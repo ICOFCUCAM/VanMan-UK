@@ -89,6 +89,19 @@ export async function getCurrentUser(): Promise<ServiceResult<UserProfile>> {
   }
 }
 
+export async function signInWithProvider(provider: 'google' | 'apple'): Promise<ServiceResult<null>> {
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: window.location.origin },
+    });
+    if (error) throw error;
+    return { data: null, error: null };
+  } catch (err) {
+    return { data: null, error: err as Error };
+  }
+}
+
 export async function resetPassword(email: string): Promise<ServiceResult<null>> {
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email);
