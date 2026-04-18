@@ -29,6 +29,7 @@ export interface UserProfile {
   full_name: string;
   phone: string | null;
   is_student: boolean;
+  is_admin: boolean;
   avatar_url: string | null;
   created_at: string;
   updated_at: string;

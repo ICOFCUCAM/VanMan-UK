@@ -8,6 +8,7 @@ create table if not exists profiles (
   full_name   text not null default '',
   phone       text,
   is_student  boolean not null default false,
+  is_admin    boolean not null default false,
   avatar_url  text,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()

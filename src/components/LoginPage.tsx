@@ -1,44 +1,139 @@
-import React, { useState } from 'react';
-import { User, Truck, Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, GraduationCap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Truck, Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, GraduationCap, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { signIn, signUp, resetPassword } from '@/services/auth';
+import { useAppContext } from '@/contexts/AppContext';
 
 interface LoginPageProps {
   type: 'customer' | 'driver';
   onNavigate: (page: string) => void;
 }
 
+function validateEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validatePassword(password: string) {
+  return password.length >= 8;
+}
+
 const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
+  const { user, role, isLoading: authLoading } = useAppContext();
+
   const [isSignup, setIsSignup] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isStudent, setIsStudent] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [awaitingAuth, setAwaitingAuth] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [resetSent, setResetSent] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email && password) {
-      setLoginSuccess(true);
-      setTimeout(() => {
-        if (type === 'driver') {
-          onNavigate('driver-marketplace');
-        } else {
-          onNavigate('home');
-        }
-      }, 1500);
+  // Once we've submitted and auth state resolves, navigate
+  useEffect(() => {
+    if (!awaitingAuth || authLoading) return;
+    if (user) {
+      if (role === 'driver') {
+        onNavigate('driver-marketplace');
+      } else if (role === 'admin') {
+        onNavigate('admin');
+      } else {
+        onNavigate('home');
+      }
     }
+  }, [awaitingAuth, authLoading, user, role]);
+
+  // If already logged in, redirect immediately
+  useEffect(() => {
+    if (!authLoading && user) {
+      if (role === 'driver') onNavigate('driver-marketplace');
+      else if (role === 'admin') onNavigate('admin');
+      else onNavigate('home');
+    }
+  }, []);
+
+  const validate = () => {
+    if (!validateEmail(email)) return 'Please enter a valid email address.';
+    if (!validatePassword(password)) return 'Password must be at least 8 characters.';
+    if (isSignup && name.trim().length < 2) return 'Please enter your full name.';
+    return null;
   };
 
-  if (loginSuccess) {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    const validationError = validate();
+    if (validationError) { setError(validationError); return; }
+
+    setIsSubmitting(true);
+
+    if (isSignup) {
+      const { error: err } = await signUp({ email, password, full_name: name, phone: phone || undefined, is_student: isStudent });
+      if (err) {
+        setError(err.message);
+        setIsSubmitting(false);
+        return;
+      }
+      // Supabase may require email confirmation — show waiting state
+      setAwaitingAuth(true);
+    } else {
+      const { error: err } = await signIn({ email, password });
+      if (err) {
+        setError(err.message.includes('Invalid login') ? 'Incorrect email or password.' : err.message);
+        setIsSubmitting(false);
+        return;
+      }
+      setAwaitingAuth(true);
+    }
+
+    setIsSubmitting(false);
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!validateEmail(email)) { setError('Please enter a valid email address.'); return; }
+    setIsSubmitting(true);
+    const { error: err } = await resetPassword(email);
+    setIsSubmitting(false);
+    if (err) { setError(err.message); return; }
+    setResetSent(true);
+  };
+
+  const isNavy = type === 'customer';
+
+  // Awaiting auth resolution — show spinner
+  if (awaitingAuth && (isSubmitting || authLoading)) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-[#0A2463]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Loader2 className="w-8 h-8 text-[#0A2463] animate-spin" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-1">Signing you in…</h2>
+          <p className="text-gray-500 text-sm">Just a moment</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Forgot password success
+  if (resetSent) {
     return (
       <div className="min-h-screen bg-gray-50 pt-24 pb-16 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-            {type === 'driver' ? <Truck className="w-8 h-8 text-green-500" /> : <User className="w-8 h-8 text-green-500" />}
+        <div className="max-w-md w-full mx-auto px-4">
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 text-center">
+            <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Check your inbox</h2>
+            <p className="text-gray-500 text-sm mb-6">We've sent a password reset link to <strong>{email}</strong>.</p>
+            <button onClick={() => { setResetSent(false); setForgotMode(false); }} className="text-[#0A2463] font-semibold text-sm hover:underline">
+              Back to sign in
+            </button>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back!</h2>
-          <p className="text-gray-600">Redirecting to your {type === 'driver' ? 'marketplace' : 'dashboard'}...</p>
         </div>
       </div>
     );
@@ -53,77 +148,120 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
 
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
           <div className="text-center mb-6">
-            <div className={`w-14 h-14 ${type === 'driver' ? 'bg-[#D4AF37]' : 'bg-[#0A2463]'} rounded-2xl flex items-center justify-center mx-auto mb-3`}>
+            <div className={`w-14 h-14 ${isNavy ? 'bg-[#0A2463]' : 'bg-[#D4AF37]'} rounded-2xl flex items-center justify-center mx-auto mb-3`}>
               {type === 'driver' ? <Truck className="w-7 h-7 text-[#0A2463]" /> : <User className="w-7 h-7 text-white" />}
             </div>
             <h1 className="text-2xl font-bold text-gray-900">
-              {isSignup ? 'Create Account' : 'Welcome Back'}
+              {forgotMode ? 'Reset Password' : isSignup ? 'Create Account' : 'Welcome Back'}
             </h1>
-            <p className="text-gray-500 text-sm mt-1">
-              {type === 'driver' ? 'Driver Portal' : 'Customer Account'}
-            </p>
+            <p className="text-gray-500 text-sm mt-1">{type === 'driver' ? 'Driver Portal' : 'Customer Account'}</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {isSignup && (
+          {error && (
+            <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4">
+              <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          )}
+
+          {/* Forgot password form */}
+          {forgotMode ? (
+            <form onSubmit={handleForgotPassword} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="John Smith" className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com"
+                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] focus:ring-2 focus:ring-[#0A2463]/10 outline-none transition-all" />
                 </div>
               </div>
-            )}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" />
-              </div>
-            </div>
-            {isSignup && (
+              <button type="submit" disabled={isSubmitting}
+                className="w-full bg-[#0A2463] hover:bg-[#1B3A8C] disabled:opacity-60 text-white py-3.5 rounded-xl font-bold transition-colors flex items-center justify-center gap-2">
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Send Reset Link'}
+              </button>
+              <button type="button" onClick={() => setForgotMode(false)} className="w-full text-center text-[#0A2463] text-sm font-medium hover:underline">
+                Back to sign in
+              </button>
+            </form>
+          ) : (
+            /* Sign in / Sign up form */
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {isSignup && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="John Smith"
+                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] focus:ring-2 focus:ring-[#0A2463]/10 outline-none transition-all" />
+                  </div>
+                </div>
+              )}
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+44 7xxx xxx xxx" className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" />
-              </div>
-            )}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Enter password" className="w-full pl-10 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            {isSignup && type === 'customer' && (
-              <label className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl cursor-pointer">
-                <input type="checkbox" checked={isStudent} onChange={(e) => setIsStudent(e.target.checked)} className="w-5 h-5 rounded text-purple-600" />
-                <div className="flex items-center gap-2">
-                  <GraduationCap className="w-4 h-4 text-purple-600" />
-                  <span className="text-sm text-gray-700">I'm a student (10% discount on all bookings)</span>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com"
+                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] focus:ring-2 focus:ring-[#0A2463]/10 outline-none transition-all" />
                 </div>
-              </label>
-            )}
+              </div>
 
-            <button type="submit" className={`w-full ${type === 'driver' ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-[#0A2463]' : 'bg-[#0A2463] hover:bg-[#1B3A8C] text-white'} py-3.5 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2`}>
-              {isSignup ? 'Create Account' : 'Sign In'}
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </form>
+              {isSignup && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+44 7xxx xxx xxx"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] focus:ring-2 focus:ring-[#0A2463]/10 outline-none transition-all" />
+                </div>
+              )}
 
-          <div className="mt-6 text-center">
-            <button onClick={() => setIsSignup(!isSignup)} className="text-[#0A2463] text-sm font-medium hover:underline">
-              {isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
-            </button>
-          </div>
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-sm font-medium text-gray-700">Password</label>
+                  {!isSignup && (
+                    <button type="button" onClick={() => setForgotMode(true)} className="text-xs text-[#0A2463] hover:underline">
+                      Forgot password?
+                    </button>
+                  )}
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required
+                    placeholder={isSignup ? 'Min. 8 characters' : 'Enter password'}
+                    className="w-full pl-10 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] focus:ring-2 focus:ring-[#0A2463]/10 outline-none transition-all" />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
 
-          {type === 'customer' && !isSignup && (
-            <button onClick={() => onNavigate('driver-login')} className="w-full mt-3 text-gray-500 text-sm hover:text-gray-700 text-center">
-              Are you a driver? Sign in here
-            </button>
+              {isSignup && type === 'customer' && (
+                <label className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl cursor-pointer">
+                  <input type="checkbox" checked={isStudent} onChange={e => setIsStudent(e.target.checked)} className="w-5 h-5 rounded text-purple-600" />
+                  <div className="flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4 text-purple-600" />
+                    <span className="text-sm text-gray-700">I'm a student (10% discount on all bookings)</span>
+                  </div>
+                </label>
+              )}
+
+              <button type="submit" disabled={isSubmitting}
+                className={`w-full ${isNavy ? 'bg-[#0A2463] hover:bg-[#1B3A8C]' : 'bg-[#D4AF37] hover:bg-[#C5A028]'} disabled:opacity-60 disabled:cursor-not-allowed ${isNavy ? 'text-white' : 'text-[#0A2463]'} py-3.5 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2`}>
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{isSignup ? 'Create Account' : 'Sign In'} <ArrowRight className="w-5 h-5" /></>}
+              </button>
+            </form>
+          )}
+
+          {!forgotMode && (
+            <div className="mt-6 text-center space-y-3">
+              <button onClick={() => { setIsSignup(!isSignup); setError(null); }} className="text-[#0A2463] text-sm font-medium hover:underline block w-full">
+                {isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
+              </button>
+              {type === 'customer' && !isSignup && (
+                <button onClick={() => onNavigate('driver-login')} className="text-gray-400 text-sm hover:text-gray-600">
+                  Are you a driver? Sign in here
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>
