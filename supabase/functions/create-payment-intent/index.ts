@@ -1,5 +1,3 @@
-import Stripe from 'npm:stripe@14';
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -14,15 +12,23 @@ Deno.serve(async (req) => {
     const { amount } = await req.json();
     if (!amount || amount <= 0) throw new Error('Invalid amount');
 
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') ?? '', {
-      apiVersion: '2024-04-10',
+    const secretKey = Deno.env.get('STRIPE_SECRET_KEY') ?? '';
+
+    const response = await fetch('https://api.stripe.com/v1/payment_intents', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${secretKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        amount: Math.round(amount * 100).toString(),
+        currency: 'gbp',
+        'automatic_payment_methods[enabled]': 'true',
+      }),
     });
 
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // pence
-      currency: 'gbp',
-      automatic_payment_methods: { enabled: true },
-    });
+    const paymentIntent = await response.json();
+    if (!response.ok) throw new Error(paymentIntent.error?.message ?? 'Stripe error');
 
     return new Response(
       JSON.stringify({ clientSecret: paymentIntent.client_secret }),
