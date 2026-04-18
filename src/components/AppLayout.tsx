@@ -22,6 +22,7 @@ import AdminDashboard from './AdminDashboard';
 import CorporatePortal from './CorporatePortal';
 import LegalPages from './LegalPages';
 import LoginPage from './LoginPage';
+import CustomerDashboard from './CustomerDashboard';
 
 const LEGAL_PAGES = ['terms', 'privacy', 'cookies', 'driver-agreement', 'cancellation', 'contact', 'about'];
 
@@ -102,7 +103,7 @@ const AppLayout: React.FC = () => {
     if (currentPage === 'customer-dashboard') {
       if (isLoading) return <LoadingScreen />;
       if (!isAuthenticated) return <LoginPage type="customer" onNavigate={navigate} />;
-      return <LoadingScreen />; // placeholder until CustomerDashboard is built
+      return <CustomerDashboard onNavigate={navigate} />;
     }
 
     // Home

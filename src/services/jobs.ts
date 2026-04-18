@@ -1,13 +1,12 @@
 import { supabase } from '@/lib/supabase';
-import type { Job, DriverTier, ServiceResult, ServiceListResult } from '@/types';
+import type { Job, ServiceResult, ServiceListResult } from '@/types';
 
-export async function getAvailableJobs(tier: DriverTier): Promise<ServiceListResult<Job>> {
+export async function getAvailableJobs(): Promise<ServiceListResult<Job>> {
   try {
     const { data, error } = await supabase
       .from('bookings')
       .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type')
       .eq('status', 'pending')
-      .eq('tier', tier)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -20,7 +19,7 @@ export async function getAvailableJobs(tier: DriverTier): Promise<ServiceListRes
       duration: row.duration,
       price: row.estimated_price,
       customerRating: 4.8,
-      tier,
+      tier: 'silver',
       status: 'available',
       items: row.vehicle_type,
       helpers: row.helpers,

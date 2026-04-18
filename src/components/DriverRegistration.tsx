@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { Truck, Upload, CheckCircle, AlertCircle, ArrowRight, ArrowLeft, User, Car, Shield, FileText, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { registerDriver } from '@/services/drivers';
+import { useAppContext } from '@/contexts/AppContext';
+import type { InsuranceType } from '@/types';
 
 interface DriverRegistrationProps {
   onNavigate: (page: string) => void;
 }
 
 const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) => {
+  const { user } = useAppContext();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', email: '', phone: '', address: '', city: '', postcode: '',
     licenseNumber: '', licenseExpiry: '', vehicleType: '', vehicleMake: '', vehicleModel: '', vehicleYear: '', vehicleReg: '',
-    insuranceType: 'standard', insuranceExpiry: '',
+    insuranceType: 'third-party' as InsuranceType, insuranceExpiry: '',
     driverLicense: null as File | null,
     vehicleRegistration: null as File | null,
     vehiclePhotos: null as File | null,
@@ -30,42 +33,29 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
     setIsSubmitting(true);
     setSubmitError(null);
 
-    try {
-      const { data, error } = await supabase.from('drivers').insert({
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        postcode: formData.postcode,
-        license_number: formData.licenseNumber,
-        license_expiry: formData.licenseExpiry || null,
-        vehicle_type: formData.vehicleType,
-        vehicle_make: formData.vehicleMake,
-        vehicle_model: formData.vehicleModel,
-        vehicle_year: formData.vehicleYear,
-        vehicle_reg: formData.vehicleReg,
-        insurance_type: formData.insuranceType,
-        insurance_expiry: formData.insuranceExpiry || null,
-        driver_license_doc: formData.driverLicense?.name || null,
-        vehicle_registration_doc: formData.vehicleRegistration?.name || null,
-        vehicle_photos_doc: formData.vehiclePhotos?.name || null,
-        insurance_doc: formData.insuranceDoc?.name || null,
-        tier: formData.insuranceType === 'commercial' ? 'gold' : 'silver',
-        status: 'pending',
-      }).select('id').single();
+    const { data, error } = await registerDriver({
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      vehicle_type: formData.vehicleType || 'Medium Van',
+      vehicle_make: formData.vehicleMake,
+      vehicle_model: formData.vehicleModel,
+      vehicle_year: formData.vehicleYear,
+      vehicle_reg: formData.vehicleReg,
+      insurance_type: formData.insuranceType,
+      user_id: user?.id,
+    });
 
-      if (error) throw error;
+    setIsSubmitting(false);
 
-      setDriverId(data.id);
-      setSubmitted(true);
-    } catch (err: any) {
-      console.error('Driver registration error:', err);
-      setSubmitError(err.message || 'Failed to submit application. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+    if (error) {
+      setSubmitError(error.message || 'Failed to submit application. Please try again.');
+      return;
     }
+
+    setDriverId(data!.id);
+    setSubmitted(true);
   };
 
   if (submitted) {
@@ -239,14 +229,14 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Insurance Type</label>
                 <div className="grid grid-cols-2 gap-3">
-                  <button onClick={() => updateField('insuranceType', 'standard')} className={`p-4 rounded-xl border-2 text-left transition-all ${formData.insuranceType === 'standard' ? 'border-gray-400 bg-gray-50' : 'border-gray-200'}`}>
+                  <button onClick={() => updateField('insuranceType', 'third-party')} className={`p-4 rounded-xl border-2 text-left transition-all ${formData.insuranceType === 'third-party' ? 'border-gray-400 bg-gray-50' : 'border-gray-200'}`}>
                     <Shield className="w-6 h-6 text-gray-400 mb-2" />
-                    <p className="font-semibold text-gray-900 text-sm">Standard Insurance</p>
+                    <p className="font-semibold text-gray-900 text-sm">Third-Party Insurance</p>
                     <p className="text-gray-500 text-xs">Silver Star tier access</p>
                   </button>
-                  <button onClick={() => updateField('insuranceType', 'commercial')} className={`p-4 rounded-xl border-2 text-left transition-all ${formData.insuranceType === 'commercial' ? 'border-[#D4AF37] bg-[#D4AF37]/5' : 'border-gray-200'}`}>
+                  <button onClick={() => updateField('insuranceType', 'comprehensive')} className={`p-4 rounded-xl border-2 text-left transition-all ${formData.insuranceType === 'comprehensive' ? 'border-[#D4AF37] bg-[#D4AF37]/5' : 'border-gray-200'}`}>
                     <Shield className="w-6 h-6 text-[#D4AF37] mb-2" />
-                    <p className="font-semibold text-gray-900 text-sm">Commercial Insurance</p>
+                    <p className="font-semibold text-gray-900 text-sm">Comprehensive Insurance</p>
                     <p className="text-[#D4AF37] text-xs font-medium">Golden Star tier access</p>
                   </button>
                 </div>

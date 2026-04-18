@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2 } from 'lucide-react';
 import { PRICING, VEHICLE_TYPES } from '@/lib/constants';
+import { geocodeUK, haversineMiles } from '@/lib/geocoding';
 import { useAppContext } from '@/contexts/AppContext';
 import { createBooking } from '@/services/bookings';
-import type { PaymentMethod } from '@/types';
+import type { PaymentMethod, QuoteData } from '@/types';
 
 interface BookingWidgetProps {
   bookingRef: React.RefObject<HTMLDivElement | null>;
@@ -21,7 +22,8 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
   const [deliveryType, setDeliveryType] = useState<'dedicated' | 'shared'>('dedicated');
   const [showQuote, setShowQuote] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
-  const [quoteData, setQuoteData] = useState<any>(null);
+  const [quoteData, setQuoteData] = useState<QuoteData | null>(null);
+  const [geocodeError, setGeocodeError] = useState<string | null>(null);
   const [isBooking, setIsBooking] = useState(false);
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [bookingId, setBookingId] = useState<string | null>(null);
@@ -35,42 +37,52 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
     setStopAddresses(updated);
   };
 
-  const calculateQuote = () => {
+  const calculateQuote = async () => {
     if (!collectionAddress || !deliveryAddress) return;
     setIsCalculating(true);
     setBookingConfirmed(false);
     setBookingError(null);
+    setGeocodeError(null);
 
-    setTimeout(() => {
-      const vehicle = VEHICLE_TYPES.find(v => v.id === selectedVehicle)!;
-      const baseMiles = Math.floor(Math.random() * 50) + 5;
-      const extraStopMiles = addStops ? stopAddresses.filter(s => s).length * 8 : 0;
-      const totalMiles = baseMiles + extraStopMiles;
-      const travelTimeMin = Math.round(totalMiles * 2.2);
-      const hours = Math.max(2, Math.ceil(travelTimeMin / 60));
+    const [fromCoords, toCoords] = await Promise.all([
+      geocodeUK(collectionAddress),
+      geocodeUK(deliveryAddress),
+    ]);
 
-      let price = Math.max(PRICING.minimumJobCost, vehicle.basePrice + (totalMiles * 1.2));
-      if (hours > 2) price += (hours - 2) * PRICING.additionalTimeCharge;
-      if (hasStairs) price += 20;
-      if (helpers > 0) price += helpers * 25;
-      if (deliveryType === 'shared') price *= 0.7;
-
-      const hour = new Date().getHours();
-      const surgeMultiplier = (hour >= 7 && hour <= 9) || (hour >= 17 && hour <= 19) ? 1.3 : 1.0;
-      price *= surgeMultiplier;
-
-      setQuoteData({
-        distance: totalMiles,
-        duration: `${Math.floor(travelTimeMin / 60)}h ${travelTimeMin % 60}m`,
-        basePrice: Math.round(price),
-        surgeMultiplier,
-        vehicle: vehicle.name,
-        vehicleId: selectedVehicle,
-        isSurge: surgeMultiplier > 1,
-      });
-      setShowQuote(true);
+    if (!fromCoords || !toCoords) {
+      setGeocodeError('Could not find one or both addresses. Please check and try again.');
       setIsCalculating(false);
-    }, 1500);
+      return;
+    }
+
+    const vehicle = VEHICLE_TYPES.find(v => v.id === selectedVehicle)!;
+    const baseMiles = haversineMiles(fromCoords[0], fromCoords[1], toCoords[0], toCoords[1]);
+    const extraStopMiles = addStops ? stopAddresses.filter(s => s).length * 8 : 0;
+    const totalMiles = Math.max(1, Math.round((baseMiles + extraStopMiles) * 10) / 10);
+    const travelTimeMin = Math.round(totalMiles * 2.2);
+    const hours = Math.max(2, Math.ceil(travelTimeMin / 60));
+
+    let price = Math.max(PRICING.minimumJobCost, vehicle.basePrice + totalMiles * 1.2);
+    if (hours > 2) price += (hours - 2) * PRICING.additionalTimeCharge;
+    if (hasStairs) price += 20;
+    if (helpers > 0) price += helpers * 25;
+    if (deliveryType === 'shared') price *= 0.7;
+
+    const hour = new Date().getHours();
+    const surgeMultiplier = (hour >= 7 && hour <= 9) || (hour >= 17 && hour <= 19) ? 1.3 : 1.0;
+    price *= surgeMultiplier;
+
+    setQuoteData({
+      distance: totalMiles,
+      duration: `${Math.floor(travelTimeMin / 60)}h ${travelTimeMin % 60}m`,
+      basePrice: Math.round(price),
+      surgeMultiplier,
+      vehicle: vehicle.name,
+      vehicleId: selectedVehicle,
+      isSurge: surgeMultiplier > 1,
+    });
+    setShowQuote(true);
+    setIsCalculating(false);
   };
 
   const confirmBooking = async (paymentMethod: PaymentMethod) => {
@@ -237,6 +249,14 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
                 </div>
               </div>
             </div>
+
+            {/* Geocode error */}
+            {geocodeError && (
+              <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                <AlertTriangle className="w-4 h-4 text-red-500 shrink-0" />
+                <p className="text-red-700 text-sm">{geocodeError}</p>
+              </div>
+            )}
 
             {/* Get Quote Button */}
             <button
