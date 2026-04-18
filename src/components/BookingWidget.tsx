@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2 } from 'lucide-react';
 import { PRICING, VEHICLE_TYPES } from '@/lib/constants';
-import { supabase } from '@/lib/supabase';
+import { useAppContext } from '@/contexts/AppContext';
+import { createBooking } from '@/services/bookings';
+import type { PaymentMethod } from '@/types';
 
 interface BookingWidgetProps {
   bookingRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
+  const { user } = useAppContext();
   const [collectionAddress, setCollectionAddress] = useState('');
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [hasStairs, setHasStairs] = useState(false);
@@ -70,38 +73,35 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
     }, 1500);
   };
 
-  const confirmBooking = async (paymentMethod: string) => {
+  const confirmBooking = async (paymentMethod: PaymentMethod) => {
     if (!quoteData) return;
     setIsBooking(true);
     setBookingError(null);
 
-    try {
-      const { data, error } = await supabase.from('bookings').insert({
-        collection_address: collectionAddress,
-        delivery_address: deliveryAddress,
-        stop_addresses: addStops ? stopAddresses.filter(s => s.trim()) : [],
-        has_stairs: hasStairs,
-        vehicle_type: quoteData.vehicleId,
-        delivery_type: deliveryType,
-        helpers,
-        distance_miles: quoteData.distance,
-        duration: quoteData.duration,
-        estimated_price: quoteData.basePrice,
-        surge_multiplier: quoteData.surgeMultiplier,
-        status: 'pending',
-        payment_method: paymentMethod,
-      }).select('id').single();
+    const { data, error } = await createBooking({
+      collection_address: collectionAddress,
+      delivery_address: deliveryAddress,
+      stop_addresses: addStops ? stopAddresses.filter(s => s.trim()) : [],
+      has_stairs: hasStairs,
+      vehicle_type: quoteData.vehicleId,
+      delivery_type: deliveryType,
+      helpers,
+      distance_miles: quoteData.distance,
+      duration: quoteData.duration,
+      estimated_price: quoteData.basePrice,
+      surge_multiplier: quoteData.surgeMultiplier,
+      payment_method: paymentMethod,
+      customer_id: user?.id,
+    });
 
-      if (error) throw error;
-
+    if (error) {
+      setBookingError(error.message || 'Failed to save booking. Please try again.');
+    } else if (data) {
       setBookingId(data.id);
       setBookingConfirmed(true);
-    } catch (err: any) {
-      console.error('Booking error:', err);
-      setBookingError(err.message || 'Failed to save booking. Please try again.');
-    } finally {
-      setIsBooking(false);
     }
+
+    setIsBooking(false);
   };
 
   return (
