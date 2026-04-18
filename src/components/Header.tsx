@@ -136,12 +136,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                       <button onClick={() => { onNavigate('login'); setAccountDropdown(false); }}
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 text-gray-700 text-sm transition-colors">
                         <User className="w-4 h-4 text-[#0A2463]" />
-                        Customer Login
-                      </button>
-                      <button onClick={() => { onNavigate('driver-login'); setAccountDropdown(false); }}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 text-gray-700 text-sm transition-colors">
-                        <Truck className="w-4 h-4 text-[#0A2463]" />
-                        Driver Login
+                        Sign In
                       </button>
                       <button onClick={() => { onNavigate('driver-register'); setAccountDropdown(false); }}
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 text-gray-700 text-sm transition-colors">

@@ -76,8 +76,7 @@ const AppLayout: React.FC = () => {
     }
 
     // Public: auth pages
-    if (currentPage === 'login') return <LoginPage type="customer" onNavigate={navigate} />;
-    if (currentPage === 'driver-login') return <LoginPage type="driver" onNavigate={navigate} />;
+    if (currentPage === 'login' || currentPage === 'driver-login') return <LoginPage onNavigate={navigate} />;
     if (currentPage === 'driver-register') return <DriverRegistration onNavigate={navigate} />;
 
     // Public: tracking & corporate (anyone can view)
@@ -94,7 +93,7 @@ const AppLayout: React.FC = () => {
     // Protected: drivers only
     if (currentPage === 'driver-marketplace' || currentPage === 'driver-dashboard') {
       if (isLoading) return <LoadingScreen />;
-      if (!isAuthenticated) return <LoginPage type="driver" onNavigate={navigate} />;
+      if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
       if (role !== 'driver') return <AccessDenied onNavigate={navigate} />;
       return <DriverMarketplace onNavigate={navigate} />;
     }
@@ -102,7 +101,7 @@ const AppLayout: React.FC = () => {
     // Protected: authenticated customers
     if (currentPage === 'customer-dashboard') {
       if (isLoading) return <LoadingScreen />;
-      if (!isAuthenticated) return <LoginPage type="customer" onNavigate={navigate} />;
+      if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
       return <CustomerDashboard onNavigate={navigate} />;
     }
 
