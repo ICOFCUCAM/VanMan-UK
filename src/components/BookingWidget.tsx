@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2, CreditCard } from 'lucide-react';
 import { PRICING, VEHICLE_TYPES } from '@/lib/constants';
 import { geocodeUK, haversineMiles } from '@/lib/geocoding';
 import { useAppContext } from '@/contexts/AppContext';
 import { createBooking } from '@/services/bookings';
-import PaymentModal from './PaymentModal';
+import { createCheckoutSession } from '@/services/payments';
 import type { PaymentMethod, QuoteData } from '@/types';
 
 interface BookingWidgetProps {
@@ -29,7 +29,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const addStop = () => setStopAddresses([...stopAddresses, '']);
   const removeStop = (idx: number) => setStopAddresses(stopAddresses.filter((_, i) => i !== idx));
@@ -118,9 +118,54 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
     setIsBooking(false);
   };
 
-  const handlePaymentSuccess = () => {
-    setShowPaymentModal(false);
-    confirmBooking('card');
+  // After Stripe redirects back with ?payment=success, complete the booking
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') !== 'success') return;
+    const pending = localStorage.getItem('pending_booking');
+    if (!pending) return;
+    window.history.replaceState({}, '', window.location.pathname);
+    const details = JSON.parse(pending);
+    localStorage.removeItem('pending_booking');
+    createBooking({ ...details, payment_method: 'card' as PaymentMethod }).then(({ data, error }) => {
+      if (error) { setBookingError(error.message); return; }
+      if (data) { setBookingId(data.id); setBookingConfirmed(true); }
+    });
+  }, []);
+
+  const handleCardPayment = async () => {
+    if (!quoteData) return;
+    setIsRedirecting(true);
+    setBookingError(null);
+    const origin = window.location.origin;
+    const bookingDetails = {
+      collection_address: collectionAddress,
+      delivery_address: deliveryAddress,
+      stop_addresses: addStops ? stopAddresses.filter(s => s.trim()) : [],
+      has_stairs: hasStairs,
+      vehicle_type: quoteData.vehicleId,
+      delivery_type: deliveryType,
+      helpers,
+      distance_miles: quoteData.distance,
+      duration: quoteData.duration,
+      estimated_price: quoteData.basePrice,
+      surge_multiplier: quoteData.surgeMultiplier,
+      customer_id: user?.id,
+    };
+    localStorage.setItem('pending_booking', JSON.stringify(bookingDetails));
+    const { url, error } = await createCheckoutSession(
+      quoteData.basePrice,
+      `Man & Van – ${collectionAddress} → ${deliveryAddress}`,
+      `${origin}?payment=success`,
+      `${origin}?payment=cancelled`,
+    );
+    if (error || !url) {
+      setBookingError(error?.message ?? 'Could not start payment. Please try again.');
+      localStorage.removeItem('pending_booking');
+      setIsRedirecting(false);
+      return;
+    }
+    window.location.href = url;
   };
 
   return (
@@ -314,16 +359,16 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
                 )}
                 <div className="flex flex-wrap gap-3">
                   <button
-                    onClick={() => setShowPaymentModal(true)}
-                    disabled={isBooking}
+                    onClick={handleCardPayment}
+                    disabled={isRedirecting || isBooking}
                     className="flex-1 bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-60 text-[#0A2463] py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
                   >
-                    <CreditCard className="w-5 h-5" />
-                    Pay by Card £{quoteData.basePrice}
+                    {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
+                    {isRedirecting ? 'Redirecting to Stripe…' : `Pay by Card £${quoteData.basePrice}`}
                   </button>
                   <button
                     onClick={() => confirmBooking('cash')}
-                    disabled={isBooking}
+                    disabled={isBooking || isRedirecting}
                     className="px-6 py-3 bg-white/10 hover:bg-white/20 disabled:opacity-60 rounded-xl font-semibold transition-all border border-white/20 flex items-center gap-2"
                   >
                     {isBooking ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
@@ -354,14 +399,6 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
         </div>
       </div>
     </section>
-
-    {showPaymentModal && quoteData && (
-      <PaymentModal
-        amount={quoteData.basePrice}
-        onSuccess={handlePaymentSuccess}
-        onClose={() => setShowPaymentModal(false)}
-      />
-    )}
   </>
   );
 };

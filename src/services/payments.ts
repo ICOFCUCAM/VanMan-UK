@@ -1,6 +1,9 @@
-export async function createPaymentIntent(
+export async function createCheckoutSession(
   amountGBP: number,
-): Promise<{ clientSecret: string | null; error: Error | null }> {
+  description: string,
+  successUrl: string,
+  cancelUrl: string,
+): Promise<{ url: string | null; error: Error | null }> {
   try {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
     const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
@@ -14,14 +17,14 @@ export async function createPaymentIntent(
           'Authorization': `Bearer ${supabaseKey}`,
           'apikey': supabaseKey,
         },
-        body: JSON.stringify({ amount: amountGBP }),
+        body: JSON.stringify({ amount: amountGBP, description, successUrl, cancelUrl }),
       },
     );
 
     const data = await response.json();
     if (data.error) throw new Error(data.error);
-    return { clientSecret: data.clientSecret as string, error: null };
+    return { url: data.url as string, error: null };
   } catch (err) {
-    return { clientSecret: null, error: err as Error };
+    return { url: null, error: err as Error };
   }
 }
