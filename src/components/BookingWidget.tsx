@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2 } from 'lucide-react';
+import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2, CreditCard } from 'lucide-react';
 import { PRICING, VEHICLE_TYPES } from '@/lib/constants';
 import { geocodeUK, haversineMiles } from '@/lib/geocoding';
 import { useAppContext } from '@/contexts/AppContext';
 import { createBooking } from '@/services/bookings';
+import PaymentModal from './PaymentModal';
 import type { PaymentMethod, QuoteData } from '@/types';
 
 interface BookingWidgetProps {
@@ -28,6 +29,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const addStop = () => setStopAddresses([...stopAddresses, '']);
   const removeStop = (idx: number) => setStopAddresses(stopAddresses.filter((_, i) => i !== idx));
@@ -116,7 +118,13 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
     setIsBooking(false);
   };
 
+  const handlePaymentSuccess = () => {
+    setShowPaymentModal(false);
+    confirmBooking('card');
+  };
+
   return (
+    <>
     <section ref={bookingRef} className="relative -mt-20 z-20 pb-16">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-2xl shadow-black/10 overflow-hidden border border-gray-100">
@@ -306,18 +314,19 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
                 )}
                 <div className="flex flex-wrap gap-3">
                   <button
-                    onClick={() => confirmBooking('card')}
+                    onClick={() => setShowPaymentModal(true)}
                     disabled={isBooking}
                     className="flex-1 bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-60 text-[#0A2463] py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
                   >
-                    {isBooking ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
-                    {isBooking ? 'Saving...' : 'Confirm Booking'}
+                    <CreditCard className="w-5 h-5" />
+                    Pay by Card £{quoteData.basePrice}
                   </button>
                   <button
                     onClick={() => confirmBooking('cash')}
                     disabled={isBooking}
-                    className="px-6 py-3 bg-white/10 hover:bg-white/20 disabled:opacity-60 rounded-xl font-semibold transition-all border border-white/20"
+                    className="px-6 py-3 bg-white/10 hover:bg-white/20 disabled:opacity-60 rounded-xl font-semibold transition-all border border-white/20 flex items-center gap-2"
                   >
+                    {isBooking ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                     Pay with Cash
                   </button>
                 </div>
@@ -345,6 +354,15 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
         </div>
       </div>
     </section>
+
+    {showPaymentModal && quoteData && (
+      <PaymentModal
+        amount={quoteData.basePrice}
+        onSuccess={handlePaymentSuccess}
+        onClose={() => setShowPaymentModal(false)}
+      />
+    )}
+  </>
   );
 };
 
