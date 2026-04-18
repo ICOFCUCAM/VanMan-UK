@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { User, Truck, Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, GraduationCap, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { Truck, Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, GraduationCap, AlertCircle, Loader2 } from 'lucide-react';
 import { signIn, signUp, resetPassword } from '@/services/auth';
 import { useAppContext } from '@/contexts/AppContext';
 
 interface LoginPageProps {
-  type: 'customer' | 'driver';
   onNavigate: (page: string) => void;
 }
 
@@ -12,11 +11,7 @@ function validateEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function validatePassword(password: string) {
-  return password.length >= 8;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
+const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
   const { user, role, isLoading: authLoading } = useAppContext();
 
   const [isSignup, setIsSignup] = useState(false);
@@ -32,32 +27,26 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
   const [error, setError] = useState<string | null>(null);
   const [resetSent, setResetSent] = useState(false);
 
-  // Once we've submitted and auth state resolves, navigate
+  const redirectByRole = (r: typeof role) => {
+    if (r === 'admin') onNavigate('admin');
+    else if (r === 'driver') onNavigate('driver-marketplace');
+    else onNavigate('home');
+  };
+
+  // Once login completes and auth state resolves, redirect by role
   useEffect(() => {
     if (!awaitingAuth || authLoading) return;
-    if (user) {
-      if (role === 'driver') {
-        onNavigate('driver-marketplace');
-      } else if (role === 'admin') {
-        onNavigate('admin');
-      } else {
-        onNavigate('home');
-      }
-    }
+    if (user) redirectByRole(role);
   }, [awaitingAuth, authLoading, user, role]);
 
-  // If already logged in, redirect immediately
+  // Already logged in — redirect immediately
   useEffect(() => {
-    if (!authLoading && user) {
-      if (role === 'driver') onNavigate('driver-marketplace');
-      else if (role === 'admin') onNavigate('admin');
-      else onNavigate('home');
-    }
+    if (!authLoading && user) redirectByRole(role);
   }, []);
 
   const validate = () => {
     if (!validateEmail(email)) return 'Please enter a valid email address.';
-    if (!validatePassword(password)) return 'Password must be at least 8 characters.';
+    if (password.length < 8) return 'Password must be at least 8 characters.';
     if (isSignup && name.trim().length < 2) return 'Please enter your full name.';
     return null;
   };
@@ -65,21 +54,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    const validationError = validate();
-    if (validationError) { setError(validationError); return; }
-
+    const err = validate();
+    if (err) { setError(err); return; }
     setIsSubmitting(true);
 
     if (isSignup) {
       const { error: err } = await signUp({ email, password, full_name: name, phone: phone || undefined, is_student: isStudent });
-      if (err) {
-        setError(err.message);
-        setIsSubmitting(false);
-        return;
-      }
-      // Supabase may require email confirmation — show waiting state
-      setAwaitingAuth(true);
+      if (err) { setError(err.message); setIsSubmitting(false); return; }
     } else {
       const { error: err } = await signIn({ email, password });
       if (err) {
@@ -87,10 +68,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
         setIsSubmitting(false);
         return;
       }
-      setAwaitingAuth(true);
     }
 
     setIsSubmitting(false);
+    setAwaitingAuth(true);
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
@@ -104,9 +85,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
     setResetSent(true);
   };
 
-  const isNavy = type === 'customer';
-
-  // Awaiting auth resolution — show spinner
+  // Awaiting auth resolution
   if (awaitingAuth && (isSubmitting || authLoading)) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -121,13 +100,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
     );
   }
 
-  // Forgot password success
+  // Password reset sent
   if (resetSent) {
     return (
       <div className="min-h-screen bg-gray-50 pt-24 pb-16 flex items-center justify-center">
         <div className="max-w-md w-full mx-auto px-4">
           <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 text-center">
-            <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="w-6 h-6 text-green-600" />
+            </div>
             <h2 className="text-xl font-bold text-gray-900 mb-2">Check your inbox</h2>
             <p className="text-gray-500 text-sm mb-6">We've sent a password reset link to <strong>{email}</strong>.</p>
             <button onClick={() => { setResetSent(false); setForgotMode(false); }} className="text-[#0A2463] font-semibold text-sm hover:underline">
@@ -147,14 +128,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
         </button>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          {/* Header */}
           <div className="text-center mb-6">
-            <div className={`w-14 h-14 ${isNavy ? 'bg-[#0A2463]' : 'bg-[#D4AF37]'} rounded-2xl flex items-center justify-center mx-auto mb-3`}>
-              {type === 'driver' ? <Truck className="w-7 h-7 text-[#0A2463]" /> : <User className="w-7 h-7 text-white" />}
+            <div className="w-14 h-14 bg-[#0A2463] rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <Truck className="w-7 h-7 text-[#D4AF37]" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">
               {forgotMode ? 'Reset Password' : isSignup ? 'Create Account' : 'Welcome Back'}
             </h1>
-            <p className="text-gray-500 text-sm mt-1">{type === 'driver' ? 'Driver Portal' : 'Customer Account'}</p>
+            <p className="text-gray-500 text-sm mt-1">
+              {forgotMode ? 'Enter your email to receive a reset link' : isSignup ? 'Join Fast Man & Van' : 'Sign in to your account'}
+            </p>
           </div>
 
           {error && (
@@ -164,7 +148,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
             </div>
           )}
 
-          {/* Forgot password form */}
+          {/* Forgot password */}
           {forgotMode ? (
             <form onSubmit={handleForgotPassword} className="space-y-4">
               <div>
@@ -184,16 +168,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
               </button>
             </form>
           ) : (
-            /* Sign in / Sign up form */
             <form onSubmit={handleSubmit} className="space-y-4">
               {isSignup && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="John Smith"
-                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] focus:ring-2 focus:ring-[#0A2463]/10 outline-none transition-all" />
-                  </div>
+                  <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="John Smith"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] focus:ring-2 focus:ring-[#0A2463]/10 outline-none transition-all" />
                 </div>
               )}
 
@@ -208,7 +188,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
 
               {isSignup && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number <span className="text-gray-400 font-normal">(optional)</span></label>
                   <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+44 7xxx xxx xxx"
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] focus:ring-2 focus:ring-[#0A2463]/10 outline-none transition-all" />
                 </div>
@@ -226,7 +206,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required
-                    placeholder={isSignup ? 'Min. 8 characters' : 'Enter password'}
+                    placeholder={isSignup ? 'Min. 8 characters' : 'Enter your password'}
                     className="w-full pl-10 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] focus:ring-2 focus:ring-[#0A2463]/10 outline-none transition-all" />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -234,7 +214,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
                 </div>
               </div>
 
-              {isSignup && type === 'customer' && (
+              {isSignup && (
                 <label className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl cursor-pointer">
                   <input type="checkbox" checked={isStudent} onChange={e => setIsStudent(e.target.checked)} className="w-5 h-5 rounded text-purple-600" />
                   <div className="flex items-center gap-2">
@@ -245,20 +225,20 @@ const LoginPage: React.FC<LoginPageProps> = ({ type, onNavigate }) => {
               )}
 
               <button type="submit" disabled={isSubmitting}
-                className={`w-full ${isNavy ? 'bg-[#0A2463] hover:bg-[#1B3A8C]' : 'bg-[#D4AF37] hover:bg-[#C5A028]'} disabled:opacity-60 disabled:cursor-not-allowed ${isNavy ? 'text-white' : 'text-[#0A2463]'} py-3.5 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2`}>
+                className="w-full bg-[#0A2463] hover:bg-[#1B3A8C] disabled:opacity-60 disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
                 {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{isSignup ? 'Create Account' : 'Sign In'} <ArrowRight className="w-5 h-5" /></>}
               </button>
             </form>
           )}
 
           {!forgotMode && (
-            <div className="mt-6 text-center space-y-3">
+            <div className="mt-6 space-y-3 text-center">
               <button onClick={() => { setIsSignup(!isSignup); setError(null); }} className="text-[#0A2463] text-sm font-medium hover:underline block w-full">
                 {isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
               </button>
-              {type === 'customer' && !isSignup && (
-                <button onClick={() => onNavigate('driver-login')} className="text-gray-400 text-sm hover:text-gray-600">
-                  Are you a driver? Sign in here
+              {!isSignup && (
+                <button onClick={() => onNavigate('driver-register')} className="flex items-center justify-center gap-2 w-full text-[#D4AF37] text-sm font-medium hover:underline">
+                  <Truck className="w-4 h-4" /> Want to become a driver? Apply here
                 </button>
               )}
             </div>
