@@ -13,9 +13,9 @@ const OPTIONS = [
     desc: 'Book vans, track your orders in real time, and manage all your deliveries from one dashboard.',
     features: ['Instant price estimates', 'Live order tracking', 'Secure escrow payments', 'Booking history & receipts'],
     cta: 'Sign Up as Customer',
-    page: 'login',
-    accent: 'bg-blue-600',
-    border: 'hover:border-blue-300',
+    page: 'register',
+    accent: 'bg-[#0E2A47]',
+    border: 'hover:border-[#0E2A47]/30',
     ctaStyle: 'bg-[#0E2A47] hover:bg-[#0F3558] text-white',
   },
   {
@@ -39,8 +39,8 @@ const OPTIONS = [
     features: ['Dedicated account manager', 'Monthly invoicing', 'API access & integrations', 'Usage analytics'],
     cta: 'Get Enterprise Access',
     page: 'corporate',
-    accent: 'bg-purple-600',
-    border: 'hover:border-purple-300',
+    accent: 'bg-[#0F3558]',
+    border: 'hover:border-[#0E2A47]/30',
     ctaStyle: 'bg-[#0E2A47] hover:bg-[#0F3558] text-white',
   },
 ];

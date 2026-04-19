@@ -5,6 +5,7 @@ import { useAppContext } from '@/contexts/AppContext';
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
+  initialSignup?: boolean;
 }
 
 function validateEmail(email: string) {
@@ -18,10 +19,10 @@ const trustPoints = [
   { icon: CheckCircle, text: 'Secure encrypted payments' },
 ];
 
-const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
+const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, initialSignup = false }) => {
   const { user, role, isLoading: authLoading } = useAppContext();
 
-  const [isSignup, setIsSignup] = useState(false);
+  const [isSignup, setIsSignup] = useState(initialSignup);
   const [forgotMode, setForgotMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isStudent, setIsStudent] = useState(false);
@@ -361,15 +362,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                   </div>
 
                   {isSignup && (
-                    <label className="flex items-center gap-3 p-4 bg-purple-50 border-2 border-purple-100 rounded-2xl cursor-pointer hover:border-purple-200 transition-colors">
-                      <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all ${isStudent ? 'bg-purple-600 border-purple-600' : 'border-gray-300'}`}>
+                    <label className="flex items-center gap-3 p-4 bg-[#0E2A47]/5 border-2 border-[#0E2A47]/10 rounded-2xl cursor-pointer hover:border-[#0E2A47]/25 transition-colors">
+                      <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all ${isStudent ? 'bg-[#0E2A47] border-[#0E2A47]' : 'border-gray-300'}`}>
                         {isStudent && <CheckCircle className="w-3.5 h-3.5 text-white" />}
                       </div>
                       <input type="checkbox" checked={isStudent} onChange={e => setIsStudent(e.target.checked)} className="sr-only" />
-                      <GraduationCap className="w-4 h-4 text-purple-600 shrink-0" />
+                      <GraduationCap className="w-4 h-4 text-[#0E2A47] shrink-0" />
                       <div>
                         <p className="text-sm font-bold text-gray-800">I'm a student</p>
-                        <p className="text-xs text-purple-600 font-semibold">10% discount on all bookings</p>
+                        <p className="text-xs text-[#F5B400] font-semibold">10% discount on all bookings</p>
                       </div>
                     </label>
                   )}

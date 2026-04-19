@@ -101,6 +101,7 @@ const AppLayout: React.FC = () => {
     // Auth pages
     if (currentPage === 'signup') return <SignUpPage onNavigate={navigate} />;
     if (currentPage === 'login' || currentPage === 'driver-login') return <LoginPage onNavigate={navigate} />;
+    if (currentPage === 'register') return <LoginPage onNavigate={navigate} initialSignup={true} />;
     if (currentPage === 'driver-register') return <DriverRegistration onNavigate={navigate} />;
 
     // Content pages
