@@ -1,51 +1,73 @@
 import React from 'react';
-import { GraduationCap, Upload, CheckCircle, AlertTriangle } from 'lucide-react';
+import { GraduationCap, CheckCircle, Info } from 'lucide-react';
 
 const StudentDiscount: React.FC = () => {
   return (
-    <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-gray-100">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-                <GraduationCap className="w-4 h-4" />
-                STUDENT OFFER
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#0A2463] to-[#1a1065]">
+          {/* Decorative background */}
+          <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #D4AF37 0%, transparent 50%), radial-gradient(circle at 80% 20%, #7C3AED 0%, transparent 40%)' }} />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl" />
+
+          <div className="relative grid grid-cols-1 md:grid-cols-2 gap-0 items-stretch">
+            {/* Left: content */}
+            <div className="p-8 sm:p-12">
+              <div className="inline-flex items-center gap-2 bg-purple-500/15 border border-purple-400/20 text-purple-300 text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-7">
+                <GraduationCap className="w-3.5 h-3.5" />
+                Student Offer
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Students Get <span className="text-purple-600">10% Off</span> Every Booking
+
+              <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">
+                Students get{' '}
+                <span className="text-[#D4AF37]">10% off</span>{' '}
+                every booking
               </h2>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                Moving to uni? Relocating between term addresses? We've got you covered with our exclusive student discount on all bookings.
+
+              <p className="text-white/55 mb-8 leading-relaxed">
+                Moving to uni, relocating between terms, or heading home? Our student discount applies to every booking — no minimum spend.
               </p>
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700 text-sm">Create a student account with your university email</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Upload className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                  <span className="text-gray-700 text-sm">Upload a valid student ID for verification</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700 text-sm">10% discount automatically applied to all bookings</span>
-                </div>
+
+              <div className="space-y-3 mb-8">
+                {[
+                  'Create an account with your university email',
+                  'Upload a valid student ID for verification',
+                  '10% discount applied automatically to all bookings',
+                ].map((step, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-green-400/15 border border-green-400/30 flex items-center justify-center shrink-0">
+                      <CheckCircle className="w-3.5 h-3.5 text-green-400" />
+                    </div>
+                    <span className="text-white/70 text-sm">{step}</span>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6">
-                <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
-                <p className="text-amber-700 text-xs">Student ID must be presented to the driver at pickup. If ID cannot be presented, the discount will be removed and the full fare charged.</p>
+
+              <div className="flex items-start gap-2.5 bg-amber-500/8 border border-amber-400/15 rounded-xl p-4">
+                <Info className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                <p className="text-amber-300/70 text-xs leading-relaxed">Student ID must be shown to the driver at pickup. If unavailable, the full fare applies.</p>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-8 text-white text-center">
-              <GraduationCap className="w-16 h-16 mx-auto mb-4 opacity-80" />
-              <p className="text-5xl font-bold mb-2">10%</p>
-              <p className="text-xl font-semibold mb-1">Student Discount</p>
-              <p className="text-white/70 text-sm mb-6">On every booking, every time</p>
-              <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
-                <p className="text-white/80 text-sm">Average student saving</p>
-                <p className="text-3xl font-bold text-[#D4AF37]">£12-£35</p>
-                <p className="text-white/60 text-xs">per booking</p>
+
+            {/* Right: visual */}
+            <div className="relative flex items-center justify-center p-8 sm:p-12 border-t md:border-t-0 md:border-l border-white/8">
+              <div className="text-center">
+                <div className="w-24 h-24 bg-[#D4AF37]/15 border border-[#D4AF37]/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                  <GraduationCap className="w-12 h-12 text-[#D4AF37]" />
+                </div>
+                <p className="text-8xl font-black text-white mb-2">10%</p>
+                <p className="text-white/60 font-semibold mb-8">Student Discount</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { label: 'Avg saving', value: '£12–£35' },
+                    { label: 'Per booking', value: 'Always' },
+                  ].map((s, i) => (
+                    <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                      <p className="text-[#D4AF37] font-black text-xl">{s.value}</p>
+                      <p className="text-white/40 text-xs mt-0.5">{s.label}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

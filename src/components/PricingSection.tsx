@@ -1,6 +1,5 @@
 import React from 'react';
-import { CheckCircle, Truck, Star, Zap, Building2 } from 'lucide-react';
-import { FEATURE_IMAGES } from '@/lib/constants';
+import { CheckCircle, Truck, Star, Zap, Building2, ArrowRight } from 'lucide-react';
 
 interface PricingSectionProps {
   onNavigate: (page: string) => void;
@@ -9,30 +8,30 @@ interface PricingSectionProps {
 const plans = [
   {
     name: 'Pay As You Go',
-    desc: 'Perfect for one-off moves and deliveries',
+    desc: 'One-off moves and deliveries',
     price: '£80',
     unit: 'minimum',
     icon: Truck,
-    color: 'border-gray-200',
+    dark: false,
     features: [
       'Minimum booking fee: £50',
-      'Minimum 2-hour job duration',
-      '£30 per additional 30 minutes',
-      'All vehicle types available',
+      'Minimum 2-hour job',
+      '£30 per extra 30 minutes',
+      'All vehicle types',
       'Real-time GPS tracking',
       'Card & cash payments',
       'Rated & verified drivers',
     ],
     cta: 'Book Now',
-    ctaStyle: 'bg-[#0A2463] hover:bg-[#1B3A8C] text-white',
+    ctaAction: 'home',
   },
   {
     name: 'Student Plan',
-    desc: '10% off every booking with valid student ID',
+    desc: '10% off with valid student ID',
     price: '£72',
     unit: 'minimum (10% off)',
     icon: Star,
-    color: 'border-purple-300 ring-2 ring-purple-100',
+    dark: true,
     badge: 'POPULAR',
     features: [
       'Everything in Pay As You Go',
@@ -44,7 +43,7 @@ const plans = [
       'Group booking discounts',
     ],
     cta: 'Student Sign Up',
-    ctaStyle: 'bg-purple-600 hover:bg-purple-700 text-white',
+    ctaAction: 'home',
   },
   {
     name: 'Corporate',
@@ -52,7 +51,7 @@ const plans = [
     price: 'Custom',
     unit: 'volume pricing',
     icon: Building2,
-    color: 'border-[#D4AF37] ring-2 ring-[#D4AF37]/20',
+    dark: false,
     badge: 'BEST VALUE',
     features: [
       'Everything in Pay As You Go',
@@ -65,61 +64,85 @@ const plans = [
       'API integration available',
     ],
     cta: 'Contact Sales',
-    ctaStyle: 'bg-[#D4AF37] hover:bg-[#C5A028] text-[#0A2463]',
+    ctaAction: 'corporate',
   },
 ];
 
 const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) => {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Header */}
         <div className="text-center mb-16">
-          <span className="inline-block bg-[#D4AF37]/10 text-[#D4AF37] text-sm font-semibold px-4 py-1.5 rounded-full mb-4">PRICING</span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Transparent, Fair Pricing</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">No hidden fees. Our AI calculates the best price based on distance, time, and vehicle type. Surge pricing applies during peak demand.</p>
+          <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-4">Pricing</span>
+          <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5">Transparent,<br />fair pricing</h2>
+          <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed">No hidden fees. Our AI calculates the best price based on distance, time, and vehicle type.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        {/* Pricing cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
           {plans.map((plan, idx) => (
-            <div key={idx} className={`relative bg-white rounded-2xl p-8 border-2 ${plan.color} hover:shadow-xl transition-all duration-300`}>
+            <div
+              key={idx}
+              className={`relative rounded-3xl p-8 flex flex-col transition-all duration-300 hover:-translate-y-1 ${
+                plan.dark
+                  ? 'bg-[#0A2463] shadow-2xl shadow-[#0A2463]/30'
+                  : 'bg-white border border-gray-100 hover:shadow-xl hover:shadow-gray-200/60'
+              }`}
+            >
               {plan.badge && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#D4AF37] text-[#0A2463] text-xs font-bold px-3 py-1 rounded-full">{plan.badge}</span>
+                <span className={`absolute -top-3.5 left-1/2 -translate-x-1/2 text-xs font-black px-4 py-1 rounded-full ${
+                  plan.dark ? 'bg-[#D4AF37] text-[#061539]' : 'bg-[#0A2463] text-white'
+                }`}>{plan.badge}</span>
               )}
-              <plan.icon className="w-10 h-10 text-[#0A2463] mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-1">{plan.name}</h3>
-              <p className="text-gray-500 text-sm mb-4">{plan.desc}</p>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-[#0A2463]">{plan.price}</span>
-                <span className="text-gray-400 text-sm ml-1">/ {plan.unit}</span>
+
+              <div className={`w-11 h-11 rounded-2xl flex items-center justify-center mb-6 ${
+                plan.dark ? 'bg-white/10' : 'bg-[#0A2463]/8'
+              }`}>
+                <plan.icon className={`w-5 h-5 ${plan.dark ? 'text-[#D4AF37]' : 'text-[#0A2463]'}`} />
               </div>
-              <ul className="space-y-3 mb-8">
+
+              <h3 className={`text-xl font-black mb-1 ${plan.dark ? 'text-white' : 'text-gray-900'}`}>{plan.name}</h3>
+              <p className={`text-sm mb-6 ${plan.dark ? 'text-white/50' : 'text-gray-400'}`}>{plan.desc}</p>
+
+              <div className="mb-8">
+                <span className={`text-5xl font-black ${plan.dark ? 'text-white' : 'text-[#0A2463]'}`}>{plan.price}</span>
+                <span className={`text-sm ml-2 ${plan.dark ? 'text-white/40' : 'text-gray-400'}`}>/ {plan.unit}</span>
+              </div>
+
+              <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                    <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <li key={i} className={`flex items-start gap-2.5 text-sm ${plan.dark ? 'text-white/70' : 'text-gray-600'}`}>
+                    <CheckCircle className={`w-4 h-4 mt-0.5 shrink-0 ${plan.dark ? 'text-[#D4AF37]' : 'text-green-500'}`} />
                     {f}
                   </li>
                 ))}
               </ul>
+
               <button
-                onClick={() => onNavigate(idx === 2 ? 'corporate' : 'home')}
-                className={`w-full py-3 rounded-xl font-semibold transition-colors ${plan.ctaStyle}`}
+                onClick={() => onNavigate(plan.ctaAction)}
+                className={`group w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all ${
+                  plan.dark
+                    ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-[#061539]'
+                    : 'bg-[#0A2463] hover:bg-[#1B3A8C] text-white'
+                }`}
               >
                 {plan.cta}
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
             </div>
           ))}
         </div>
 
-        {/* Surge Pricing Info */}
-        <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-8 border border-orange-200">
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-              <Zap className="w-8 h-8 text-orange-500" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Dynamic Surge Pricing</h3>
-              <p className="text-gray-600">During high demand periods, prices may increase by up to 2.5x the standard rate. Surge pricing is based on driver availability, traffic conditions, peak hours, and demand levels. You'll always see the final price before confirming your booking.</p>
-            </div>
+        {/* Surge pricing note */}
+        <div className="bg-white border border-orange-100 rounded-2xl p-7 flex flex-col sm:flex-row items-start gap-5">
+          <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center shrink-0">
+            <Zap className="w-6 h-6 text-orange-500" />
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900 mb-1.5">Dynamic Surge Pricing</h3>
+            <p className="text-gray-500 text-sm leading-relaxed">During high demand periods, prices may increase up to 2.5× the standard rate based on driver availability, traffic, and peak hours. You'll always see the final price <strong className="text-gray-700">before</strong> confirming your booking.</p>
           </div>
         </div>
       </div>

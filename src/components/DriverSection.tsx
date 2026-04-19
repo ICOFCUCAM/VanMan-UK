@@ -7,41 +7,68 @@ interface DriverSectionProps {
 }
 
 const benefits = [
-  { icon: Wallet, title: 'Earn on Your Terms', desc: 'Set your own hours. Accept jobs that suit your schedule. Weekly payouts or instant withdrawals.' },
-  { icon: TrendingUp, title: 'Surge Pricing Bonuses', desc: 'Earn more during peak hours with dynamic surge pricing. Top drivers earn up to 2.5x standard rates.' },
-  { icon: Star, title: 'Golden Star Status', desc: 'Achieve Gold tier with commercial insurance for priority access to high-value premium jobs.' },
-  { icon: Shield, title: 'Full Support', desc: 'Dedicated driver support team, insurance guidance, and dispute resolution available 24/7.' },
-  { icon: Clock, title: 'Quick Onboarding', desc: 'Upload your documents, get verified, and start earning within 48 hours of approval.' },
-  { icon: CheckCircle, title: 'Fair Commission', desc: 'Transparent commission structure. No hidden fees. See exactly what you earn on every job.' },
+  { icon: Wallet, title: 'Earn on Your Terms', desc: 'Set your own hours. Accept jobs that fit your schedule. Weekly payouts or instant withdrawals.' },
+  { icon: TrendingUp, title: 'Surge Pricing Bonuses', desc: 'Earn more during peak hours with dynamic surge pricing up to 2.5× standard rates.' },
+  { icon: Star, title: 'Gold Tier Status', desc: 'Achieve Gold with commercial insurance for priority access to high-value jobs at lower commission.' },
+  { icon: Shield, title: 'Full Support', desc: 'Dedicated driver support, insurance guidance, and dispute resolution available 24/7.' },
+  { icon: Clock, title: 'Quick Onboarding', desc: 'Upload documents, get verified, and start earning within 48 hours of approval.' },
+  { icon: CheckCircle, title: 'Fair Commission', desc: 'Transparent structure. Gold tier: 15% commission. Silver: 20%. No hidden fees.' },
+];
+
+const tiers = [
+  {
+    name: 'Gold Tier',
+    subtitle: 'Premium Drivers',
+    commission: '15%',
+    commissionLabel: 'commission rate',
+    color: 'border-[#D4AF37]/40 bg-[#D4AF37]/8',
+    iconBg: 'bg-[#D4AF37]',
+    iconColor: 'text-[#061539]',
+    checkColor: 'text-[#D4AF37]',
+    perks: ['Commercial insurance required', 'Priority job access', 'Highest earnings per delivery', 'Premium customer base'],
+  },
+  {
+    name: 'Silver Tier',
+    subtitle: 'Standard Drivers',
+    commission: '20%',
+    commissionLabel: 'commission rate',
+    color: 'border-white/10 bg-white/4',
+    iconBg: 'bg-white/20',
+    iconColor: 'text-white',
+    checkColor: 'text-gray-400',
+    perks: ['Standard driving licence', 'Access to all standard jobs', 'Competitive earnings', 'Clear path to Gold upgrade'],
+  },
 ];
 
 const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
   return (
-    <section className="py-20 bg-gradient-to-br from-[#061539] via-[#0A2463] to-[#1B3A8C] relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-20 w-96 h-96 border border-white rounded-full" />
-        <div className="absolute bottom-20 right-20 w-64 h-64 border border-white rounded-full" />
-      </div>
+    <section className="py-24 bg-[#061539] relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#0A2463] rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+
+        {/* Top section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-16">
+          {/* Left: content */}
           <div>
-            <span className="inline-block bg-[#D4AF37]/20 text-[#D4AF37] text-sm font-semibold px-4 py-1.5 rounded-full mb-4">FOR DRIVERS</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-              Drive With Us. <span className="text-[#D4AF37]">Earn More.</span>
+            <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-6">For Drivers</span>
+            <h2 className="text-4xl sm:text-5xl font-black text-white mb-6 leading-tight">
+              Drive with us.<br />
+              <span className="text-[#D4AF37]">Earn more.</span>
             </h2>
-            <p className="text-white/70 text-lg mb-8 leading-relaxed">
-              Join thousands of independent drivers earning great money on their own schedule. Whether you have a small van or a Luton truck, there's work waiting for you.
+            <p className="text-white/55 text-lg mb-10 leading-relaxed">
+              Join thousands of independent drivers earning great money on their own schedule. Whether you have a small van or a Luton truck, there's work waiting.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
               {benefits.map((b, idx) => (
-                <div key={idx} className="flex gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                  <b.icon className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
+                <div key={idx} className="group flex gap-3 p-4 rounded-2xl bg-white/3 hover:bg-white/6 border border-white/6 hover:border-white/12 transition-all">
+                  <b.icon className="w-5 h-5 text-[#D4AF37] mt-0.5 shrink-0" />
                   <div>
                     <p className="text-white font-semibold text-sm">{b.title}</p>
-                    <p className="text-white/50 text-xs mt-0.5">{b.desc}</p>
+                    <p className="text-white/40 text-xs mt-0.5 leading-snug">{b.desc}</p>
                   </div>
                 </div>
               ))}
@@ -49,68 +76,64 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
 
             <button
               onClick={() => onNavigate('driver-register')}
-              className="group flex items-center gap-2 bg-[#D4AF37] hover:bg-[#C5A028] text-[#0A2463] px-8 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-xl hover:shadow-[#D4AF37]/30"
+              className="group inline-flex items-center gap-3 bg-[#D4AF37] hover:bg-[#C5A028] text-[#061539] px-8 py-4 rounded-2xl font-black text-base transition-all hover:shadow-2xl hover:shadow-[#D4AF37]/25 hover:-translate-y-0.5"
             >
               Apply to Drive
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
 
-          {/* Driver Images */}
+          {/* Right: driver images + earnings stat */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
-              <img src={DRIVER_IMAGES[0]} alt="Driver" className="rounded-2xl shadow-2xl w-full h-48 object-cover" />
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
-                <p className="text-[#D4AF37] text-3xl font-bold">£1,200+</p>
-                <p className="text-white/60 text-sm">Average weekly earnings</p>
+              <div className="relative rounded-2xl overflow-hidden">
+                <img src={DRIVER_IMAGES[0]} alt="Driver" className="w-full h-52 object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#061539]/40 to-transparent" />
+              </div>
+              <div className="bg-white/5 border border-[#D4AF37]/20 rounded-2xl p-5">
+                <p className="text-[#D4AF37] text-3xl font-black">£1,200+</p>
+                <p className="text-white/50 text-sm">Average weekly earnings</p>
               </div>
             </div>
-            <div className="space-y-4 mt-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/10">
-                <p className="text-[#D4AF37] text-3xl font-bold">10K+</p>
-                <p className="text-white/60 text-sm">Active drivers</p>
+            <div className="space-y-4 mt-10">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                <p className="text-white text-3xl font-black">10K+</p>
+                <p className="text-white/50 text-sm">Active drivers</p>
               </div>
-              <img src={DRIVER_IMAGES[1]} alt="Driver" className="rounded-2xl shadow-2xl w-full h-48 object-cover" />
+              <div className="relative rounded-2xl overflow-hidden">
+                <img src={DRIVER_IMAGES[1]} alt="Driver" className="w-full h-52 object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#061539]/40 to-transparent" />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Driver Tiers */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gradient-to-br from-[#D4AF37]/20 to-[#D4AF37]/5 rounded-2xl p-8 border border-[#D4AF37]/30">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-[#D4AF37] rounded-xl flex items-center justify-center">
-                <Star className="w-6 h-6 text-[#0A2463]" />
+        {/* Driver tiers */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {tiers.map((tier, idx) => (
+            <div key={idx} className={`rounded-3xl p-8 border ${tier.color}`}>
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`w-12 h-12 ${tier.iconBg} rounded-2xl flex items-center justify-center shadow-lg`}>
+                  <Star className={`w-6 h-6 ${tier.iconColor}`} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white">{tier.name}</h3>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[#D4AF37] font-black text-sm">{tier.commission}</span>
+                    <span className="text-white/35 text-xs">{tier.commissionLabel}</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">Golden Star Drivers</h3>
-                <p className="text-[#D4AF37] text-sm font-medium">Premium Tier</p>
-              </div>
+              <ul className="space-y-2.5">
+                {tier.perks.map((perk, i) => (
+                  <li key={i} className="flex items-center gap-2.5 text-white/70 text-sm">
+                    <CheckCircle className={`w-4 h-4 shrink-0 ${tier.checkColor}`} />
+                    {perk}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="space-y-2 text-white/80 text-sm">
-              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-[#D4AF37]" /> Commercial insurance license required</li>
-              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-[#D4AF37]" /> Priority access to high-value jobs</li>
-              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-[#D4AF37]" /> Higher earnings per delivery</li>
-              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-[#D4AF37]" /> Premium customer base</li>
-            </ul>
-          </div>
-          <div className="bg-white/5 rounded-2xl p-8 border border-white/10">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gray-400 rounded-xl flex items-center justify-center">
-                <Star className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">Silver Star Drivers</h3>
-                <p className="text-gray-400 text-sm font-medium">Standard Tier</p>
-              </div>
-            </div>
-            <ul className="space-y-2 text-white/80 text-sm">
-              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-gray-400" /> Standard driving license</li>
-              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-gray-400" /> Access to all standard jobs</li>
-              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-gray-400" /> Competitive earnings</li>
-              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-gray-400" /> Path to Gold tier upgrade</li>
-            </ul>
-          </div>
+          ))}
         </div>
       </div>
     </section>
