@@ -11,6 +11,7 @@ import CookieConsent from './CookieConsent';
 // Homepage sections
 import HeroSlider from './HeroSlider';
 import BookingWidget from './BookingWidget';
+import DriverSubscriptionPage from './pages/DriverSubscriptionPage';
 import TrustMetricsStrip from './TrustMetricsStrip';
 import HowItWorks from './HowItWorks';
 import NationwideCoverageStrip from './NationwideCoverageStrip';
@@ -100,6 +101,7 @@ const AppLayout: React.FC = () => {
     if (currentPage === 'drivers') return <DriversPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
     if (currentPage === 'students') return <StudentsPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
     if (currentPage === 'enterprise') return <EnterprisePage onNavigate={navigate} />;
+    if (currentPage === 'driver-subscription') return <DriverSubscriptionPage onNavigate={navigate} />;
 
     // Public functional pages
     if (currentPage === 'tracking') return <TrackingView onNavigate={navigate} />;
@@ -134,6 +136,7 @@ const AppLayout: React.FC = () => {
     return (
       <>
         <HeroSlider onNavigate={navigate} bookingRef={bookingRef} />
+        <BookingWidget bookingRef={bookingRef} onNavigate={navigate} />
         <TrustMetricsStrip />
         <HowItWorks />
         <VanCalculator onNavigate={navigate} />

@@ -48,11 +48,19 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
     return (
       <>
         {/* ── SECTION 1 — TRACKING HERO ────────────────────────────────────── */}
-        <section
-          className="pt-[88px] py-14"
-          style={{ background: 'linear-gradient(180deg, #071A2F 0%, #0E2A47 100%)' }}
-        >
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <section className="relative pt-[88px] py-14 overflow-hidden">
+          {/* City routes photo background */}
+          <img
+            src={FEATURE_IMAGES.cityRoutes}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover object-center"
+          />
+          {/* Teal-navy overlay — visually distinct from pure #071A2F header */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(4,40,72,0.94) 0%, rgba(10,70,100,0.90) 100%)' }} />
+          {/* Bottom fade to white */}
+          <div className="absolute bottom-0 left-0 right-0" style={{ height: '60px', background: 'linear-gradient(to bottom, transparent, #ffffff)' }} />
+
+          <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <span className="text-[#F5B400] text-xs font-bold tracking-[0.2em] uppercase mb-4 block">
               Live Tracking
             </span>

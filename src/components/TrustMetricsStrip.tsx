@@ -9,7 +9,7 @@ const metrics = [
 ];
 
 const TrustMetricsStrip: React.FC = () => (
-  <section className="relative px-4 sm:px-6 lg:px-8" style={{ marginTop: '-48px', zIndex: 20 }}>
+  <section className="relative px-4 sm:px-6 lg:px-8 py-8" style={{ background: '#F7FAFC' }}>
     <div className="max-w-4xl mx-auto">
       <div
         className="rounded-2xl border border-gray-100 py-4 px-6 sm:px-10"

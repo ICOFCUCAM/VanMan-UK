@@ -33,6 +33,7 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
       { label: 'Driver Requirements',  page: 'drivers' },
       { label: 'Driver Earnings',      page: 'drivers' },
       { label: 'Driver Support',       page: 'contact' },
+      { label: 'Subscription Tiers',   page: 'driver-subscription' },
     ],
   },
   {
@@ -135,9 +136,9 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => (
     <div className="border-t border-white/[0.04]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-white/20 text-[11.5px]">
-            &copy; Fast Man &amp; Van &nbsp;&middot;&nbsp; Nationwide UK transport network
-          </p>
+          <div className="text-white/20 text-[11.5px] space-y-1">
+            <p>&copy; {new Date().getFullYear()} Fast Man &amp; Van is a trading name of Golden Recruit LMD &nbsp;&middot;&nbsp; Registered in England &amp; Wales</p>
+          </div>
           <div className="flex items-center gap-5 flex-wrap justify-center">
             {LEGAL.map((link) => (
               <button
