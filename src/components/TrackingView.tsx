@@ -55,10 +55,8 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
             alt=""
             className="absolute inset-0 w-full h-full object-cover object-center"
           />
-          {/* Teal-navy overlay — visually distinct from pure #071A2F header */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(4,40,72,0.94) 0%, rgba(10,70,100,0.90) 100%)' }} />
-          {/* Bottom fade to white */}
-          <div className="absolute bottom-0 left-0 right-0" style={{ height: '60px', background: 'linear-gradient(to bottom, transparent, #ffffff)' }} />
+          {/* Overlay — semi-transparent so photo is visible */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(7,26,47,0.82) 0%, rgba(14,42,71,0.78) 100%)' }} />
 
           <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <span className="text-[#F5B400] text-xs font-bold tracking-[0.2em] uppercase mb-4 block">

@@ -17,11 +17,11 @@ const BADGES = [
 const StatsSection: React.FC = () => (
   <section className="py-16 bg-white">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {STATS.map(s => (
           <div key={s.label} className="text-center">
-            <p className="text-3xl sm:text-4xl font-black text-[#0E2A47] mb-1">{s.value}</p>
-            <p className="text-sm text-gray-500">{s.label}</p>
+            <p className="text-2xl sm:text-3xl font-black text-[#0E2A47] mb-1">{s.value}</p>
+            <p className="text-xs text-gray-500">{s.label}</p>
           </div>
         ))}
       </div>

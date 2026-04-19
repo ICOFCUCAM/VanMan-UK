@@ -24,6 +24,7 @@ import SubscriptionTeaser from './SubscriptionTeaser';
 import DriverCTA from './DriverCTA';
 
 // App pages
+import SignUpPage from './pages/SignUpPage';
 import DriverSubscriptionPage from './pages/DriverSubscriptionPage';
 import MovingChecklistPage from './pages/MovingChecklistPage';
 import VanGuidePage from './pages/VanGuidePage';
@@ -98,6 +99,7 @@ const AppLayout: React.FC = () => {
     }
 
     // Auth pages
+    if (currentPage === 'signup') return <SignUpPage onNavigate={navigate} />;
     if (currentPage === 'login' || currentPage === 'driver-login') return <LoginPage onNavigate={navigate} />;
     if (currentPage === 'driver-register') return <DriverRegistration onNavigate={navigate} />;
 

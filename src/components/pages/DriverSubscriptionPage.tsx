@@ -94,7 +94,6 @@ export default function DriverSubscriptionPage({ onNavigate }: DriverSubscriptio
           alt=""
           className="absolute inset-0 w-full h-full object-cover object-center opacity-10"
         />
-        <div className="absolute bottom-0 left-0 right-0" style={{ height: '60px', background: 'linear-gradient(to bottom, transparent, #f9fafb)' }} />
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 bg-[#F5B400]/10 border border-[#F5B400]/20 rounded-full px-4 py-1.5 mb-6">
             <span className="text-[#F5B400] text-xs font-bold tracking-[0.15em] uppercase">Driver Subscription Plans</span>

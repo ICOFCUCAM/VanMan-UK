@@ -28,11 +28,6 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, bookingRef }) => {
         style={{ background: 'linear-gradient(105deg, rgba(7,26,47,0.92) 0%, rgba(14,42,71,0.78) 40%, rgba(14,42,71,0.35) 70%, rgba(14,42,71,0.1) 100%)' }}
       />
 
-      {/* Bottom fade into next section */}
-      <div
-        className="absolute bottom-0 left-0 right-0 pointer-events-none"
-        style={{ height: '160px', background: 'linear-gradient(to bottom, transparent 0%, rgba(249,250,251,0.15) 70%, #f9fafb 100%)', zIndex: 5 }}
-      />
 
       {/* Content */}
       <div className="relative z-10 h-full flex items-center" style={{ paddingTop: '88px' }}>

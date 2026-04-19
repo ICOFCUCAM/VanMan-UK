@@ -67,7 +67,6 @@ export default function VanGuidePage({ onNavigate, onScrollToBooking }: VanGuide
         className="relative pt-[88px] pb-16 overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #071A2F 0%, #0E2A47 60%, #0F3558 100%)' }}
       >
-        <div className="absolute bottom-0 left-0 right-0" style={{ height: '60px', background: 'linear-gradient(to bottom, transparent, #f9fafb)' }} />
         <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 bg-[#F5B400]/10 border border-[#F5B400]/20 rounded-full px-4 py-1.5 mb-6">
             <span className="text-[#F5B400] text-xs font-bold tracking-[0.15em] uppercase">Van Size Guide</span>

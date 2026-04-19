@@ -9,11 +9,12 @@ interface HeaderProps {
 }
 
 const NAV = [
-  { label: 'Home',         page: 'home' },
-  { label: 'Services',     page: 'services' },
-  { label: 'Moving Tools', page: 'van-guide' },
+  { label: 'Home',            page: 'home' },
+  { label: 'Services',        page: 'services' },
+  { label: 'Moving Tools',    page: 'van-guide' },
   { label: 'Become a Driver', page: 'drivers' },
-  { label: 'Enterprise',   page: 'enterprise' },
+  { label: 'Track Order',     page: 'tracking' },
+  { label: 'Enterprise',      page: 'enterprise' },
 ];
 
 const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
@@ -163,7 +164,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                     Sign In
                   </button>
                   <button
-                    onClick={() => onNavigate('driver-register')}
+                    onClick={() => onNavigate('signup')}
                     className="hidden sm:flex items-center border border-[#0E2A47] text-[#0E2A47] hover:bg-[#0E2A47] hover:text-white px-4 py-1.5 rounded-lg text-[13px] font-semibold transition-all"
                   >
                     Sign Up
@@ -239,9 +240,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                     className="w-full text-left px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 text-[13px] font-medium transition-colors">
                     Sign In
                   </button>
-                  <button onClick={() => { onNavigate('driver-register'); setMobileMenuOpen(false); }}
+                  <button onClick={() => { onNavigate('signup'); setMobileMenuOpen(false); }}
                     className="w-full text-left px-4 py-3 rounded-xl text-[#0E2A47] font-semibold hover:bg-gray-50 text-[13px] transition-colors">
-                    Sign Up — Become a Driver
+                    Sign Up
                   </button>
                 </>
               )}
