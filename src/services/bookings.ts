@@ -22,6 +22,8 @@ export async function createBooking(input: CreateBookingInput): Promise<ServiceR
         payment_status: 'pending',
         customer_id: input.customer_id ?? null,
         scheduled_at: input.scheduled_at ?? null,
+        is_recurring: input.is_recurring ?? false,
+        recurring_frequency: input.recurring_frequency ?? null,
       })
       .select('*')
       .single();

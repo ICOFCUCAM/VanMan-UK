@@ -180,6 +180,8 @@ export interface Booking {
   payment_method: PaymentMethod;
   payment_status: PaymentStatus;
   corporate_account_id: string | null;
+  is_recurring: boolean;
+  recurring_frequency: 'weekly' | 'biweekly' | 'monthly' | null;
   scheduled_at: string | null;
   picked_up_at: string | null;
   delivered_at: string | null;
@@ -205,6 +207,8 @@ export interface CreateBookingInput {
   payment_method: PaymentMethod;
   customer_id?: string;
   scheduled_at?: string;
+  is_recurring?: boolean;
+  recurring_frequency?: 'weekly' | 'biweekly' | 'monthly' | null;
 }
 
 // ─── Quote (in-memory, not persisted) ────────────────────────────────────────

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { BarChart3, Users, Truck, DollarSign, CheckCircle, XCircle, Clock, AlertTriangle, Star, Shield, Search, Eye, TrendingUp, Activity, Loader2, AlertCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { getAllDrivers, updateDriverStatus } from '@/services/drivers';
@@ -9,20 +9,6 @@ interface AdminDashboardProps {
   onNavigate: (page: string) => void;
 }
 
-const revenueData = [
-  { month: 'Sep', revenue: 45000 }, { month: 'Oct', revenue: 52000 }, { month: 'Nov', revenue: 61000 },
-  { month: 'Dec', revenue: 78000 }, { month: 'Jan', revenue: 65000 }, { month: 'Feb', revenue: 72000 }, { month: 'Mar', revenue: 85000 },
-];
-const bookingsData = [
-  { day: 'Mon', bookings: 120 }, { day: 'Tue', bookings: 145 }, { day: 'Wed', bookings: 132 },
-  { day: 'Thu', bookings: 168 }, { day: 'Fri', bookings: 195 }, { day: 'Sat', bookings: 210 }, { day: 'Sun', bookings: 88 },
-];
-const pieData = [
-  { name: 'Small Van', value: 25, color: '#0A2463' },
-  { name: 'Medium Van', value: 40, color: '#1B3A8C' },
-  { name: 'Large Van', value: 25, color: '#D4AF37' },
-  { name: 'Luton Van', value: 10, color: '#C5A028' },
-];
 
 const STATUS_COLOURS: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-700',
@@ -61,6 +47,41 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     setDrivers(prev => prev.map(d => d.id === id ? { ...d, status: 'rejected' } : d));
   };
 
+  const revenueData = useMemo(() => {
+    const now = new Date();
+    return Array.from({ length: 6 }, (_, i) => {
+      const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const revenue = bookings
+        .filter(b => b.created_at.slice(0, 7) === key)
+        .reduce((s, b) => s + (b.estimated_price ?? 0), 0);
+      return { month: d.toLocaleDateString('en-GB', { month: 'short' }), revenue };
+    });
+  }, [bookings]);
+
+  const bookingsByDay = useMemo(() => {
+    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const counts = new Array(7).fill(0);
+    bookings.forEach(b => {
+      const dow = new Date(b.created_at).getDay();
+      counts[dow === 0 ? 6 : dow - 1]++;
+    });
+    return labels.map((day, i) => ({ day, bookings: counts[i] }));
+  }, [bookings]);
+
+  const vehicleData = useMemo(() => {
+    const palette = ['#0A2463', '#1B3A8C', '#D4AF37', '#C5A028', '#2563EB'];
+    const counts = new Map<string, number>();
+    bookings.forEach(b => counts.set(b.vehicle_type, (counts.get(b.vehicle_type) ?? 0) + 1));
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, value], i) => ({ name, value, color: palette[i % palette.length] }));
+  }, [bookings]);
+
+  const topDrivers = useMemo(() =>
+    [...drivers].sort((a, b) => b.total_jobs - a.total_jobs).slice(0, 10),
+  [drivers]);
+
   const pendingDrivers = drivers.filter(d => d.status === 'pending');
   const filteredDrivers = drivers.filter(d =>
     `${d.first_name} ${d.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -69,6 +90,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
+    { id: 'analytics', label: 'Analytics', icon: TrendingUp },
     { id: 'drivers', label: 'Driver Approvals', icon: Users },
     { id: 'bookings', label: 'Bookings', icon: Truck },
     { id: 'pricing', label: 'Pricing Rules', icon: DollarSign },
@@ -159,21 +181,21 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                  <h3 className="font-bold text-gray-900 mb-4">Revenue Trend (placeholder)</h3>
+                  <h3 className="font-bold text-gray-900 mb-4">Revenue — Last 6 Months</h3>
                   <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={revenueData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis dataKey="month" fontSize={12} />
-                      <YAxis fontSize={12} tickFormatter={v => `£${v / 1000}k`} />
+                      <YAxis fontSize={12} tickFormatter={v => v === 0 ? '£0' : `£${(v / 1000).toFixed(0)}k`} />
                       <Tooltip formatter={(v: number) => [`£${v.toLocaleString()}`, 'Revenue']} />
                       <Bar dataKey="revenue" fill="#0A2463" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                  <h3 className="font-bold text-gray-900 mb-4">Weekly Bookings (placeholder)</h3>
+                  <h3 className="font-bold text-gray-900 mb-4">Bookings by Day of Week</h3>
                   <ResponsiveContainer width="100%" height={250}>
-                    <LineChart data={bookingsData}>
+                    <LineChart data={bookingsByDay}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis dataKey="day" fontSize={12} />
                       <YAxis fontSize={12} />
@@ -187,14 +209,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <h3 className="font-bold text-gray-900 mb-4">Vehicle Distribution</h3>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
-                        {pieData.map((entry, idx) => <Cell key={idx} fill={entry.color} />)}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {vehicleData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={200}>
+                      <PieChart>
+                        <Pie data={vehicleData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                          {vehicleData.map((entry, idx) => <Cell key={idx} fill={entry.color} />)}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="flex items-center justify-center h-48 text-gray-400 text-sm">No booking data yet</div>
+                  )}
                 </div>
                 <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <h3 className="font-bold text-gray-900 mb-4">Recent Bookings</h3>
@@ -225,6 +251,126 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                         </tbody>
                       </table>
                       {bookings.length === 0 && <p className="text-center text-gray-400 text-sm py-6">No bookings yet.</p>}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Analytics */}
+          {activeTab === 'analytics' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-900">Analytics</h2>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <h3 className="font-bold text-gray-900 mb-1">Revenue — Last 6 Months</h3>
+                  <p className="text-gray-500 text-sm mb-4">Total £{bookings.reduce((s, b) => s + (b.estimated_price ?? 0), 0).toLocaleString()} all-time</p>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={revenueData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="month" fontSize={12} />
+                      <YAxis fontSize={12} tickFormatter={v => v === 0 ? '£0' : `£${(v / 1000).toFixed(0)}k`} />
+                      <Tooltip formatter={(v: number) => [`£${v.toLocaleString()}`, 'Revenue']} />
+                      <Bar dataKey="revenue" fill="#0A2463" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <h3 className="font-bold text-gray-900 mb-1">Booking Volume by Day</h3>
+                  <p className="text-gray-500 text-sm mb-4">All-time distribution across days of the week</p>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={bookingsByDay}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="day" fontSize={12} />
+                      <YAxis fontSize={12} />
+                      <Tooltip />
+                      <Bar dataKey="bookings" fill="#D4AF37" radius={[4, 4, 0, 0]} name="Bookings" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <h3 className="font-bold text-gray-900 mb-4">Vehicle Mix</h3>
+                  {vehicleData.length > 0 ? (
+                    <>
+                      <ResponsiveContainer width="100%" height={180}>
+                        <PieChart>
+                          <Pie data={vehicleData} cx="50%" cy="50%" innerRadius={45} outerRadius={75} dataKey="value">
+                            {vehicleData.map((entry, idx) => <Cell key={idx} fill={entry.color} />)}
+                          </Pie>
+                          <Tooltip formatter={(v: number, name: string) => [v, name]} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      <div className="space-y-1.5 mt-3">
+                        {vehicleData.map((v, i) => (
+                          <div key={i} className="flex items-center justify-between text-sm">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: v.color }} />
+                              <span className="text-gray-600">{v.name}</span>
+                            </div>
+                            <span className="font-semibold text-gray-900">{v.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-center h-48 text-gray-400 text-sm">No data yet</div>
+                  )}
+                </div>
+
+                <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <h3 className="font-bold text-gray-900 mb-4">Driver Performance</h3>
+                  {loadingDrivers ? (
+                    <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 text-[#0A2463] animate-spin" /></div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="text-left text-gray-500 border-b border-gray-100">
+                            <th className="pb-2 font-medium">Driver</th>
+                            <th className="pb-2 font-medium">Vehicle</th>
+                            <th className="pb-2 font-medium">Tier</th>
+                            <th className="pb-2 font-medium">Jobs</th>
+                            <th className="pb-2 font-medium">Earnings</th>
+                            <th className="pb-2 font-medium">Rating</th>
+                            <th className="pb-2 font-medium">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                          {topDrivers.map(d => (
+                            <tr key={d.id} className="hover:bg-gray-50">
+                              <td className="py-2.5 font-medium text-gray-900">{d.first_name} {d.last_name}</td>
+                              <td className="py-2.5 text-gray-500 text-xs">{d.vehicle_make} {d.vehicle_model}</td>
+                              <td className="py-2.5">
+                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${d.tier === 'gold' ? 'bg-[#D4AF37]/20 text-[#8B6914]' : 'bg-gray-100 text-gray-600'}`}>
+                                  {d.tier}
+                                </span>
+                              </td>
+                              <td className="py-2.5 font-semibold text-gray-900">{d.total_jobs}</td>
+                              <td className="py-2.5 font-semibold text-gray-900">£{d.total_earnings.toLocaleString()}</td>
+                              <td className="py-2.5">
+                                <span className="flex items-center gap-1 text-[#D4AF37]">
+                                  <Star className="w-3 h-3 fill-current" />{d.rating.toFixed(1)}
+                                </span>
+                              </td>
+                              <td className="py-2.5">
+                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  d.status === 'active' || d.status === 'approved' ? 'bg-green-100 text-green-700' :
+                                  d.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
+                                }`}>{d.status}</span>
+                              </td>
+                            </tr>
+                          ))}
+                          {topDrivers.length === 0 && (
+                            <tr><td colSpan={7} className="py-8 text-center text-gray-400">No drivers yet.</td></tr>
+                          )}
+                        </tbody>
+                      </table>
                     </div>
                   )}
                 </div>

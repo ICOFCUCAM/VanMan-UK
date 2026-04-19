@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2, CreditCard } from 'lucide-react';
+import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2, CreditCard, Calendar, Repeat } from 'lucide-react';
 import { PRICING, VEHICLE_TYPES } from '@/lib/constants';
 import { geocodeUK, haversineMiles } from '@/lib/geocoding';
 import { useAppContext } from '@/contexts/AppContext';
@@ -30,6 +30,10 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [scheduleForLater, setScheduleForLater] = useState(false);
+  const [scheduledAt, setScheduledAt] = useState('');
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurringFrequency, setRecurringFrequency] = useState<'weekly' | 'biweekly' | 'monthly'>('weekly');
 
   const addStop = () => setStopAddresses([...stopAddresses, '']);
   const removeStop = (idx: number) => setStopAddresses(stopAddresses.filter((_, i) => i !== idx));
@@ -106,6 +110,9 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
       surge_multiplier: quoteData.surgeMultiplier,
       payment_method: paymentMethod,
       customer_id: user?.id,
+      scheduled_at: scheduleForLater && scheduledAt ? new Date(scheduledAt).toISOString() : undefined,
+      is_recurring: isRecurring,
+      recurring_frequency: isRecurring ? recurringFrequency : null,
     });
 
     if (error) {
@@ -151,6 +158,9 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
       estimated_price: quoteData.basePrice,
       surge_multiplier: quoteData.surgeMultiplier,
       customer_id: user?.id,
+      scheduled_at: scheduleForLater && scheduledAt ? new Date(scheduledAt).toISOString() : undefined,
+      is_recurring: isRecurring,
+      recurring_frequency: isRecurring ? recurringFrequency : null,
     };
     localStorage.setItem('pending_booking', JSON.stringify(bookingDetails));
     const { url, error } = await createCheckoutSession(
@@ -351,6 +361,58 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
                     <p className="text-white/60 text-xs uppercase tracking-wider">Estimated Price</p>
                     <p className="text-3xl font-bold text-[#D4AF37]">£{quoteData.basePrice}</p>
                   </div>
+                </div>
+                {/* Schedule / Recurring options */}
+                <div className="bg-white/5 rounded-xl p-4 mb-4 space-y-3">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={scheduleForLater}
+                      onChange={e => { setScheduleForLater(e.target.checked); if (!e.target.checked) { setIsRecurring(false); } }}
+                      className="w-4 h-4 rounded"
+                    />
+                    <Calendar className="w-4 h-4 text-white/70" />
+                    <span className="text-white/90 text-sm font-medium">Schedule for a specific date & time</span>
+                  </label>
+                  {scheduleForLater && (
+                    <>
+                      <input
+                        type="datetime-local"
+                        value={scheduledAt}
+                        onChange={e => setScheduledAt(e.target.value)}
+                        min={new Date().toISOString().slice(0, 16)}
+                        className="w-full bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 text-sm outline-none focus:border-[#D4AF37]"
+                      />
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={isRecurring}
+                          onChange={e => setIsRecurring(e.target.checked)}
+                          className="w-4 h-4 rounded"
+                        />
+                        <Repeat className="w-4 h-4 text-white/70" />
+                        <span className="text-white/90 text-sm font-medium">Repeat this booking</span>
+                      </label>
+                      {isRecurring && (
+                        <div className="flex gap-2 pl-7">
+                          {(['weekly', 'biweekly', 'monthly'] as const).map(freq => (
+                            <button
+                              key={freq}
+                              type="button"
+                              onClick={() => setRecurringFrequency(freq)}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all capitalize ${
+                                recurringFrequency === freq
+                                  ? 'bg-[#D4AF37] text-[#0A2463]'
+                                  : 'bg-white/10 text-white/70 hover:bg-white/20'
+                              }`}
+                            >
+                              {freq === 'biweekly' ? 'Bi-weekly' : freq.charAt(0).toUpperCase() + freq.slice(1)}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
                 {bookingError && (
                   <div className="flex items-center gap-2 bg-red-500/20 rounded-lg px-4 py-2 mb-4">
