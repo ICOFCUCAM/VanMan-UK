@@ -18,6 +18,8 @@ import ServicesPreview from './ServicesPreview';
 import EnterprisePreview from './EnterprisePreview';
 import CustomerRatingSummary from './CustomerRatingSummary';
 import FinalCTA from './FinalCTA';
+import VanCalculator from './VanCalculator';
+import BookingChecklist from './BookingChecklist';
 
 // New content pages
 import ServicesPage from './pages/ServicesPage';
@@ -134,8 +136,10 @@ const AppLayout: React.FC = () => {
         <HeroSlider onNavigate={navigate} bookingRef={bookingRef} />
         <TrustMetricsStrip />
         <HowItWorks />
+        <VanCalculator onNavigate={navigate} />
         <NationwideCoverageStrip />
         <ServicesPreview onNavigate={navigate} />
+        <BookingChecklist onNavigate={navigate} onScrollToBooking={scrollToBooking} />
         <EnterprisePreview onNavigate={navigate} />
         <CustomerRatingSummary />
         <FinalCTA onScrollToBooking={scrollToBooking} onNavigate={navigate} />

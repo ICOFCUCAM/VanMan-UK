@@ -22,9 +22,10 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, bookingRef }) => {
       {/* Dark overlays for readability */}
       <div className="absolute inset-0 bg-[#071A2F]/78" />
       <div className="absolute inset-0 bg-gradient-to-r from-[#071A2F]/95 via-[#071A2F]/65 to-[#071A2F]/30" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#071A2F]/80" />
       {/* Gold glow near widget */}
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 80% 45%, rgba(245,180,0,0.09), transparent 45%)' }} />
+      {/* Bottom boundary — closes hero cleanly into white */}
+      <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ zIndex: 5, height: '150px', background: 'linear-gradient(to bottom, transparent 0%, rgba(7,26,47,0.80) 45%, #ffffff 100%)' }} />
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[1fr_400px] gap-8 lg:gap-12 items-center py-10 lg:py-14">

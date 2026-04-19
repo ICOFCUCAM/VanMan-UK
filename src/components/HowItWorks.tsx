@@ -9,34 +9,35 @@ const steps = [
 ];
 
 const HowItWorks: React.FC = () => (
-  <section className="bg-white py-14 border-b border-gray-100">
+  <section className="bg-white border-t border-[#EEF2F7] py-20">
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center mb-10">
-        <span className="text-[#0E2A47] text-xs font-bold tracking-[0.2em] uppercase">Dispatch Pipeline</span>
-        <p className="text-gray-400 text-sm mt-1">From booking to delivery in minutes</p>
+
+      <div className="text-center mb-14">
+        <span className="text-[#0E2A47] text-[10px] font-bold tracking-[0.25em] uppercase mb-3 block">Dispatch Pipeline</span>
+        <h2 className="text-2xl sm:text-3xl font-black text-[#0B2239] mb-3">From booking to delivery in minutes</h2>
+        <p className="text-gray-400 text-sm max-w-sm mx-auto">Every job follows the same 4-step dispatch sequence — no waiting, no uncertainty.</p>
       </div>
 
-      <div className="flex items-start justify-center flex-wrap sm:flex-nowrap gap-0">
-        {steps.map((step, idx) => (
-          <React.Fragment key={idx}>
-            <div className="flex flex-col items-center text-center w-1/2 sm:w-auto sm:flex-1 px-4 py-2">
-              <div className={`w-11 h-11 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center mb-3 ${step.iconColor}`}>
-                <step.icon className="w-[18px] h-[18px]" />
+      {/* Horizontal timeline */}
+      <div className="relative">
+        {/* Connecting line (desktop) */}
+        <div className="hidden sm:block absolute top-[22px] left-[12.5%] right-[12.5%] h-px bg-[#EEF2F7]" />
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-4">
+          {steps.map((step, idx) => (
+            <div key={idx} className="flex flex-col items-center text-center relative">
+              {/* Icon node */}
+              <div className={`relative z-10 w-11 h-11 rounded-full bg-white border-2 border-[#EEF2F7] flex items-center justify-center mb-4 shadow-sm ${step.iconColor}`}>
+                <step.icon className="w-5 h-5" />
+                <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#0E2A47] rounded-full text-white text-[9px] font-black flex items-center justify-center">{idx + 1}</span>
               </div>
-              <span className="text-gray-300 text-[10px] font-bold tracking-widest mb-1">STEP {step.number}</span>
-              <p className="text-[#0B2239] font-semibold text-sm leading-snug mb-1">{step.title}</p>
-              <p className="text-gray-400 text-xs leading-snug max-w-[130px]">{step.label}</p>
+              <p className="text-[#0B2239] font-bold text-sm leading-snug mb-1.5">{step.title}</p>
+              <p className="text-gray-400 text-xs leading-relaxed max-w-[120px]">{step.label}</p>
             </div>
-            {idx < steps.length - 1 && (
-              <div className="hidden sm:flex items-center self-center pb-6">
-                <svg width="20" height="12" viewBox="0 0 20 12" fill="none" className="text-gray-200">
-                  <path d="M0 6h16M12 1l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-            )}
-          </React.Fragment>
-        ))}
+          ))}
+        </div>
       </div>
+
     </div>
   </section>
 );
