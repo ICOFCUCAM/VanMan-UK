@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   Lock, Shield, CheckCircle2, AlertCircle, Loader2, CreditCard,
-  Building2, ArrowLeft, MapPin, Clock, Package, ChevronRight, Wallet,
+  Building2, ArrowLeft, MapPin, Clock, Package, ChevronRight, Wallet, Banknote,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAppContext } from '@/contexts/AppContext';
 import { createCheckoutSession } from '@/services/payments';
 import { activateEscrowFallback } from '@/services/escrow';
+import { COMMISSION } from '@/lib/constants';
 import type { Booking } from '@/types';
 
 interface PaymentPageProps {
@@ -20,21 +21,27 @@ const STEPS = [
   { label: 'Funds released to driver', icon: Wallet },
 ];
 
+const CASH_STEPS = [
+  { label: 'Driver assigned within minutes', icon: Package },
+  { label: 'Track your delivery in real time', icon: MapPin },
+  { label: 'Pay remaining 70% in cash to your driver', icon: Banknote },
+  { label: 'Confirm delivery once complete', icon: CheckCircle2 },
+];
+
 const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
   const { user } = useAppContext();
 
-  const [booking, setBooking]       = useState<Booking | null>(null);
-  const [isLoading, setIsLoading]   = useState(true);
+  const [booking, setBooking]         = useState<Booking | null>(null);
+  const [isLoading, setIsLoading]     = useState(true);
   const [isProcessing, setProcessing] = useState(false);
-  const [error, setError]           = useState<string | null>(null);
-  const [isSuccess, setIsSuccess]   = useState(false);
-  const [method, setMethod]         = useState<'card' | 'invoice'>('card');
+  const [error, setError]             = useState<string | null>(null);
+  const [isSuccess, setIsSuccess]     = useState(false);
+  const [method, setMethod]           = useState<'card' | 'invoice'>('card');
 
-  // Load booking on mount
   useEffect(() => {
-    const params    = new URLSearchParams(window.location.search);
-    const urlBookingId = params.get('booking_id');
-    const storedId  = urlBookingId ?? sessionStorage.getItem('payment_booking_id');
+    const params        = new URLSearchParams(window.location.search);
+    const urlBookingId  = params.get('booking_id');
+    const storedId      = urlBookingId ?? sessionStorage.getItem('pending_payment_booking_id');
 
     if (params.get('payment') === 'success') {
       setIsSuccess(true);
@@ -42,14 +49,13 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
     }
 
     if (!storedId) {
-      // Try to find most recent pending booking for this user
       if (!user) { setIsLoading(false); return; }
       supabase
         .from('bookings')
         .select('*')
         .eq('customer_id', user.id)
         .eq('payment_status', 'pending')
-        .eq('payment_method', 'card')
+        .in('payment_method', ['card', 'cash'])
         .order('created_at', { ascending: false })
         .limit(1)
         .single()
@@ -81,6 +87,10 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
     setProcessing(true);
     setError(null);
 
+    const isCash     = booking.payment_method === 'cash';
+    const fullPrice  = booking.estimated_price;
+    const chargeAmt  = isCash ? Math.round(fullPrice * COMMISSION.cashDeposit) : fullPrice;
+
     if (method === 'invoice') {
       const { error: err } = await supabase
         .from('bookings')
@@ -92,14 +102,15 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
       return;
     }
 
-    // Card → Stripe Checkout
     const origin     = window.location.origin;
     const successUrl = `${origin}?payment=success&booking_id=${booking.id}`;
     const cancelUrl  = `${origin}?payment=cancelled&booking_id=${booking.id}`;
 
     const { url, error: payErr } = await createCheckoutSession(
-      booking.estimated_price,
-      `Man & Van — ${booking.collection_address.split(',')[0]} → ${booking.delivery_address.split(',')[0]}`,
+      chargeAmt,
+      isCash
+        ? `30% deposit — Man & Van — ${booking.collection_address.split(',')[0]} → ${booking.delivery_address.split(',')[0]}`
+        : `Man & Van — ${booking.collection_address.split(',')[0]} → ${booking.delivery_address.split(',')[0]}`,
       successUrl,
       cancelUrl,
       user?.email,
@@ -107,24 +118,24 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
     );
 
     if (payErr || !url) {
-      // Dev fallback: activate escrow directly
-      const { error: escrowErr } = await activateEscrowFallback(booking.id, booking.estimated_price);
+      // Dev fallback
+      const { error: escrowErr } = await activateEscrowFallback(booking.id, chargeAmt);
       if (escrowErr) {
         setError(escrowErr.message || 'Payment could not be started. Please try again.');
         setProcessing(false);
         return;
       }
-      sessionStorage.removeItem('payment_booking_id');
+      sessionStorage.removeItem('pending_payment_booking_id');
       setIsSuccess(true);
       setProcessing(false);
       return;
     }
 
-    sessionStorage.removeItem('payment_booking_id');
+    sessionStorage.removeItem('pending_payment_booking_id');
     window.location.href = url;
   };
 
-  // ── Loading ─────────────────────────────────────────────────────────────────
+  // ── Loading ──────────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-20">
@@ -135,42 +146,69 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
 
   // ── Success ──────────────────────────────────────────────────────────────────
   if (isSuccess && booking) {
-    const isInvoice = method === 'invoice' || booking.payment_status === 'invoice_pending';
-    const amount    = booking.estimated_price;
-    const earning   = booking.driver_earning ?? amount * 0.80;
+    const isCash     = booking.payment_method === 'cash';
+    const isInvoice  = method === 'invoice' || booking.payment_status === 'invoice_pending';
+    const fullPrice  = booking.estimated_price;
+    const depositAmt = Math.round(fullPrice * COMMISSION.cashDeposit);
+    const cashAmt    = fullPrice - depositAmt;
+    const earning    = booking.driver_earning ?? fullPrice * 0.80;
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0A2463] via-[#1B3A8C] to-[#0A2463] flex items-center justify-center p-4 pt-24">
         <div className="w-full max-w-lg">
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            {/* Success Header */}
             <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-8 text-center">
               <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="w-10 h-10 text-white" />
+                {isCash ? <Banknote className="w-10 h-10 text-white" /> : <CheckCircle2 className="w-10 h-10 text-white" />}
               </div>
               <h1 className="text-white font-bold text-2xl mb-1">
-                {isInvoice ? 'Invoice Confirmed' : 'Payment Secured'}
+                {isInvoice ? 'Invoice Confirmed' : isCash ? 'Deposit Secured' : 'Payment Secured'}
               </h1>
               <p className="text-white/80 text-sm">
-                {isInvoice ? 'Added to your monthly invoice' : 'Your funds are held securely in escrow'}
+                {isInvoice
+                  ? 'Added to your monthly invoice'
+                  : isCash
+                  ? '30% deposit held securely · Pay 70% cash to driver'
+                  : 'Your funds are held securely in escrow'}
               </p>
             </div>
 
             <div className="p-8">
-              {/* Amount */}
-              <div className="text-center mb-6">
-                <p className="text-gray-500 text-sm mb-1">
-                  {isInvoice ? 'Amount due on invoice' : 'Amount secured in escrow'}
-                </p>
-                <p className="text-4xl font-bold text-[#0A2463]">£{amount.toLocaleString()}</p>
-                {!isInvoice && (
-                  <p className="text-gray-400 text-xs mt-1">
-                    Driver will receive £{earning.toFixed(2)} on confirmed delivery
+              {isCash ? (
+                <div className="mb-6 space-y-3">
+                  <div className="flex items-center justify-between bg-green-50 rounded-xl px-4 py-3">
+                    <div>
+                      <p className="text-xs text-green-600 font-medium">Deposit paid online</p>
+                      <p className="text-sm text-green-700">30% platform fee — secured</p>
+                    </div>
+                    <p className="text-xl font-bold text-green-700">£{depositAmt}</p>
+                  </div>
+                  <div className="flex items-center justify-between bg-blue-50 rounded-xl px-4 py-3">
+                    <div>
+                      <p className="text-xs text-blue-600 font-medium">Due to driver in cash</p>
+                      <p className="text-sm text-blue-700">70% — pay on delivery</p>
+                    </div>
+                    <p className="text-xl font-bold text-blue-700">£{cashAmt}</p>
+                  </div>
+                  <div className="flex items-center justify-between border border-gray-100 rounded-xl px-4 py-3">
+                    <p className="text-sm font-semibold text-gray-600">Total job value</p>
+                    <p className="text-xl font-bold text-[#0A2463]">£{fullPrice}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center mb-6">
+                  <p className="text-gray-500 text-sm mb-1">
+                    {isInvoice ? 'Amount due on invoice' : 'Amount secured in escrow'}
                   </p>
-                )}
-              </div>
+                  <p className="text-4xl font-bold text-[#0A2463]">£{fullPrice.toLocaleString()}</p>
+                  {!isInvoice && (
+                    <p className="text-gray-400 text-xs mt-1">
+                      Driver will receive £{earning.toFixed(2)} on confirmed delivery
+                    </p>
+                  )}
+                </div>
+              )}
 
-              {/* Booking ref */}
               <div className="bg-gray-50 rounded-xl p-4 mb-6 text-center">
                 <p className="text-gray-500 text-xs mb-1">Booking Reference</p>
                 <p className="font-mono font-bold text-gray-900 text-lg">
@@ -178,24 +216,20 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
                 </p>
               </div>
 
-              {/* What happens next */}
-              {!isInvoice && (
-                <div className="mb-6">
-                  <p className="text-sm font-semibold text-gray-700 mb-3">What happens next</p>
-                  <div className="space-y-3">
-                    {STEPS.map((step, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-[#0A2463]/10 rounded-full flex items-center justify-center shrink-0">
-                          <step.icon className="w-4 h-4 text-[#0A2463]" />
-                        </div>
-                        <p className="text-sm text-gray-600">{step.label}</p>
+              <div className="mb-6">
+                <p className="text-sm font-semibold text-gray-700 mb-3">What happens next</p>
+                <div className="space-y-3">
+                  {(isCash ? CASH_STEPS : STEPS).map((step, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-[#0A2463]/10 rounded-full flex items-center justify-center shrink-0">
+                        <step.icon className="w-4 h-4 text-[#0A2463]" />
                       </div>
-                    ))}
-                  </div>
+                      <p className="text-sm text-gray-600">{step.label}</p>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
 
-              {/* Actions */}
               <div className="flex gap-3">
                 <button
                   onClick={() => onNavigate('tracking')}
@@ -217,7 +251,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
     );
   }
 
-  // ── No booking found ─────────────────────────────────────────────────────────
+  // ── No booking found ──────────────────────────────────────────────────────────
   if (!booking) {
     return (
       <div className="min-h-screen bg-gray-50 pt-24 flex items-center justify-center p-4">
@@ -234,12 +268,15 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
   }
 
   // ── Payment form ─────────────────────────────────────────────────────────────
-  const price    = booking.estimated_price;
+  const isCash      = booking.payment_method === 'cash';
+  const fullPrice   = booking.estimated_price;
+  const depositAmt  = Math.round(fullPrice * COMMISSION.cashDeposit);
+  const cashAmt     = fullPrice - depositAmt;
+  const chargeLabel = isCash ? depositAmt : fullPrice;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A2463] via-[#1B3A8C] to-[#061539] flex items-center justify-center p-4 pt-24">
       <div className="w-full max-w-lg">
-        {/* Back */}
         <button
           onClick={() => onNavigate('customer-dashboard')}
           className="flex items-center gap-2 text-white/60 hover:text-white mb-6 text-sm transition-colors"
@@ -256,13 +293,18 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
                   <Lock className="w-5 h-5 text-[#D4AF37]" />
                 </div>
                 <div>
-                  <p className="text-white font-bold text-lg leading-none">Secure Checkout</p>
+                  <p className="text-white font-bold text-lg leading-none">
+                    {isCash ? 'Cash Booking Deposit' : 'Secure Checkout'}
+                  </p>
                   <p className="text-white/50 text-xs mt-0.5">FAST MAN & VAN</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-white/50 text-xs">Total due</p>
-                <p className="text-[#D4AF37] font-bold text-2xl">£{price.toLocaleString()}</p>
+                <p className="text-white/50 text-xs">{isCash ? 'Deposit due now' : 'Total due'}</p>
+                <p className="text-[#D4AF37] font-bold text-2xl">£{chargeLabel.toLocaleString()}</p>
+                {isCash && (
+                  <p className="text-white/40 text-xs">of £{fullPrice} total</p>
+                )}
               </div>
             </div>
           </div>
@@ -296,68 +338,100 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
             <div className="rounded-2xl border border-gray-100 overflow-hidden">
               <div className="divide-y divide-gray-50">
                 <div className="flex items-center justify-between px-4 py-3">
-                  <span className="text-sm text-gray-600">Service price</span>
-                  <span className="font-semibold text-gray-900">£{price.toLocaleString()}</span>
+                  <span className="text-sm text-gray-600">Total service price</span>
+                  <span className="font-semibold text-gray-900">£{fullPrice.toLocaleString()}</span>
                 </div>
-                <div className="flex items-center justify-between px-4 py-3">
-                  <span className="text-sm text-gray-600 flex items-center gap-1.5">
-                    <Shield className="w-3.5 h-3.5 text-green-500" />
-                    Escrow protection
-                  </span>
-                  <span className="text-sm font-medium text-green-600">Included</span>
-                </div>
+                {isCash ? (
+                  <>
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <span className="text-sm text-gray-600 flex items-center gap-1.5">
+                        <Shield className="w-3.5 h-3.5 text-[#0A2463]" />
+                        Platform deposit (30% — due now)
+                      </span>
+                      <span className="font-semibold text-[#0A2463]">£{depositAmt}</span>
+                    </div>
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <span className="text-sm text-gray-600 flex items-center gap-1.5">
+                        <Banknote className="w-3.5 h-3.5 text-green-600" />
+                        Cash to driver on delivery (70%)
+                      </span>
+                      <span className="font-semibold text-green-700">£{cashAmt}</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <span className="text-sm text-gray-600 flex items-center gap-1.5">
+                      <Shield className="w-3.5 h-3.5 text-green-500" />
+                      Escrow protection
+                    </span>
+                    <span className="text-sm font-medium text-green-600">Included</span>
+                  </div>
+                )}
               </div>
               <div className="bg-[#0A2463] px-4 py-3 flex items-center justify-between">
-                <span className="text-white font-semibold">Total</span>
-                <span className="text-[#D4AF37] font-bold text-lg">£{price.toLocaleString()}</span>
+                <span className="text-white font-semibold">
+                  {isCash ? 'Due online now' : 'Total'}
+                </span>
+                <span className="text-[#D4AF37] font-bold text-lg">£{chargeLabel.toLocaleString()}</span>
               </div>
             </div>
 
-            {/* Payment Method */}
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Payment Method</p>
-              <button
-                onClick={() => setMethod('card')}
-                className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                  method === 'card'
-                    ? 'border-[#0A2463] bg-[#0A2463]/5'
-                    : 'border-gray-100 hover:border-gray-200'
-                }`}
-              >
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${method === 'card' ? 'bg-[#0A2463]' : 'bg-gray-100'}`}>
-                  <CreditCard className={`w-5 h-5 ${method === 'card' ? 'text-white' : 'text-gray-400'}`} />
-                </div>
-                <div className="text-left flex-1">
-                  <p className={`font-semibold text-sm ${method === 'card' ? 'text-[#0A2463]' : 'text-gray-700'}`}>
-                    Card / Google Pay / Apple Pay
-                  </p>
-                  <p className="text-gray-400 text-xs">Powered by Stripe · All cards accepted</p>
-                </div>
-                {method === 'card' && <CheckCircle2 className="w-5 h-5 text-[#0A2463] shrink-0" />}
-              </button>
+            {/* Cash info banner */}
+            {isCash && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-3">
+                <Banknote className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                <p className="text-amber-800 text-xs leading-relaxed">
+                  <strong>Cash booking:</strong> Pay the £{depositAmt} deposit online now to confirm your booking.
+                  Your driver will collect the remaining <strong>£{cashAmt} in cash</strong> upon delivery.
+                </p>
+              </div>
+            )}
 
-              {booking.corporate_account_id && (
-                <button
-                  onClick={() => setMethod('invoice')}
-                  className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                    method === 'invoice'
-                      ? 'border-[#D4AF37] bg-[#D4AF37]/5'
-                      : 'border-gray-100 hover:border-gray-200'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${method === 'invoice' ? 'bg-[#D4AF37]' : 'bg-gray-100'}`}>
-                    <Building2 className={`w-5 h-5 ${method === 'invoice' ? 'text-[#0A2463]' : 'text-gray-400'}`} />
-                  </div>
-                  <div className="text-left flex-1">
-                    <p className={`font-semibold text-sm ${method === 'invoice' ? 'text-[#0A2463]' : 'text-gray-700'}`}>
-                      Corporate Invoice
-                    </p>
-                    <p className="text-gray-400 text-xs">Added to your monthly consolidated invoice</p>
-                  </div>
-                  {method === 'invoice' && <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0" />}
-                </button>
-              )}
-            </div>
+            {/* Payment Method — only show for non-cash or if corporate invoice available */}
+            {(!isCash || booking.corporate_account_id) && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Payment Method</p>
+                {!isCash && (
+                  <button
+                    onClick={() => setMethod('card')}
+                    className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
+                      method === 'card' ? 'border-[#0A2463] bg-[#0A2463]/5' : 'border-gray-100 hover:border-gray-200'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${method === 'card' ? 'bg-[#0A2463]' : 'bg-gray-100'}`}>
+                      <CreditCard className={`w-5 h-5 ${method === 'card' ? 'text-white' : 'text-gray-400'}`} />
+                    </div>
+                    <div className="text-left flex-1">
+                      <p className={`font-semibold text-sm ${method === 'card' ? 'text-[#0A2463]' : 'text-gray-700'}`}>
+                        Card / Google Pay / Apple Pay
+                      </p>
+                      <p className="text-gray-400 text-xs">Powered by Stripe · All cards accepted</p>
+                    </div>
+                    {method === 'card' && <CheckCircle2 className="w-5 h-5 text-[#0A2463] shrink-0" />}
+                  </button>
+                )}
+
+                {booking.corporate_account_id && (
+                  <button
+                    onClick={() => setMethod('invoice')}
+                    className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
+                      method === 'invoice' ? 'border-[#D4AF37] bg-[#D4AF37]/5' : 'border-gray-100 hover:border-gray-200'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${method === 'invoice' ? 'bg-[#D4AF37]' : 'bg-gray-100'}`}>
+                      <Building2 className={`w-5 h-5 ${method === 'invoice' ? 'text-[#0A2463]' : 'text-gray-400'}`} />
+                    </div>
+                    <div className="text-left flex-1">
+                      <p className={`font-semibold text-sm ${method === 'invoice' ? 'text-[#0A2463]' : 'text-gray-700'}`}>
+                        Corporate Invoice
+                      </p>
+                      <p className="text-gray-400 text-xs">Added to your monthly consolidated invoice</p>
+                    </div>
+                    {method === 'invoice' && <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0" />}
+                  </button>
+                )}
+              </div>
+            )}
 
             {error && (
               <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
@@ -374,8 +448,10 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
             >
               {isProcessing ? (
                 <><Loader2 className="w-5 h-5 animate-spin" /> Processing…</>
+              ) : isCash ? (
+                <><Lock className="w-5 h-5" /> Pay deposit £{depositAmt}<ChevronRight className="w-5 h-5" /></>
               ) : (
-                <><Lock className="w-5 h-5" /> Pay £{price.toLocaleString()}<ChevronRight className="w-5 h-5" /></>
+                <><Lock className="w-5 h-5" /> Pay £{fullPrice.toLocaleString()}<ChevronRight className="w-5 h-5" /></>
               )}
             </button>
 
@@ -386,13 +462,14 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
               </p>
               <p className="text-xs text-gray-400 flex items-center justify-center gap-1.5">
                 <Shield className="w-3 h-3 text-green-500" />
-                Payment held in escrow until delivery is confirmed
+                {isCash
+                  ? '30% deposit held securely · 70% paid to driver in cash'
+                  : 'Payment held in escrow until delivery is confirmed'}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Booking ref */}
         <p className="text-center text-white/30 text-xs mt-4">
           Ref: {booking.booking_ref ?? booking.id.slice(0, 8).toUpperCase()}
         </p>

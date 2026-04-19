@@ -160,6 +160,41 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate })
     if (onNavigate) onNavigate('payment');
   };
 
+  const handleCashPayment = async () => {
+    if (!quoteData) return;
+    setIsBooking(true);
+    setBookingError(null);
+
+    const { data, error } = await createBooking({
+      collection_address: collectionAddress,
+      delivery_address: deliveryAddress,
+      stop_addresses: addStops ? stopAddresses.filter(s => s.trim()) : [],
+      has_stairs: hasStairs,
+      vehicle_type: quoteData.vehicleId,
+      delivery_type: deliveryType,
+      helpers,
+      distance_miles: quoteData.distance,
+      duration: quoteData.duration,
+      estimated_price: quoteData.basePrice,
+      surge_multiplier: quoteData.surgeMultiplier,
+      payment_method: 'cash',
+      customer_id: user?.id,
+      scheduled_at: scheduleForLater && scheduledAt ? new Date(scheduledAt).toISOString() : undefined,
+      is_recurring: isRecurring,
+      recurring_frequency: isRecurring ? recurringFrequency : null,
+    });
+
+    if (error || !data) {
+      setBookingError(error?.message ?? 'Failed to create booking. Please try again.');
+      setIsBooking(false);
+      return;
+    }
+
+    sessionStorage.setItem('pending_payment_booking_id', data.id);
+    setIsBooking(false);
+    if (onNavigate) onNavigate('payment');
+  };
+
   return (
     <>
     <section ref={bookingRef} className="relative -mt-20 z-20 pb-16">
@@ -411,7 +446,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate })
                     {isRedirecting ? 'Preparing Payment…' : `Pay by Card £${quoteData.basePrice}`}
                   </button>
                   <button
-                    onClick={() => confirmBooking('cash')}
+                    onClick={handleCashPayment}
                     disabled={isBooking || isRedirecting}
                     className="px-6 py-3 bg-white/10 hover:bg-white/20 disabled:opacity-60 rounded-xl font-semibold transition-all border border-white/20 flex items-center gap-2"
                   >

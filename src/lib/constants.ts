@@ -51,6 +51,7 @@ export const PRICING = {
 export const COMMISSION = {
   gold: 0.15,
   silver: 0.20,
+  cashDeposit: 0.30,   // 30% upfront platform deposit for cash-payment jobs
   smallJobThreshold: 50,
 };
 
