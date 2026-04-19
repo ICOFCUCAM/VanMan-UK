@@ -1,14 +1,62 @@
 import React from 'react';
 import { Home, Building2, Sofa, GraduationCap, Package, Clock, Truck, ArrowRight, CheckCircle } from 'lucide-react';
-import { FEATURE_IMAGES } from '@/lib/constants';
+import { SERVICE_IMAGES, FEATURE_IMAGES } from '@/lib/constants';
 
 const services = [
-  { icon: Home, title: 'House Moving', desc: 'Full house moves with professional drivers and optional helpers. From studio flats to 5-bed homes.', tag: 'Most Popular' },
-  { icon: Building2, title: 'Office Relocation', desc: 'Efficient office moves with minimal downtime. IT equipment, furniture, and document transport.', tag: null },
-  { icon: Sofa, title: 'Furniture Delivery', desc: 'Single item or multiple pieces delivered safely with blanket wrapping and care.', tag: null },
-  { icon: GraduationCap, title: 'Student Moves', desc: 'Affordable student moving with 10% discount. Perfect for term-time relocations.', tag: '10% Off' },
-  { icon: Package, title: 'Same Day Delivery', desc: 'Urgent deliveries within hours. AI dispatch finds the nearest available driver instantly.', tag: 'Express' },
-  { icon: Clock, title: 'Scheduled Transport', desc: 'Book in advance for planned moves. Set your preferred date, time, and vehicle type.', tag: null },
+  {
+    icon: Home,
+    title: 'House Moving',
+    desc: 'Full house moves from studio flats to 5-bed homes. Professional drivers with optional helpers.',
+    tag: 'Most Popular',
+    tagColor: 'bg-[#D4AF37] text-[#061539]',
+    image: SERVICE_IMAGES.houseMoving,
+    featured: true,
+  },
+  {
+    icon: Building2,
+    title: 'Office Relocation',
+    desc: 'Efficient office moves with minimal downtime. IT equipment, furniture, and document transport.',
+    tag: null,
+    tagColor: '',
+    image: SERVICE_IMAGES.officeRelocation,
+    featured: false,
+  },
+  {
+    icon: Sofa,
+    title: 'Furniture Delivery',
+    desc: 'Single items or multiple pieces delivered safely with blanket wrapping and care.',
+    tag: null,
+    tagColor: '',
+    image: SERVICE_IMAGES.furnitureDelivery,
+    featured: false,
+  },
+  {
+    icon: GraduationCap,
+    title: 'Student Moves',
+    desc: 'Affordable student moving with 10% discount. Perfect for term-time relocations.',
+    tag: '10% Off',
+    tagColor: 'bg-purple-500 text-white',
+    image: SERVICE_IMAGES.studentMoves,
+    featured: false,
+  },
+  {
+    icon: Package,
+    title: 'Same Day Delivery',
+    desc: 'Urgent deliveries within hours. AI dispatch finds the nearest available driver instantly.',
+    tag: 'Express',
+    tagColor: 'bg-orange-500 text-white',
+    image: SERVICE_IMAGES.sameDayDelivery,
+    featured: false,
+  },
+  {
+    icon: Clock,
+    title: 'Scheduled Transport',
+    desc: 'Book in advance for planned moves. Set your preferred date, time, and vehicle type.',
+    tag: null,
+    tagColor: '',
+    image: SERVICE_IMAGES.scheduled,
+    featured: false,
+  },
 ];
 
 const vehicles = [
@@ -24,26 +72,49 @@ const ServicesSection: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-14">
           <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-4">Our Services</span>
           <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5">Transport solutions<br />for every need</h2>
-          <p className="text-gray-500 max-w-xl mx-auto leading-relaxed">From single item deliveries to full house moves, our platform connects you with the right driver and vehicle for any job.</p>
+          <p className="text-gray-500 max-w-xl mx-auto leading-relaxed">From single item deliveries to full house moves — we connect you with the right driver for any job.</p>
         </div>
 
-        {/* Services grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
+        {/* Services grid — image cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-14">
           {services.map((s, idx) => (
-            <div key={idx} className="group relative bg-white rounded-2xl p-7 border border-gray-100 hover:border-[#0A2463]/15 hover:shadow-2xl hover:shadow-gray-200/60 transition-all duration-300 hover:-translate-y-1">
+            <div
+              key={idx}
+              className="group relative rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-400 hover:-translate-y-1 cursor-default"
+              style={{ aspectRatio: '4/3' }}
+            >
+              {/* Background image */}
+              <img
+                src={s.image}
+                alt={s.title}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+
+              {/* Gradient overlay — stronger at bottom */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#061539]/92 via-[#0A2463]/40 to-transparent" />
+
+              {/* Tag badge */}
               {s.tag && (
-                <span className="absolute top-5 right-5 text-xs font-bold px-2.5 py-1 rounded-full bg-[#D4AF37]/10 text-[#8B6914]">{s.tag}</span>
+                <div className="absolute top-4 left-4">
+                  <span className={`text-xs font-black px-3 py-1.5 rounded-full ${s.tagColor}`}>{s.tag}</span>
+                </div>
               )}
-              <div className="w-12 h-12 bg-[#0A2463]/6 group-hover:bg-[#0A2463] rounded-xl flex items-center justify-center mb-5 transition-colors">
-                <s.icon className="w-6 h-6 text-[#0A2463] group-hover:text-white transition-colors" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{s.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-5">{s.desc}</p>
-              <div className="flex items-center gap-1 text-[#0A2463] text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
-                Learn more <ArrowRight className="w-4 h-4" />
+
+              {/* Content — pinned to bottom */}
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="w-8 h-8 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-xl flex items-center justify-center shrink-0">
+                    <s.icon className="w-4 h-4 text-[#D4AF37]" />
+                  </div>
+                  <h3 className="text-lg font-black text-white">{s.title}</h3>
+                </div>
+                <p className="text-white/65 text-sm leading-relaxed mb-4">{s.desc}</p>
+                <div className="flex items-center gap-1.5 text-[#D4AF37] text-sm font-bold opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                  Book now <ArrowRight className="w-4 h-4" />
+                </div>
               </div>
             </div>
           ))}
@@ -65,7 +136,6 @@ const ServicesSection: React.FC = () => {
                   All vehicles are verified and insured
                 </div>
               </div>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {vehicles.map((v, idx) => (
                   <div key={idx} className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#D4AF37]/30 rounded-2xl p-5 transition-all cursor-default">
