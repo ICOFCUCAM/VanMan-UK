@@ -23,9 +23,8 @@ export async function createCheckoutSession(
     );
 
     const data = await response.json();
-    console.log('create-payment response:', response.status, data);
     if (data.error) throw new Error(data.error);
-    if (!data.url) throw new Error(`No URL returned. Response: ${JSON.stringify(data)}`);
+    if (!data.url) throw new Error('Payment session could not be created. Please try again.');
     return { url: data.url as string, error: null };
   } catch (err) {
     return { url: null, error: err as Error };
