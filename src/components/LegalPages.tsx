@@ -25,7 +25,7 @@ const LegalPages: React.FC<LegalPagesProps> = ({ page, onNavigate }) => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-[#0A2463] text-white py-16">
+      <div className="bg-[#0E2A47] text-white py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <button
             onClick={() => onNavigate('home')}
@@ -35,7 +35,7 @@ const LegalPages: React.FC<LegalPagesProps> = ({ page, onNavigate }) => {
             Back to Home
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-[#D4AF37]">{section.icon}</div>
+            <div className="text-[#F5B400]">{section.icon}</div>
             <h1 className="text-3xl sm:text-4xl font-bold">{section.title}</h1>
           </div>
           <p className="mt-4 text-white/70 text-sm">

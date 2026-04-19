@@ -18,8 +18,8 @@ const features = [
     desc: 'Watch your driver on a live map from the moment they accept the job. Accurate ETAs powered by OSRM real road data.',
     stat: '99%',
     statLabel: 'ETA accuracy',
-    accent: 'bg-[#D4AF37]/10 text-[#8B6914]',
-    border: 'border-l-[#D4AF37]',
+    accent: 'bg-[#F5B400]/10 text-[#8A6E00]',
+    border: 'border-l-[#F5B400]',
   },
   {
     icon: Shield,
@@ -48,7 +48,7 @@ const FeaturesSection: React.FC = () => {
 
         {/* Header */}
         <div className="text-center mb-10">
-          <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-3">Why Choose Us</span>
+          <span className="inline-block text-[#0E2A47] text-xs font-bold tracking-[0.2em] uppercase mb-3">Why Choose Us</span>
           <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">Built for trust and reliability</h2>
           <p className="text-gray-500 max-w-lg mx-auto text-sm leading-relaxed">Enterprise-grade technology and rigorous driver standards — every delivery backed by our guarantee.</p>
         </div>
@@ -65,7 +65,7 @@ const FeaturesSection: React.FC = () => {
                   <f.icon className="w-6 h-6" />
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-black text-[#0A2463]">{f.stat}</p>
+                  <p className="text-2xl font-black text-[#0E2A47]">{f.stat}</p>
                   <p className="text-gray-400 text-xs font-medium">{f.statLabel}</p>
                 </div>
               </div>
@@ -82,11 +82,11 @@ const FeaturesSection: React.FC = () => {
             alt="Logistics network"
             className="w-full h-64 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-700"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#061539]/95 via-[#0A2463]/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#071A2F]/95 via-[#0E2A47]/80 to-transparent" />
 
           <div className="absolute inset-0 flex items-center">
             <div className="p-8 sm:p-10 max-w-2xl">
-              <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-4">Intelligent Routing</span>
+              <span className="inline-block text-[#F5B400] text-xs font-bold tracking-[0.2em] uppercase mb-4">Intelligent Routing</span>
               <h3 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">Route optimised<br />for real UK roads</h3>
               <p className="text-white/60 mb-8 leading-relaxed max-w-md">OSRM-powered routing calculates real road distances across the entire UK — transparent pricing before you confirm.</p>
               <div className="flex flex-wrap gap-4">
@@ -96,7 +96,7 @@ const FeaturesSection: React.FC = () => {
                   { label: 'Price Accuracy', value: '99%' },
                 ].map((m, i) => (
                   <div key={i} className="bg-white/8 backdrop-blur-sm border border-white/15 rounded-2xl px-5 py-3 text-center">
-                    <p className="text-[#D4AF37] font-black text-2xl">{m.value}</p>
+                    <p className="text-[#F5B400] font-black text-2xl">{m.value}</p>
                     <p className="text-white/50 text-xs mt-0.5 font-medium">{m.label}</p>
                   </div>
                 ))}

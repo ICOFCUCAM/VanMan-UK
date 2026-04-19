@@ -25,18 +25,18 @@ const CorporateSection: React.FC<CorporateSectionProps> = ({ onNavigate }) => {
           <div className="relative order-2 lg:order-1">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-gray-900/15">
               <img src={FEATURE_IMAGES.corporate} alt="Corporate logistics dashboard" className="w-full h-64 lg:h-[360px] object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#061539]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#071A2F]/60 to-transparent" />
             </div>
 
             {/* Floating stat card */}
             <div className="absolute -bottom-5 -right-5 bg-white rounded-2xl shadow-xl border border-gray-100 p-5">
               <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">Monthly Savings</p>
-              <p className="text-[#0A2463] text-3xl font-black">Up to 25%</p>
+              <p className="text-[#0E2A47] text-3xl font-black">Up to 25%</p>
               <p className="text-gray-400 text-xs">vs individual bookings</p>
             </div>
 
             {/* Floating live badge */}
-            <div className="absolute -top-4 -left-4 bg-[#0A2463] rounded-2xl shadow-xl px-5 py-3 flex items-center gap-2">
+            <div className="absolute -top-4 -left-4 bg-[#0E2A47] rounded-2xl shadow-xl px-5 py-3 flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
@@ -47,9 +47,9 @@ const CorporateSection: React.FC<CorporateSectionProps> = ({ onNavigate }) => {
 
           {/* Right: content */}
           <div className="order-1 lg:order-2">
-            <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-5">For Business</span>
+            <span className="inline-block text-[#0E2A47] text-xs font-bold tracking-[0.2em] uppercase mb-5">For Business</span>
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight">
-              Enterprise logistics <span className="text-[#D4AF37]">made simple</span>
+              Enterprise logistics <span className="text-[#F5B400]">made simple</span>
             </h2>
             <p className="text-gray-500 text-base mb-7 leading-relaxed">
               Streamline your business deliveries with our corporate portal — from bulk bookings to detailed analytics.
@@ -58,8 +58,8 @@ const CorporateSection: React.FC<CorporateSectionProps> = ({ onNavigate }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-7">
               {corpFeatures.map((f, idx) => (
                 <div key={idx} className="group flex gap-3 p-4 rounded-2xl hover:bg-white hover:shadow-md border border-transparent hover:border-gray-100 transition-all">
-                  <div className="w-9 h-9 bg-[#0A2463]/8 group-hover:bg-[#0A2463] rounded-xl flex items-center justify-center shrink-0 transition-colors">
-                    <f.icon className="w-4 h-4 text-[#0A2463] group-hover:text-white transition-colors" />
+                  <div className="w-9 h-9 bg-[#0E2A47]/8 group-hover:bg-[#0E2A47] rounded-xl flex items-center justify-center shrink-0 transition-colors">
+                    <f.icon className="w-4 h-4 text-[#0E2A47] group-hover:text-white transition-colors" />
                   </div>
                   <div>
                     <p className="font-bold text-gray-900 text-sm mb-0.5">{f.title}</p>
@@ -71,7 +71,7 @@ const CorporateSection: React.FC<CorporateSectionProps> = ({ onNavigate }) => {
 
             <button
               onClick={() => onNavigate('corporate')}
-              className="group inline-flex items-center gap-3 bg-[#0A2463] hover:bg-[#1B3A8C] text-white px-8 py-4 rounded-2xl font-bold transition-all hover:shadow-xl hover:shadow-[#0A2463]/25 hover:-translate-y-0.5"
+              className="group inline-flex items-center gap-3 bg-[#0E2A47] hover:bg-[#0F3558] text-white px-8 py-4 rounded-2xl font-bold transition-all hover:shadow-xl hover:shadow-[#0E2A47]/25 hover:-translate-y-0.5"
             >
               Open Corporate Account
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

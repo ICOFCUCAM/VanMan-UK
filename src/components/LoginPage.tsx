@@ -100,10 +100,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
 
   if (awaitingAuth && (isSubmitting || authLoading)) {
     return (
-      <div className="min-h-screen bg-[#061539] flex items-center justify-center">
+      <div className="min-h-screen bg-[#071A2F] flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 bg-white/8 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10">
-            <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#F5B400] animate-spin" />
           </div>
           <h2 className="text-xl font-black text-white mb-1">Signing you in…</h2>
           <p className="text-white/40 text-sm">Just a moment</p>
@@ -124,7 +124,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
             <p className="text-gray-500 text-sm mb-8 leading-relaxed">We've sent a password reset link to <strong className="text-gray-700">{email}</strong>.</p>
             <button
               onClick={() => { setResetSent(false); setForgotMode(false); }}
-              className="w-full bg-[#0A2463] hover:bg-[#1B3A8C] text-white py-3.5 rounded-2xl font-bold transition-colors"
+              className="w-full bg-[#0E2A47] hover:bg-[#0F3558] text-white py-3.5 rounded-2xl font-bold transition-colors"
             >
               Back to sign in
             </button>
@@ -138,11 +138,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
     <div className="min-h-screen flex">
 
       {/* Left panel — brand / trust */}
-      <div className="hidden lg:flex lg:w-[46%] xl:w-[42%] bg-[#061539] flex-col relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-[46%] xl:w-[42%] bg-[#071A2F] flex-col relative overflow-hidden">
         {/* Background decorations */}
-        <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, #D4AF37 0%, transparent 55%), radial-gradient(circle at 80% 20%, #0A2463 0%, transparent 50%)' }} />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#0A2463] rounded-full blur-3xl opacity-60 -translate-y-1/3 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/8 rounded-full blur-3xl" />
+        <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, #F5B400 0%, transparent 55%), radial-gradient(circle at 80% 20%, #0E2A47 0%, transparent 50%)' }} />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#0E2A47] rounded-full blur-3xl opacity-60 -translate-y-1/3 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#F5B400]/8 rounded-full blur-3xl" />
 
         {/* Mesh grid */}
         <div className="absolute inset-0 opacity-[0.035]" style={{ backgroundImage: 'linear-gradient(rgba(212,175,55,1) 1px,transparent 1px),linear-gradient(90deg,rgba(212,175,55,1) 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
@@ -150,8 +150,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
         <div className="relative z-10 flex flex-col h-full px-10 py-10">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-auto">
-            <div className="w-11 h-11 bg-[#D4AF37] rounded-xl flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
-              <Truck className="w-6 h-6 text-[#061539]" />
+            <div className="w-11 h-11 bg-[#F5B400] rounded-xl flex items-center justify-center shadow-lg shadow-[#F5B400]/30">
+              <Truck className="w-6 h-6 text-[#071A2F]" />
             </div>
             <div>
               <p className="font-black text-white text-sm tracking-wide">FAST MAN & VAN</p>
@@ -163,7 +163,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
           <div className="my-auto">
             <h1 className="text-4xl xl:text-5xl font-black text-white leading-tight mb-6">
               Move anything,<br />
-              <span className="text-[#D4AF37]">anywhere.</span>
+              <span className="text-[#F5B400]">anywhere.</span>
             </h1>
             <p className="text-white/50 text-lg leading-relaxed mb-10 max-w-sm">
               Join thousands of customers and independent drivers on the UK's fastest growing van logistics platform.
@@ -173,8 +173,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
             <div className="space-y-4">
               {trustPoints.map((tp, i) => (
                 <div key={i} className="flex items-center gap-3.5">
-                  <div className="w-9 h-9 bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-xl flex items-center justify-center shrink-0">
-                    <tp.icon className="w-4 h-4 text-[#D4AF37]" />
+                  <div className="w-9 h-9 bg-[#F5B400]/10 border border-[#F5B400]/20 rounded-xl flex items-center justify-center shrink-0">
+                    <tp.icon className="w-4 h-4 text-[#F5B400]" />
                   </div>
                   <span className="text-white/65 text-sm font-medium">{tp.text}</span>
                 </div>
@@ -185,12 +185,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
           {/* Bottom testimonial */}
           <div className="bg-white/5 border border-white/8 rounded-2xl p-5 mt-auto">
             <div className="flex gap-0.5 mb-3">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 text-[#D4AF37] fill-[#D4AF37]" />)}
+              {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 text-[#F5B400] fill-[#F5B400]" />)}
             </div>
             <p className="text-white/70 text-sm leading-relaxed italic mb-3">"Incredibly fast and professional. The driver arrived early and handled everything carefully. Would use again in a heartbeat."</p>
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center">
-                <span className="text-[#061539] text-xs font-black">SH</span>
+              <div className="w-8 h-8 bg-[#F5B400] rounded-full flex items-center justify-center">
+                <span className="text-[#071A2F] text-xs font-black">SH</span>
               </div>
               <div>
                 <p className="text-white/80 text-xs font-bold">Sarah H.</p>
@@ -205,7 +205,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
       <div className="flex-1 bg-gray-50 flex flex-col">
         {/* Mobile back button */}
         <div className="lg:hidden px-6 pt-6">
-          <button onClick={() => onNavigate('home')} className="flex items-center gap-2 text-[#0A2463] font-semibold text-sm hover:text-[#1B3A8C] transition-colors">
+          <button onClick={() => onNavigate('home')} className="flex items-center gap-2 text-[#0E2A47] font-semibold text-sm hover:text-[#0F3558] transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </button>
         </div>
@@ -215,10 +215,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
 
             {/* Mobile logo */}
             <div className="lg:hidden flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 bg-[#0A2463] rounded-xl flex items-center justify-center">
-                <Truck className="w-5 h-5 text-[#D4AF37]" />
+              <div className="w-10 h-10 bg-[#0E2A47] rounded-xl flex items-center justify-center">
+                <Truck className="w-5 h-5 text-[#F5B400]" />
               </div>
-              <p className="font-black text-[#0A2463]">FAST MAN & VAN</p>
+              <p className="font-black text-[#0E2A47]">FAST MAN & VAN</p>
             </div>
 
             {/* Desktop back button */}
@@ -302,14 +302,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                     <div className="relative">
                       <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com"
-                        className="w-full pl-10 pr-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:border-[#0A2463] focus:ring-4 focus:ring-[#0A2463]/8 outline-none transition-all text-sm" />
+                        className="w-full pl-10 pr-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:border-[#0E2A47] focus:ring-4 focus:ring-[#0E2A47]/8 outline-none transition-all text-sm" />
                     </div>
                   </div>
                   <button type="submit" disabled={isSubmitting}
-                    className="w-full bg-[#0A2463] hover:bg-[#1B3A8C] disabled:opacity-60 text-white py-4 rounded-2xl font-black text-sm transition-colors flex items-center justify-center gap-2">
+                    className="w-full bg-[#0E2A47] hover:bg-[#0F3558] disabled:opacity-60 text-white py-4 rounded-2xl font-black text-sm transition-colors flex items-center justify-center gap-2">
                     {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Send Reset Link'}
                   </button>
-                  <button type="button" onClick={() => setForgotMode(false)} className="w-full text-center text-[#0A2463] text-sm font-semibold hover:underline py-2">
+                  <button type="button" onClick={() => setForgotMode(false)} className="w-full text-center text-[#0E2A47] text-sm font-semibold hover:underline py-2">
                     Back to sign in
                   </button>
                 </form>
@@ -319,7 +319,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                     <div>
                       <label className="block text-xs font-black text-gray-500 tracking-widest uppercase mb-2">Full Name</label>
                       <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="John Smith"
-                        className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:border-[#0A2463] focus:ring-4 focus:ring-[#0A2463]/8 outline-none transition-all text-sm" />
+                        className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:border-[#0E2A47] focus:ring-4 focus:ring-[#0E2A47]/8 outline-none transition-all text-sm" />
                     </div>
                   )}
 
@@ -328,7 +328,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                     <div className="relative">
                       <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com"
-                        className="w-full pl-10 pr-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:border-[#0A2463] focus:ring-4 focus:ring-[#0A2463]/8 outline-none transition-all text-sm" />
+                        className="w-full pl-10 pr-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:border-[#0E2A47] focus:ring-4 focus:ring-[#0E2A47]/8 outline-none transition-all text-sm" />
                     </div>
                   </div>
 
@@ -336,7 +336,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                     <div>
                       <label className="block text-xs font-black text-gray-500 tracking-widest uppercase mb-2">Phone <span className="text-gray-350 normal-case font-normal">(optional)</span></label>
                       <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+44 7xxx xxx xxx"
-                        className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:border-[#0A2463] focus:ring-4 focus:ring-[#0A2463]/8 outline-none transition-all text-sm" />
+                        className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:border-[#0E2A47] focus:ring-4 focus:ring-[#0E2A47]/8 outline-none transition-all text-sm" />
                     </div>
                   )}
 
@@ -344,7 +344,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                     <div className="flex justify-between items-center mb-2">
                       <label className="block text-xs font-black text-gray-500 tracking-widest uppercase">Password</label>
                       {!isSignup && (
-                        <button type="button" onClick={() => setForgotMode(true)} className="text-xs text-[#0A2463] font-semibold hover:underline">
+                        <button type="button" onClick={() => setForgotMode(true)} className="text-xs text-[#0E2A47] font-semibold hover:underline">
                           Forgot password?
                         </button>
                       )}
@@ -353,7 +353,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                       <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required
                         placeholder={isSignup ? 'Min. 8 characters' : 'Enter your password'}
-                        className="w-full pl-10 pr-11 py-3.5 border-2 border-gray-200 rounded-2xl focus:border-[#0A2463] focus:ring-4 focus:ring-[#0A2463]/8 outline-none transition-all text-sm" />
+                        className="w-full pl-10 pr-11 py-3.5 border-2 border-gray-200 rounded-2xl focus:border-[#0E2A47] focus:ring-4 focus:ring-[#0E2A47]/8 outline-none transition-all text-sm" />
                       <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -375,7 +375,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                   )}
 
                   <button type="submit" disabled={isSubmitting}
-                    className="w-full bg-[#0A2463] hover:bg-[#1B3A8C] disabled:opacity-60 disabled:cursor-not-allowed text-white py-4 rounded-2xl font-black transition-all hover:shadow-xl hover:shadow-[#0A2463]/25 flex items-center justify-center gap-2.5 text-base mt-2">
+                    className="w-full bg-[#0E2A47] hover:bg-[#0F3558] disabled:opacity-60 disabled:cursor-not-allowed text-white py-4 rounded-2xl font-black transition-all hover:shadow-xl hover:shadow-[#0E2A47]/25 flex items-center justify-center gap-2.5 text-base mt-2">
                     {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{isSignup ? 'Create Account' : 'Sign In'} <ArrowRight className="w-5 h-5" /></>}
                   </button>
                 </form>
@@ -383,11 +383,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
 
               {!forgotMode && (
                 <div className="mt-6 space-y-3 text-center border-t border-gray-100 pt-5">
-                  <button onClick={() => { setIsSignup(!isSignup); setError(null); }} className="text-[#0A2463] text-sm font-semibold hover:underline block w-full transition-colors">
+                  <button onClick={() => { setIsSignup(!isSignup); setError(null); }} className="text-[#0E2A47] text-sm font-semibold hover:underline block w-full transition-colors">
                     {isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign up free"}
                   </button>
                   {!isSignup && (
-                    <button onClick={() => onNavigate('driver-register')} className="flex items-center justify-center gap-2 w-full text-gray-400 hover:text-[#D4AF37] text-sm font-medium transition-colors">
+                    <button onClick={() => onNavigate('driver-register')} className="flex items-center justify-center gap-2 w-full text-gray-400 hover:text-[#F5B400] text-sm font-medium transition-colors">
                       <Truck className="w-4 h-4" /> Want to become a driver?
                     </button>
                   )}

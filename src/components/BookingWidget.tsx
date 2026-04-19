@@ -201,8 +201,8 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
     <div className="bg-white rounded-3xl shadow-2xl shadow-black/15 overflow-hidden border border-gray-100/80">
 
           {/* Header */}
-          <div className="relative bg-gradient-to-r from-[#061539] via-[#0A2463] to-[#1B3A8C] px-6 sm:px-8 py-7 overflow-hidden">
-            <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle at 80% 50%, #D4AF37 0%, transparent 55%)' }} />
+          <div className="relative bg-gradient-to-r from-[#071A2F] via-[#0E2A47] to-[#0F3558] px-6 sm:px-8 py-7 overflow-hidden">
+            <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle at 80% 50%, #F5B400 0%, transparent 55%)' }} />
             <div className="relative flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Instant Van Quote</h2>
@@ -216,7 +216,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                 ].map((item, i) => (
                   <div key={i} className="flex flex-col items-center gap-1">
                     <div className="w-9 h-9 bg-white/8 rounded-xl flex items-center justify-center border border-white/10">
-                      <item.icon className="w-4 h-4 text-[#D4AF37]" />
+                      <item.icon className="w-4 h-4 text-[#F5B400]" />
                     </div>
                     <span className="text-white/40 text-[10px] font-semibold tracking-wide">{item.label}</span>
                   </div>
@@ -240,7 +240,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                     value={collectionAddress}
                     onChange={(e) => setCollectionAddress(e.target.value)}
                     placeholder="Pickup postcode or address"
-                    className="w-full pl-13 pr-4 py-3.5 border-2 border-gray-150 rounded-2xl focus:border-[#0A2463] focus:ring-4 focus:ring-[#0A2463]/8 outline-none transition-all text-gray-800 placeholder:text-gray-350 text-sm font-medium bg-gray-50/50 focus:bg-white"
+                    className="w-full pl-13 pr-4 py-3.5 border-2 border-gray-150 rounded-2xl focus:border-[#0E2A47] focus:ring-4 focus:ring-[#0E2A47]/8 outline-none transition-all text-gray-800 placeholder:text-gray-350 text-sm font-medium bg-gray-50/50 focus:bg-white"
                     style={{ paddingLeft: '3.25rem' }}
                   />
                 </div>
@@ -256,7 +256,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                     value={deliveryAddress}
                     onChange={(e) => setDeliveryAddress(e.target.value)}
                     placeholder="Destination postcode or address"
-                    className="w-full pr-4 py-3.5 border-2 border-gray-150 rounded-2xl focus:border-[#0A2463] focus:ring-4 focus:ring-[#0A2463]/8 outline-none transition-all text-gray-800 placeholder:text-gray-350 text-sm font-medium bg-gray-50/50 focus:bg-white"
+                    className="w-full pr-4 py-3.5 border-2 border-gray-150 rounded-2xl focus:border-[#0E2A47] focus:ring-4 focus:ring-[#0E2A47]/8 outline-none transition-all text-gray-800 placeholder:text-gray-350 text-sm font-medium bg-gray-50/50 focus:bg-white"
                     style={{ paddingLeft: '3.25rem' }}
                   />
                 </div>
@@ -270,13 +270,13 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                 {stopAddresses.map((stop, idx) => (
                   <div key={idx} className="flex gap-2">
                     <div className="relative flex-1">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#D4AF37]" />
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#F5B400]" />
                       <input
                         type="text"
                         value={stop}
                         onChange={(e) => updateStop(idx, e.target.value)}
                         placeholder={`Stop ${idx + 1} address...`}
-                        className="w-full pl-10 pr-4 py-3 border-2 border-amber-200 rounded-xl focus:border-[#0A2463] outline-none text-sm bg-white"
+                        className="w-full pl-10 pr-4 py-3 border-2 border-amber-200 rounded-xl focus:border-[#0E2A47] outline-none text-sm bg-white"
                       />
                     </div>
                     <button onClick={() => removeStop(idx)} className="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors">
@@ -284,7 +284,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                     </button>
                   </div>
                 ))}
-                <button onClick={addStop} className="flex items-center gap-2 text-[#0A2463] text-sm font-bold hover:text-[#1B3A8C] transition-colors">
+                <button onClick={addStop} className="flex items-center gap-2 text-[#0E2A47] text-sm font-bold hover:text-[#0F3558] transition-colors">
                   <Plus className="w-4 h-4" /> Add another stop
                 </button>
               </div>
@@ -296,9 +296,9 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                 { label: 'Stairs at location', checked: hasStairs, onChange: (v: boolean) => setHasStairs(v) },
                 { label: 'Add stop points', checked: addStops, onChange: (v: boolean) => setAddStops(v) },
               ].map((opt, i) => (
-                <label key={i} className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border-2 cursor-pointer transition-all select-none ${opt.checked ? 'border-[#0A2463] bg-[#0A2463]/5 text-[#0A2463]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                <label key={i} className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border-2 cursor-pointer transition-all select-none ${opt.checked ? 'border-[#0E2A47] bg-[#0E2A47]/5 text-[#0E2A47]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
                   <input type="checkbox" checked={opt.checked} onChange={(e) => opt.onChange(e.target.checked)} className="sr-only" />
-                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${opt.checked ? 'bg-[#0A2463] border-[#0A2463]' : 'border-gray-300'}`}>
+                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${opt.checked ? 'bg-[#0E2A47] border-[#0E2A47]' : 'border-gray-300'}`}>
                     {opt.checked && <CheckCircle2 className="w-3 h-3 text-white" />}
                   </div>
                   <span className="text-sm font-semibold">{opt.label}</span>
@@ -316,19 +316,19 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                     onClick={() => setSelectedVehicle(v.id)}
                     className={`group relative p-4 rounded-2xl border-2 text-left transition-all ${
                       selectedVehicle === v.id
-                        ? 'border-[#0A2463] bg-[#0A2463] shadow-lg shadow-[#0A2463]/20'
-                        : 'border-gray-200 hover:border-[#0A2463]/40 hover:bg-gray-50'
+                        ? 'border-[#0E2A47] bg-[#0E2A47] shadow-lg shadow-[#0E2A47]/20'
+                        : 'border-gray-200 hover:border-[#0E2A47]/40 hover:bg-gray-50'
                     }`}
                   >
                     {selectedVehicle === v.id && (
-                      <div className="absolute top-2 right-2 w-5 h-5 bg-[#D4AF37] rounded-full flex items-center justify-center">
-                        <CheckCircle2 className="w-3 h-3 text-[#061539]" />
+                      <div className="absolute top-2 right-2 w-5 h-5 bg-[#F5B400] rounded-full flex items-center justify-center">
+                        <CheckCircle2 className="w-3 h-3 text-[#071A2F]" />
                       </div>
                     )}
-                    <Truck className={`w-7 h-7 mb-2.5 transition-colors ${selectedVehicle === v.id ? 'text-[#D4AF37]' : 'text-gray-400 group-hover:text-[#0A2463]'}`} />
+                    <Truck className={`w-7 h-7 mb-2.5 transition-colors ${selectedVehicle === v.id ? 'text-[#F5B400]' : 'text-gray-400 group-hover:text-[#0E2A47]'}`} />
                     <p className={`font-black text-sm transition-colors ${selectedVehicle === v.id ? 'text-white' : 'text-gray-800'}`}>{v.name}</p>
                     <p className={`text-xs mt-0.5 transition-colors ${selectedVehicle === v.id ? 'text-white/60' : 'text-gray-400'}`}>{v.capacity}</p>
-                    <p className={`font-black text-sm mt-1.5 transition-colors ${selectedVehicle === v.id ? 'text-[#D4AF37]' : 'text-[#D4AF37]'}`}>From £{v.basePrice}</p>
+                    <p className={`font-black text-sm mt-1.5 transition-colors ${selectedVehicle === v.id ? 'text-[#F5B400]' : 'text-[#F5B400]'}`}>From £{v.basePrice}</p>
                   </button>
                 ))}
               </div>
@@ -341,10 +341,10 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                 <div className="flex gap-3">
                   <button
                     onClick={() => setDeliveryType('dedicated')}
-                    className={`flex-1 p-3.5 rounded-2xl border-2 text-center transition-all ${deliveryType === 'dedicated' ? 'border-[#0A2463] bg-[#0A2463]/5' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`flex-1 p-3.5 rounded-2xl border-2 text-center transition-all ${deliveryType === 'dedicated' ? 'border-[#0E2A47] bg-[#0E2A47]/5' : 'border-gray-200 hover:border-gray-300'}`}
                   >
-                    <Truck className={`w-5 h-5 mx-auto mb-1.5 ${deliveryType === 'dedicated' ? 'text-[#0A2463]' : 'text-gray-400'}`} />
-                    <p className={`text-sm font-black ${deliveryType === 'dedicated' ? 'text-[#0A2463]' : 'text-gray-700'}`}>Dedicated</p>
+                    <Truck className={`w-5 h-5 mx-auto mb-1.5 ${deliveryType === 'dedicated' ? 'text-[#0E2A47]' : 'text-gray-400'}`} />
+                    <p className={`text-sm font-black ${deliveryType === 'dedicated' ? 'text-[#0E2A47]' : 'text-gray-700'}`}>Dedicated</p>
                     <p className="text-xs text-gray-400 mt-0.5">Full vehicle</p>
                   </button>
                   <button
@@ -362,18 +362,18 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                 <div className="flex items-center gap-3 bg-gray-50 rounded-2xl p-4 border border-gray-100">
                   <button
                     onClick={() => setHelpers(Math.max(0, helpers - 1))}
-                    className="w-10 h-10 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-600 hover:border-[#0A2463] hover:text-[#0A2463] transition-all font-black text-lg"
+                    className="w-10 h-10 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-600 hover:border-[#0E2A47] hover:text-[#0E2A47] transition-all font-black text-lg"
                   >−</button>
                   <div className="flex-1 text-center">
-                    <p className="text-3xl font-black text-[#0A2463]">{helpers}</p>
+                    <p className="text-3xl font-black text-[#0E2A47]">{helpers}</p>
                     <p className="text-xs text-gray-400 font-semibold">helpers</p>
                   </div>
                   <button
                     onClick={() => setHelpers(Math.min(3, helpers + 1))}
-                    className="w-10 h-10 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-600 hover:border-[#0A2463] hover:text-[#0A2463] transition-all font-black text-lg"
+                    className="w-10 h-10 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-600 hover:border-[#0E2A47] hover:text-[#0E2A47] transition-all font-black text-lg"
                   >+</button>
                   <div className="text-center ml-1">
-                    <p className="text-[#D4AF37] font-black text-sm">£25</p>
+                    <p className="text-[#F5B400] font-black text-sm">£25</p>
                     <p className="text-gray-400 text-xs">each</p>
                   </div>
                 </div>
@@ -392,7 +392,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
             <button
               onClick={calculateQuote}
               disabled={!collectionAddress || !deliveryAddress || isCalculating}
-              className="w-full bg-[#D4AF37] hover:bg-[#C5A028] disabled:bg-gray-200 disabled:cursor-not-allowed text-[#061539] py-4.5 rounded-2xl font-black text-lg transition-all hover:shadow-2xl hover:shadow-[#D4AF37]/30 hover:-translate-y-0.5 flex items-center justify-center gap-3 disabled:text-gray-400"
+              className="w-full bg-[#F5B400] hover:bg-[#E5A000] disabled:bg-gray-200 disabled:cursor-not-allowed text-[#071A2F] py-4.5 rounded-2xl font-black text-lg transition-all hover:shadow-2xl hover:shadow-[#F5B400]/30 hover:-translate-y-0.5 flex items-center justify-center gap-3 disabled:text-gray-400"
               style={{ paddingTop: '1.1rem', paddingBottom: '1.1rem' }}
             >
               {isCalculating ? (
@@ -405,8 +405,8 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
             {/* Quote Result */}
             {showQuote && quoteData && !bookingConfirmed && (
               <div className="relative rounded-3xl overflow-hidden animate-in slide-in-from-bottom-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#061539] via-[#0A2463] to-[#1B3A8C]" />
-                <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 90% 10%, #D4AF37 0%, transparent 50%)' }} />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#071A2F] via-[#0E2A47] to-[#0F3558]" />
+                <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 90% 10%, #F5B400 0%, transparent 50%)' }} />
                 <div className="relative p-6">
                   {quoteData.isSurge && (
                     <div className="flex items-center gap-2.5 bg-orange-500/15 border border-orange-400/20 rounded-xl px-4 py-2.5 mb-5">
@@ -423,9 +423,9 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                       { label: 'Vehicle', value: quoteData.vehicle },
                       { label: 'Your Price', value: `£${quoteData.basePrice}`, highlight: true },
                     ].map((stat, i) => (
-                      <div key={i} className={`rounded-2xl p-3.5 text-center ${stat.highlight ? 'bg-[#D4AF37]/15 border border-[#D4AF37]/25' : 'bg-white/5 border border-white/8'}`}>
+                      <div key={i} className={`rounded-2xl p-3.5 text-center ${stat.highlight ? 'bg-[#F5B400]/15 border border-[#F5B400]/25' : 'bg-white/5 border border-white/8'}`}>
                         <p className="text-white/45 text-xs uppercase tracking-wider mb-1">{stat.label}</p>
-                        <p className={`font-black text-xl ${stat.highlight ? 'text-[#D4AF37]' : 'text-white'}`}>{stat.value}</p>
+                        <p className={`font-black text-xl ${stat.highlight ? 'text-[#F5B400]' : 'text-white'}`}>{stat.value}</p>
                       </div>
                     ))}
                   </div>
@@ -433,8 +433,8 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                   {/* Schedule / Recurring options */}
                   <div className="bg-white/5 border border-white/8 rounded-2xl p-4 mb-4 space-y-3">
                     <label className="flex items-center gap-3 cursor-pointer">
-                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${scheduleForLater ? 'bg-[#D4AF37] border-[#D4AF37]' : 'border-white/30'}`}>
-                        {scheduleForLater && <CheckCircle2 className="w-3.5 h-3.5 text-[#061539]" />}
+                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${scheduleForLater ? 'bg-[#F5B400] border-[#F5B400]' : 'border-white/30'}`}>
+                        {scheduleForLater && <CheckCircle2 className="w-3.5 h-3.5 text-[#071A2F]" />}
                       </div>
                       <input type="checkbox" checked={scheduleForLater} onChange={e => { setScheduleForLater(e.target.checked); if (!e.target.checked) setIsRecurring(false); }} className="sr-only" />
                       <Calendar className="w-4 h-4 text-white/60" />
@@ -447,11 +447,11 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                           value={scheduledAt}
                           onChange={e => setScheduledAt(e.target.value)}
                           min={new Date().toISOString().slice(0, 16)}
-                          className="w-full bg-white/8 border border-white/15 text-white rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37] transition-colors"
+                          className="w-full bg-white/8 border border-white/15 text-white rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#F5B400] transition-colors"
                         />
                         <label className="flex items-center gap-3 cursor-pointer">
-                          <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${isRecurring ? 'bg-[#D4AF37] border-[#D4AF37]' : 'border-white/30'}`}>
-                            {isRecurring && <CheckCircle2 className="w-3.5 h-3.5 text-[#061539]" />}
+                          <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${isRecurring ? 'bg-[#F5B400] border-[#F5B400]' : 'border-white/30'}`}>
+                            {isRecurring && <CheckCircle2 className="w-3.5 h-3.5 text-[#071A2F]" />}
                           </div>
                           <input type="checkbox" checked={isRecurring} onChange={e => setIsRecurring(e.target.checked)} className="sr-only" />
                           <Repeat className="w-4 h-4 text-white/60" />
@@ -466,7 +466,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                                 onClick={() => setRecurringFrequency(freq)}
                                 className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all capitalize ${
                                   recurringFrequency === freq
-                                    ? 'bg-[#D4AF37] text-[#0A2463]'
+                                    ? 'bg-[#F5B400] text-[#0E2A47]'
                                     : 'bg-white/8 text-white/60 hover:bg-white/15'
                                 }`}
                               >
@@ -490,7 +490,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                     <button
                       onClick={handleCardPayment}
                       disabled={isRedirecting || isBooking}
-                      className="flex-1 bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-60 disabled:cursor-not-allowed text-[#061539] py-4 rounded-2xl font-black transition-all hover:shadow-xl hover:shadow-[#D4AF37]/25 flex items-center justify-center gap-2.5"
+                      className="flex-1 bg-[#F5B400] hover:bg-[#E5A000] disabled:opacity-60 disabled:cursor-not-allowed text-[#071A2F] py-4 rounded-2xl font-black transition-all hover:shadow-xl hover:shadow-[#F5B400]/25 flex items-center justify-center gap-2.5"
                     >
                       {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
                       {isRedirecting ? 'Preparing…' : `Pay by Card — £${quoteData.basePrice}`}

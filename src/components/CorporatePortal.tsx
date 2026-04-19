@@ -204,7 +204,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 pt-24 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#0A2463] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#0E2A47] animate-spin" />
       </div>
     );
   }
@@ -215,7 +215,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
       <div className="min-h-screen bg-gray-50 pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-[#0A2463] rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-[#0E2A47] rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Building2 className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Corporate Logistics Portal</h1>
@@ -227,37 +227,37 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
               <form onSubmit={handleSignup} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                  <input type="text" value={companyName} onChange={e => setCompanyName(e.target.value)} required className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="Your Company Ltd" />
+                  <input type="text" value={companyName} onChange={e => setCompanyName(e.target.value)} required className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="Your Company Ltd" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Business Email</label>
-                  <input type="email" value={companyEmail} onChange={e => setCompanyEmail(e.target.value)} required className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="logistics@company.com" />
+                  <input type="email" value={companyEmail} onChange={e => setCompanyEmail(e.target.value)} required className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="logistics@company.com" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  <input type="tel" value={companyPhone} onChange={e => setCompanyPhone(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="+44 20 xxxx xxxx" />
+                  <input type="tel" value={companyPhone} onChange={e => setCompanyPhone(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="+44 20 xxxx xxxx" />
                 </div>
                 {signupError && (
                   <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 p-3 rounded-lg">
                     <AlertCircle className="w-4 h-4 shrink-0" /> {signupError}
                   </div>
                 )}
-                <button type="submit" disabled={signingUp} className="w-full bg-[#0A2463] hover:bg-[#1B3A8C] disabled:opacity-60 text-white py-3.5 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
+                <button type="submit" disabled={signingUp} className="w-full bg-[#0E2A47] hover:bg-[#0F3558] disabled:opacity-60 text-white py-3.5 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
                   {signingUp ? <Loader2 className="w-5 h-5 animate-spin" /> : <><span>Create Account</span><ArrowRight className="w-5 h-5" /></>}
                 </button>
               </form>
               {!user && (
                 <p className="text-center text-sm text-gray-500 mt-4">
                   Already registered?{' '}
-                  <button onClick={() => onNavigate('login')} className="text-[#0A2463] font-medium hover:underline">Sign in</button>
+                  <button onClick={() => onNavigate('login')} className="text-[#0E2A47] font-medium hover:underline">Sign in</button>
                 </p>
               )}
             </div>
             <div className="space-y-4">
               {FEATURES.map((f, idx) => (
                 <div key={idx} className="flex gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
-                  <div className="w-10 h-10 bg-[#0A2463]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <f.icon className="w-5 h-5 text-[#0A2463]" />
+                  <div className="w-10 h-10 bg-[#0E2A47]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <f.icon className="w-5 h-5 text-[#0E2A47]" />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">{f.title}</p>
@@ -289,7 +289,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
         <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
           {['dashboard', 'bookings', 'recurring', 'team', 'invoices'].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors capitalize ${
-              activeTab === tab ? 'bg-[#0A2463] text-white' : 'bg-white text-gray-600 hover:bg-gray-100'
+              activeTab === tab ? 'bg-[#0E2A47] text-white' : 'bg-white text-gray-600 hover:bg-gray-100'
             }`}>{tab}</button>
           ))}
         </div>
@@ -305,7 +305,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
                 { label: 'Team Members', value: stats?.teamMembers ?? 0, icon: Users },
               ].map((s, idx) => (
                 <div key={idx} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                  <s.icon className="w-6 h-6 text-[#0A2463] mb-2" />
+                  <s.icon className="w-6 h-6 text-[#0E2A47] mb-2" />
                   <p className="text-2xl font-bold text-gray-900">{s.value}</p>
                   <p className="text-gray-500 text-sm">{s.label}</p>
                 </div>
@@ -320,8 +320,8 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
                     <XAxis dataKey="week" fontSize={12} />
                     <YAxis fontSize={12} />
                     <Tooltip />
-                    <Bar dataKey="deliveries" fill="#0A2463" radius={[4, 4, 0, 0]} name="Deliveries" />
-                    <Bar dataKey="cost" fill="#D4AF37" radius={[4, 4, 0, 0]} name="Cost (£)" />
+                    <Bar dataKey="deliveries" fill="#0E2A47" radius={[4, 4, 0, 0]} name="Deliveries" />
+                    <Bar dataKey="cost" fill="#F5B400" radius={[4, 4, 0, 0]} name="Cost (£)" />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -346,24 +346,24 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
                       value={row.pickup}
                       onChange={e => setBulkRows(prev => prev.map((r, idx) => idx === i ? { ...r, pickup: e.target.value } : r))}
                       placeholder="Pickup address"
-                      className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]"
+                      className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]"
                     />
                     <input
                       value={row.delivery}
                       onChange={e => setBulkRows(prev => prev.map((r, idx) => idx === i ? { ...r, delivery: e.target.value } : r))}
                       placeholder="Delivery address"
-                      className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]"
+                      className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]"
                     />
                     <input
                       value={row.date}
                       onChange={e => setBulkRows(prev => prev.map((r, idx) => idx === i ? { ...r, date: e.target.value } : r))}
                       type="date"
-                      className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]"
+                      className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]"
                     />
                     <select
                       value={row.vehicle}
                       onChange={e => setBulkRows(prev => prev.map((r, idx) => idx === i ? { ...r, vehicle: e.target.value } : r))}
-                      className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]"
+                      className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]"
                     >
                       {['Small Van', 'Medium Van', 'Large Van', 'Luton Van'].map(v => <option key={v}>{v}</option>)}
                     </select>
@@ -378,7 +378,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
               </div>
               <button
                 onClick={() => setBulkRows(prev => [...prev, { ...EMPTY_ROW }])}
-                className="flex items-center gap-2 text-[#0A2463] text-sm font-medium hover:underline mt-3"
+                className="flex items-center gap-2 text-[#0E2A47] text-sm font-medium hover:underline mt-3"
               >
                 <Plus className="w-4 h-4" /> Add another delivery
               </button>
@@ -395,7 +395,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
               <button
                 onClick={handleBulkSubmit}
                 disabled={submittingBulk}
-                className="w-full mt-4 bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-60 text-[#0A2463] py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
+                className="w-full mt-4 bg-[#F5B400] hover:bg-[#E5A000] disabled:opacity-60 text-[#0E2A47] py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
               >
                 {submittingBulk && <Loader2 className="w-4 h-4 animate-spin" />}
                 {submittingBulk ? 'Submitting…' : 'Submit Bulk Booking'}
@@ -447,7 +447,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
               <h3 className="font-bold text-gray-900">Recurring Delivery Schedules</h3>
               <button
                 onClick={() => setShowAddSchedule(v => !v)}
-                className="flex items-center gap-2 bg-[#0A2463] hover:bg-[#1B3A8C] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                className="flex items-center gap-2 bg-[#0E2A47] hover:bg-[#0F3558] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
               >
                 <Plus className="w-4 h-4" /> Add Schedule
               </button>
@@ -457,23 +457,23 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
               <div className="bg-gray-50 rounded-xl p-5 mb-5 space-y-3 border border-gray-200">
                 <p className="font-semibold text-gray-900 text-sm">New Schedule</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input value={scheduleForm.pickup_address} onChange={e => setScheduleForm(f => ({ ...f, pickup_address: e.target.value }))} placeholder="Pickup address" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]" />
-                  <input value={scheduleForm.delivery_address} onChange={e => setScheduleForm(f => ({ ...f, delivery_address: e.target.value }))} placeholder="Delivery address" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]" />
-                  <select value={scheduleForm.frequency} onChange={e => setScheduleForm(f => ({ ...f, frequency: e.target.value as RecurringSchedule['frequency'] }))} className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]">
+                  <input value={scheduleForm.pickup_address} onChange={e => setScheduleForm(f => ({ ...f, pickup_address: e.target.value }))} placeholder="Pickup address" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]" />
+                  <input value={scheduleForm.delivery_address} onChange={e => setScheduleForm(f => ({ ...f, delivery_address: e.target.value }))} placeholder="Delivery address" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]" />
+                  <select value={scheduleForm.frequency} onChange={e => setScheduleForm(f => ({ ...f, frequency: e.target.value as RecurringSchedule['frequency'] }))} className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]">
                     <option value="daily">Daily</option>
                     <option value="weekly">Weekly</option>
                     <option value="biweekly">Bi-weekly</option>
                     <option value="monthly">Monthly</option>
                   </select>
-                  <input value={scheduleForm.day_of_week ?? ''} onChange={e => setScheduleForm(f => ({ ...f, day_of_week: e.target.value }))} placeholder="Day (e.g. Monday)" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]" />
-                  <input value={scheduleForm.time_of_day} onChange={e => setScheduleForm(f => ({ ...f, time_of_day: e.target.value }))} type="time" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]" />
-                  <select value={scheduleForm.vehicle_type} onChange={e => setScheduleForm(f => ({ ...f, vehicle_type: e.target.value }))} className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]">
+                  <input value={scheduleForm.day_of_week ?? ''} onChange={e => setScheduleForm(f => ({ ...f, day_of_week: e.target.value }))} placeholder="Day (e.g. Monday)" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]" />
+                  <input value={scheduleForm.time_of_day} onChange={e => setScheduleForm(f => ({ ...f, time_of_day: e.target.value }))} type="time" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]" />
+                  <select value={scheduleForm.vehicle_type} onChange={e => setScheduleForm(f => ({ ...f, vehicle_type: e.target.value }))} className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]">
                     {['Small Van', 'Medium Van', 'Large Van', 'Luton Van'].map(v => <option key={v}>{v}</option>)}
                   </select>
                 </div>
                 <div className="flex gap-2 justify-end">
                   <button onClick={() => setShowAddSchedule(false)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-100">Cancel</button>
-                  <button onClick={handleAddSchedule} disabled={addingSchedule} className="px-4 py-2 text-sm bg-[#0A2463] text-white rounded-lg font-semibold hover:bg-[#1B3A8C] disabled:opacity-60 flex items-center gap-2">
+                  <button onClick={handleAddSchedule} disabled={addingSchedule} className="px-4 py-2 text-sm bg-[#0E2A47] text-white rounded-lg font-semibold hover:bg-[#0F3558] disabled:opacity-60 flex items-center gap-2">
                     {addingSchedule && <Loader2 className="w-3 h-3 animate-spin" />} Save Schedule
                   </button>
                 </div>
@@ -496,7 +496,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${s.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'}`}>
                       {s.is_active ? 'Active' : 'Paused'}
                     </span>
-                    <button onClick={() => handleToggleSchedule(s.id, s.is_active)} className="text-[#0A2463] text-xs font-medium hover:underline">
+                    <button onClick={() => handleToggleSchedule(s.id, s.is_active)} className="text-[#0E2A47] text-xs font-medium hover:underline">
                       {s.is_active ? 'Pause' : 'Resume'}
                     </button>
                     <button onClick={() => handleDeleteSchedule(s.id)} className="text-gray-400 hover:text-red-500 transition-colors">
@@ -516,7 +516,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
               <h3 className="font-bold text-gray-900">Team Members</h3>
               <button
                 onClick={() => setShowAddMember(v => !v)}
-                className="flex items-center gap-2 bg-[#0A2463] hover:bg-[#1B3A8C] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                className="flex items-center gap-2 bg-[#0E2A47] hover:bg-[#0F3558] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
               >
                 <Plus className="w-4 h-4" /> Add Member
               </button>
@@ -526,9 +526,9 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
               <div className="bg-gray-50 rounded-xl p-5 mb-5 space-y-3 border border-gray-200">
                 <p className="font-semibold text-gray-900 text-sm">Invite Team Member</p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} placeholder="Full name" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]" />
-                  <input value={newMemberEmail} onChange={e => setNewMemberEmail(e.target.value)} type="email" placeholder="Email address" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]" />
-                  <select value={newMemberRole} onChange={e => setNewMemberRole(e.target.value as CorporateRole)} className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0A2463]">
+                  <input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} placeholder="Full name" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]" />
+                  <input value={newMemberEmail} onChange={e => setNewMemberEmail(e.target.value)} type="email" placeholder="Email address" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]" />
+                  <select value={newMemberRole} onChange={e => setNewMemberRole(e.target.value as CorporateRole)} className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]">
                     <option value="admin">Admin</option>
                     <option value="manager">Manager</option>
                     <option value="booker">Booker</option>
@@ -537,7 +537,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
                 </div>
                 <div className="flex gap-2 justify-end">
                   <button onClick={() => setShowAddMember(false)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-100">Cancel</button>
-                  <button onClick={handleAddMember} disabled={addingMember || !newMemberEmail} className="px-4 py-2 text-sm bg-[#0A2463] text-white rounded-lg font-semibold hover:bg-[#1B3A8C] disabled:opacity-60 flex items-center gap-2">
+                  <button onClick={handleAddMember} disabled={addingMember || !newMemberEmail} className="px-4 py-2 text-sm bg-[#0E2A47] text-white rounded-lg font-semibold hover:bg-[#0F3558] disabled:opacity-60 flex items-center gap-2">
                     {addingMember && <Loader2 className="w-3 h-3 animate-spin" />} Add Member
                   </button>
                 </div>
@@ -550,7 +550,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
               ) : team.map(m => (
                 <div key={m.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#0A2463] rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0">
+                    <div className="w-10 h-10 bg-[#0E2A47] rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0">
                       {(m.name ?? m.email).slice(0, 1).toUpperCase()}
                     </div>
                     <div>
@@ -587,7 +587,7 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
                       <p className="text-gray-500 text-sm">{inv.deliveries} {inv.deliveries === 1 ? 'delivery' : 'deliveries'}</p>
                     </div>
                     <div className="flex items-center gap-4">
-                      <p className="text-xl font-bold text-[#0A2463]">£{inv.amount.toLocaleString()}</p>
+                      <p className="text-xl font-bold text-[#0E2A47]">£{inv.amount.toLocaleString()}</p>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                         inv.status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
                       }`}>{inv.status}</span>

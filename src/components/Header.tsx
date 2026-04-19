@@ -34,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
     <header className="fixed top-0 left-0 right-0 z-50">
 
       {/* Status strip */}
-      <div className="bg-[#030b1f] border-b border-white/[0.06]">
+      <div className="bg-[#040f1f] border-b border-white/[0.06]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center h-8 gap-2.5">
             <span className="relative flex h-1.5 w-1.5">
@@ -55,20 +55,20 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
       {/* Navbar */}
       <div className={`transition-all duration-200 ${
         scrolled || currentPage !== 'home'
-          ? 'bg-[#0A2463]/98 backdrop-blur-md shadow-lg shadow-black/25 border-b border-white/[0.08]'
-          : 'bg-[#061539]/96 backdrop-blur-sm'
+          ? 'bg-[#0E2A47]/98 backdrop-blur-md shadow-lg shadow-black/25 border-b border-white/[0.08]'
+          : 'bg-[#071A2F]/96 backdrop-blur-sm'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-14 gap-6">
 
             {/* Logo */}
             <button onClick={() => onNavigate('home')} className="flex items-center gap-2.5 group shrink-0">
-              <div className="w-8 h-8 bg-[#D4AF37] rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform shadow-md shadow-[#D4AF37]/25">
-                <Truck className="w-4 h-4 text-[#0A2463]" />
+              <div className="w-8 h-8 bg-[#F5B400] rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform shadow-md shadow-[#F5B400]/25">
+                <Truck className="w-4 h-4 text-[#0E2A47]" />
               </div>
               <div className="hidden sm:block">
                 <span className="text-white font-black text-[13px] tracking-wide block leading-tight">FAST MAN & VAN</span>
-                <span className="text-[#D4AF37]/45 text-[8px] font-semibold tracking-[0.2em] uppercase block">UK Transport Network</span>
+                <span className="text-[#F5B400]/45 text-[8px] font-semibold tracking-[0.2em] uppercase block">UK Transport Network</span>
               </div>
             </button>
 
@@ -97,7 +97,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                     onClick={() => setAccountDropdown(!accountDropdown)}
                     className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-white/65 hover:text-white hover:bg-white/[0.07] transition-all text-[13px]"
                   >
-                    <div className="w-6 h-6 bg-[#D4AF37] rounded-full flex items-center justify-center text-[#0A2463] text-[10px] font-black">
+                    <div className="w-6 h-6 bg-[#F5B400] rounded-full flex items-center justify-center text-[#0E2A47] text-[10px] font-black">
                       {initials}
                     </div>
                     <span className="hidden md:inline max-w-[100px] truncate">
@@ -113,7 +113,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                         <p className="text-sm font-semibold text-gray-900 truncate">{user?.email}</p>
                         <span className={`inline-block mt-1.5 text-[11px] px-2 py-0.5 rounded-full font-semibold ${
                           role === 'admin'  ? 'bg-red-100 text-red-700' :
-                          role === 'driver' ? 'bg-[#D4AF37]/15 text-[#8B6914]' :
+                          role === 'driver' ? 'bg-[#F5B400]/15 text-[#8A6E00]' :
                                              'bg-blue-100 text-blue-700'
                         }`}>
                           {role === 'admin' ? '⚡ Admin' : role === 'driver' ? '🚛 Driver' : '👤 Customer'}
@@ -123,13 +123,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                         {role === 'driver' && (
                           <button onClick={() => { onNavigate('driver-marketplace'); setAccountDropdown(false); }}
                             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 text-sm transition-colors">
-                            <Truck className="w-4 h-4 text-[#0A2463]" />My Marketplace
+                            <Truck className="w-4 h-4 text-[#0E2A47]" />My Marketplace
                           </button>
                         )}
                         {role === 'customer' && (
                           <button onClick={() => { onNavigate('customer-dashboard'); setAccountDropdown(false); }}
                             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 text-sm transition-colors">
-                            <User className="w-4 h-4 text-[#0A2463]" />My Bookings
+                            <User className="w-4 h-4 text-[#0E2A47]" />My Bookings
                           </button>
                         )}
                         {role === 'admin' && (
@@ -159,7 +159,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
               <button
                 onClick={() => onNavigate('home')}
-                className="flex items-center gap-1.5 bg-[#D4AF37] hover:bg-[#C5A028] text-[#061539] px-4 py-2 rounded-lg font-bold text-[13px] transition-all hover:shadow-lg hover:shadow-[#D4AF37]/25"
+                className="flex items-center gap-1.5 bg-[#F5B400] hover:bg-[#E5A000] text-[#071A2F] px-4 py-2 rounded-lg font-bold text-[13px] transition-all hover:shadow-lg hover:shadow-[#F5B400]/25"
               >
                 <Zap className="w-3.5 h-3.5" />
                 Get Quote
@@ -199,7 +199,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   <div className="px-4 py-1.5 text-white/30 text-[11px]">{user?.email}</div>
                   {role === 'driver' && (
                     <button onClick={() => { onNavigate('driver-marketplace'); setMobileMenuOpen(false); }}
-                      className="w-full text-left px-4 py-3 rounded-xl text-[#D4AF37] hover:bg-white/[0.07] text-[13px] font-medium transition-colors">
+                      className="w-full text-left px-4 py-3 rounded-xl text-[#F5B400] hover:bg-white/[0.07] text-[13px] font-medium transition-colors">
                       My Marketplace
                     </button>
                   )}
@@ -227,7 +227,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                     Sign In
                   </button>
                   <button onClick={() => { onNavigate('driver-register'); setMobileMenuOpen(false); }}
-                    className="w-full text-left px-4 py-3 rounded-xl text-[#D4AF37]/70 hover:bg-white/[0.07] text-[13px] font-medium transition-colors">
+                    className="w-full text-left px-4 py-3 rounded-xl text-[#F5B400]/70 hover:bg-white/[0.07] text-[13px] font-medium transition-colors">
                     Become a Driver
                   </button>
                 </>

@@ -39,15 +39,15 @@ const CookieConsent: React.FC = () => {
       <div className="max-w-3xl mx-auto">
         <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/30">
           {/* Dark glassmorphism background */}
-          <div className="absolute inset-0 bg-[#061539]/96 backdrop-blur-xl" />
+          <div className="absolute inset-0 bg-[#071A2F]/96 backdrop-blur-xl" />
           <div className="absolute inset-0 border border-white/8 rounded-2xl pointer-events-none" />
-          <div className="absolute top-0 right-0 w-48 h-48 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[#F5B400]/5 rounded-full blur-3xl pointer-events-none" />
 
           {!showSettings ? (
             <div className="relative p-5 sm:p-6">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-[#D4AF37]/15 border border-[#D4AF37]/20 rounded-xl flex items-center justify-center shrink-0">
-                  <Cookie className="w-5 h-5 text-[#D4AF37]" />
+                <div className="w-10 h-10 bg-[#F5B400]/15 border border-[#F5B400]/20 rounded-xl flex items-center justify-center shrink-0">
+                  <Cookie className="w-5 h-5 text-[#F5B400]" />
                 </div>
                 <div className="flex-1 min-w-0 pr-8">
                   <div className="flex items-center gap-2 mb-1.5">
@@ -57,7 +57,7 @@ const CookieConsent: React.FC = () => {
                       <span className="text-green-400 text-[9px] font-bold tracking-wide uppercase">GDPR</span>
                     </div>
                   </div>
-                  <p className="text-white/45 text-xs leading-relaxed">We use cookies to enhance your experience, serve personalised content, and analyse traffic. See our <button className="text-[#D4AF37]/80 hover:text-[#D4AF37] underline transition-colors" onClick={() => {}}>Cookie Policy</button> for details.</p>
+                  <p className="text-white/45 text-xs leading-relaxed">We use cookies to enhance your experience, serve personalised content, and analyse traffic. See our <button className="text-[#F5B400]/80 hover:text-[#F5B400] underline transition-colors" onClick={() => {}}>Cookie Policy</button> for details.</p>
                 </div>
                 <button onClick={rejectAll} className="absolute top-4 right-4 w-7 h-7 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-white/40 hover:text-white/70 transition-all">
                   <X className="w-3.5 h-3.5" />
@@ -67,7 +67,7 @@ const CookieConsent: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2.5 mt-4 ml-14">
                 <button
                   onClick={acceptAll}
-                  className="bg-[#D4AF37] hover:bg-[#C5A028] text-[#061539] px-5 py-2 rounded-xl font-black text-xs transition-all hover:shadow-lg hover:shadow-[#D4AF37]/25"
+                  className="bg-[#F5B400] hover:bg-[#E5A000] text-[#071A2F] px-5 py-2 rounded-xl font-black text-xs transition-all hover:shadow-lg hover:shadow-[#F5B400]/25"
                 >
                   Accept All
                 </button>
@@ -89,8 +89,8 @@ const CookieConsent: React.FC = () => {
             <div className="relative p-5 sm:p-6">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#D4AF37]/15 border border-[#D4AF37]/20 rounded-lg flex items-center justify-center">
-                    <Settings className="w-4 h-4 text-[#D4AF37]" />
+                  <div className="w-8 h-8 bg-[#F5B400]/15 border border-[#F5B400]/20 rounded-lg flex items-center justify-center">
+                    <Settings className="w-4 h-4 text-[#F5B400]" />
                   </div>
                   <h3 className="font-black text-white text-sm">Cookie Preferences</h3>
                 </div>
@@ -111,15 +111,15 @@ const CookieConsent: React.FC = () => {
                       <p className="text-white/35 text-xs mt-0.5 leading-snug">{cookie.desc}</p>
                     </div>
                     {cookie.locked ? (
-                      <div className="w-10 h-5.5 bg-[#D4AF37]/30 rounded-full flex items-center justify-end pr-0.5 shrink-0 ml-4" style={{ height: '1.375rem' }}>
-                        <div className="w-4 h-4 bg-[#D4AF37] rounded-full" />
+                      <div className="w-10 h-5.5 bg-[#F5B400]/30 rounded-full flex items-center justify-end pr-0.5 shrink-0 ml-4" style={{ height: '1.375rem' }}>
+                        <div className="w-4 h-4 bg-[#F5B400] rounded-full" />
                       </div>
                     ) : (
                       <button
                         onClick={() => setPreferences(p => ({ ...p, [cookie.key]: !p[cookie.key as keyof typeof p] }))}
                         className={`shrink-0 ml-4 w-10 rounded-full transition-all flex items-center px-0.5 ${
                           preferences[cookie.key as keyof typeof preferences]
-                            ? 'bg-[#D4AF37] justify-end'
+                            ? 'bg-[#F5B400] justify-end'
                             : 'bg-white/15 justify-start'
                         }`}
                         style={{ height: '1.375rem' }}
@@ -134,7 +134,7 @@ const CookieConsent: React.FC = () => {
               <div className="flex gap-3 mt-4">
                 <button
                   onClick={savePreferences}
-                  className="flex-1 bg-[#D4AF37] hover:bg-[#C5A028] text-[#061539] py-2.5 rounded-xl font-black text-xs transition-all"
+                  className="flex-1 bg-[#F5B400] hover:bg-[#E5A000] text-[#071A2F] py-2.5 rounded-xl font-black text-xs transition-all"
                 >
                   Save Preferences
                 </button>

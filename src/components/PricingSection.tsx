@@ -75,7 +75,7 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) => {
 
         {/* Header */}
         <div className="text-center mb-10">
-          <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-3">Pricing</span>
+          <span className="inline-block text-[#0E2A47] text-xs font-bold tracking-[0.2em] uppercase mb-3">Pricing</span>
           <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">Transparent, fair pricing</h2>
           <p className="text-gray-500 max-w-lg mx-auto text-sm leading-relaxed">No hidden fees. Our AI calculates the best price based on distance, time, and vehicle type.</p>
         </div>
@@ -87,34 +87,34 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) => {
               key={idx}
               className={`relative rounded-2xl p-6 flex flex-col transition-all duration-300 hover:-translate-y-0.5 ${
                 plan.dark
-                  ? 'bg-[#0A2463] shadow-2xl shadow-[#0A2463]/30'
+                  ? 'bg-[#0E2A47] shadow-2xl shadow-[#0E2A47]/30'
                   : 'bg-white border border-gray-100 hover:shadow-xl hover:shadow-gray-200/60'
               }`}
             >
               {plan.badge && (
                 <span className={`absolute -top-3.5 left-1/2 -translate-x-1/2 text-xs font-black px-4 py-1 rounded-full ${
-                  plan.dark ? 'bg-[#D4AF37] text-[#061539]' : 'bg-[#0A2463] text-white'
+                  plan.dark ? 'bg-[#F5B400] text-[#071A2F]' : 'bg-[#0E2A47] text-white'
                 }`}>{plan.badge}</span>
               )}
 
               <div className={`w-11 h-11 rounded-2xl flex items-center justify-center mb-6 ${
-                plan.dark ? 'bg-white/10' : 'bg-[#0A2463]/8'
+                plan.dark ? 'bg-white/10' : 'bg-[#0E2A47]/8'
               }`}>
-                <plan.icon className={`w-5 h-5 ${plan.dark ? 'text-[#D4AF37]' : 'text-[#0A2463]'}`} />
+                <plan.icon className={`w-5 h-5 ${plan.dark ? 'text-[#F5B400]' : 'text-[#0E2A47]'}`} />
               </div>
 
               <h3 className={`text-xl font-black mb-1 ${plan.dark ? 'text-white' : 'text-gray-900'}`}>{plan.name}</h3>
               <p className={`text-sm mb-6 ${plan.dark ? 'text-white/50' : 'text-gray-400'}`}>{plan.desc}</p>
 
               <div className="mb-5">
-                <span className={`text-4xl font-black ${plan.dark ? 'text-white' : 'text-[#0A2463]'}`}>{plan.price}</span>
+                <span className={`text-4xl font-black ${plan.dark ? 'text-white' : 'text-[#0E2A47]'}`}>{plan.price}</span>
                 <span className={`text-sm ml-2 ${plan.dark ? 'text-white/40' : 'text-gray-400'}`}>/ {plan.unit}</span>
               </div>
 
               <ul className="space-y-2.5 mb-5 flex-1">
                 {plan.features.map((f, i) => (
                   <li key={i} className={`flex items-start gap-2.5 text-sm ${plan.dark ? 'text-white/70' : 'text-gray-600'}`}>
-                    <CheckCircle className={`w-4 h-4 mt-0.5 shrink-0 ${plan.dark ? 'text-[#D4AF37]' : 'text-green-500'}`} />
+                    <CheckCircle className={`w-4 h-4 mt-0.5 shrink-0 ${plan.dark ? 'text-[#F5B400]' : 'text-green-500'}`} />
                     {f}
                   </li>
                 ))}
@@ -124,8 +124,8 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) => {
                 onClick={() => onNavigate(plan.ctaAction)}
                 className={`group w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all ${
                   plan.dark
-                    ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-[#061539]'
-                    : 'bg-[#0A2463] hover:bg-[#1B3A8C] text-white'
+                    ? 'bg-[#F5B400] hover:bg-[#E5A000] text-[#071A2F]'
+                    : 'bg-[#0E2A47] hover:bg-[#0F3558] text-white'
                 }`}
               >
                 {plan.cta}

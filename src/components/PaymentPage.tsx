@@ -139,7 +139,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-20">
-        <Loader2 className="w-8 h-8 text-[#0A2463] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#0E2A47] animate-spin" />
       </div>
     );
   }
@@ -154,7 +154,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
     const earning    = booking.driver_earning ?? fullPrice * 0.80;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0A2463] via-[#1B3A8C] to-[#0A2463] flex items-center justify-center p-4 pt-24">
+      <div className="min-h-screen bg-gradient-to-br from-[#0E2A47] via-[#0F3558] to-[#0E2A47] flex items-center justify-center p-4 pt-24">
         <div className="w-full max-w-lg">
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
             <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-8 text-center">
@@ -192,7 +192,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
                   </div>
                   <div className="flex items-center justify-between border border-gray-100 rounded-xl px-4 py-3">
                     <p className="text-sm font-semibold text-gray-600">Total job value</p>
-                    <p className="text-xl font-bold text-[#0A2463]">£{fullPrice}</p>
+                    <p className="text-xl font-bold text-[#0E2A47]">£{fullPrice}</p>
                   </div>
                 </div>
               ) : (
@@ -200,7 +200,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
                   <p className="text-gray-500 text-sm mb-1">
                     {isInvoice ? 'Amount due on invoice' : 'Amount secured in escrow'}
                   </p>
-                  <p className="text-4xl font-bold text-[#0A2463]">£{fullPrice.toLocaleString()}</p>
+                  <p className="text-4xl font-bold text-[#0E2A47]">£{fullPrice.toLocaleString()}</p>
                   {!isInvoice && (
                     <p className="text-gray-400 text-xs mt-1">
                       Driver will receive £{earning.toFixed(2)} on confirmed delivery
@@ -221,8 +221,8 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
                 <div className="space-y-3">
                   {(isCash ? CASH_STEPS : STEPS).map((step, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-[#0A2463]/10 rounded-full flex items-center justify-center shrink-0">
-                        <step.icon className="w-4 h-4 text-[#0A2463]" />
+                      <div className="w-8 h-8 bg-[#0E2A47]/10 rounded-full flex items-center justify-center shrink-0">
+                        <step.icon className="w-4 h-4 text-[#0E2A47]" />
                       </div>
                       <p className="text-sm text-gray-600">{step.label}</p>
                     </div>
@@ -233,7 +233,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
               <div className="flex gap-3">
                 <button
                   onClick={() => onNavigate('tracking')}
-                  className="flex-1 bg-[#0A2463] hover:bg-[#1B3A8C] text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 text-sm"
+                  className="flex-1 bg-[#0E2A47] hover:bg-[#0F3558] text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 text-sm"
                 >
                   <MapPin className="w-4 h-4" /> Track Delivery
                 </button>
@@ -259,7 +259,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
           <AlertCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">No pending payment</h2>
           <p className="text-gray-500 text-sm mb-6">We couldn't find a booking awaiting payment.</p>
-          <button onClick={() => onNavigate('home')} className="bg-[#0A2463] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#1B3A8C] transition-colors">
+          <button onClick={() => onNavigate('home')} className="bg-[#0E2A47] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#0F3558] transition-colors">
             Book a Van
           </button>
         </div>
@@ -275,7 +275,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
   const chargeLabel = isCash ? depositAmt : fullPrice;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A2463] via-[#1B3A8C] to-[#061539] flex items-center justify-center p-4 pt-24">
+    <div className="min-h-screen bg-gradient-to-br from-[#0E2A47] via-[#0F3558] to-[#071A2F] flex items-center justify-center p-4 pt-24">
       <div className="w-full max-w-lg">
         <button
           onClick={() => onNavigate('customer-dashboard')}
@@ -286,11 +286,11 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
 
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#0A2463] to-[#1B3A8C] px-8 py-6">
+          <div className="bg-gradient-to-r from-[#0E2A47] to-[#0F3558] px-8 py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
-                  <Lock className="w-5 h-5 text-[#D4AF37]" />
+                  <Lock className="w-5 h-5 text-[#F5B400]" />
                 </div>
                 <div>
                   <p className="text-white font-bold text-lg leading-none">
@@ -301,7 +301,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
               </div>
               <div className="text-right">
                 <p className="text-white/50 text-xs">{isCash ? 'Deposit due now' : 'Total due'}</p>
-                <p className="text-[#D4AF37] font-bold text-2xl">£{chargeLabel.toLocaleString()}</p>
+                <p className="text-[#F5B400] font-bold text-2xl">£{chargeLabel.toLocaleString()}</p>
                 {isCash && (
                   <p className="text-white/40 text-xs">of £{fullPrice} total</p>
                 )}
@@ -345,10 +345,10 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
                   <>
                     <div className="flex items-center justify-between px-4 py-3">
                       <span className="text-sm text-gray-600 flex items-center gap-1.5">
-                        <Shield className="w-3.5 h-3.5 text-[#0A2463]" />
+                        <Shield className="w-3.5 h-3.5 text-[#0E2A47]" />
                         Platform deposit (30% — due now)
                       </span>
-                      <span className="font-semibold text-[#0A2463]">£{depositAmt}</span>
+                      <span className="font-semibold text-[#0E2A47]">£{depositAmt}</span>
                     </div>
                     <div className="flex items-center justify-between px-4 py-3">
                       <span className="text-sm text-gray-600 flex items-center gap-1.5">
@@ -368,11 +368,11 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
                   </div>
                 )}
               </div>
-              <div className="bg-[#0A2463] px-4 py-3 flex items-center justify-between">
+              <div className="bg-[#0E2A47] px-4 py-3 flex items-center justify-between">
                 <span className="text-white font-semibold">
                   {isCash ? 'Due online now' : 'Total'}
                 </span>
-                <span className="text-[#D4AF37] font-bold text-lg">£{chargeLabel.toLocaleString()}</span>
+                <span className="text-[#F5B400] font-bold text-lg">£{chargeLabel.toLocaleString()}</span>
               </div>
             </div>
 
@@ -395,19 +395,19 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
                   <button
                     onClick={() => setMethod('card')}
                     className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                      method === 'card' ? 'border-[#0A2463] bg-[#0A2463]/5' : 'border-gray-100 hover:border-gray-200'
+                      method === 'card' ? 'border-[#0E2A47] bg-[#0E2A47]/5' : 'border-gray-100 hover:border-gray-200'
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${method === 'card' ? 'bg-[#0A2463]' : 'bg-gray-100'}`}>
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${method === 'card' ? 'bg-[#0E2A47]' : 'bg-gray-100'}`}>
                       <CreditCard className={`w-5 h-5 ${method === 'card' ? 'text-white' : 'text-gray-400'}`} />
                     </div>
                     <div className="text-left flex-1">
-                      <p className={`font-semibold text-sm ${method === 'card' ? 'text-[#0A2463]' : 'text-gray-700'}`}>
+                      <p className={`font-semibold text-sm ${method === 'card' ? 'text-[#0E2A47]' : 'text-gray-700'}`}>
                         Card / Google Pay / Apple Pay
                       </p>
                       <p className="text-gray-400 text-xs">Powered by Stripe · All cards accepted</p>
                     </div>
-                    {method === 'card' && <CheckCircle2 className="w-5 h-5 text-[#0A2463] shrink-0" />}
+                    {method === 'card' && <CheckCircle2 className="w-5 h-5 text-[#0E2A47] shrink-0" />}
                   </button>
                 )}
 
@@ -415,19 +415,19 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
                   <button
                     onClick={() => setMethod('invoice')}
                     className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                      method === 'invoice' ? 'border-[#D4AF37] bg-[#D4AF37]/5' : 'border-gray-100 hover:border-gray-200'
+                      method === 'invoice' ? 'border-[#F5B400] bg-[#F5B400]/5' : 'border-gray-100 hover:border-gray-200'
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${method === 'invoice' ? 'bg-[#D4AF37]' : 'bg-gray-100'}`}>
-                      <Building2 className={`w-5 h-5 ${method === 'invoice' ? 'text-[#0A2463]' : 'text-gray-400'}`} />
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${method === 'invoice' ? 'bg-[#F5B400]' : 'bg-gray-100'}`}>
+                      <Building2 className={`w-5 h-5 ${method === 'invoice' ? 'text-[#0E2A47]' : 'text-gray-400'}`} />
                     </div>
                     <div className="text-left flex-1">
-                      <p className={`font-semibold text-sm ${method === 'invoice' ? 'text-[#0A2463]' : 'text-gray-700'}`}>
+                      <p className={`font-semibold text-sm ${method === 'invoice' ? 'text-[#0E2A47]' : 'text-gray-700'}`}>
                         Corporate Invoice
                       </p>
                       <p className="text-gray-400 text-xs">Added to your monthly consolidated invoice</p>
                     </div>
-                    {method === 'invoice' && <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0" />}
+                    {method === 'invoice' && <CheckCircle2 className="w-5 h-5 text-[#F5B400] shrink-0" />}
                   </button>
                 )}
               </div>
@@ -444,7 +444,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ onNavigate }) => {
             <button
               onClick={handlePay}
               disabled={isProcessing}
-              className="w-full bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-60 disabled:cursor-not-allowed text-[#0A2463] py-4 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#D4AF37]/20"
+              className="w-full bg-[#F5B400] hover:bg-[#E5A000] disabled:opacity-60 disabled:cursor-not-allowed text-[#0E2A47] py-4 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#F5B400]/20"
             >
               {isProcessing ? (
                 <><Loader2 className="w-5 h-5 animate-spin" /> Processing…</>

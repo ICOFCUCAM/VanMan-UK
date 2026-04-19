@@ -46,17 +46,17 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
 
   if (!isTracking) {
     return (
-      <div className="min-h-screen bg-[#061539] flex items-center justify-center px-4 pt-24 pb-16">
+      <div className="min-h-screen bg-[#071A2F] flex items-center justify-center px-4 pt-24 pb-16">
         <div className="w-full max-w-lg">
           {/* Card */}
           <div className="relative rounded-3xl overflow-hidden">
             <div className="absolute inset-0 bg-white/5 backdrop-blur-sm" />
             <div className="absolute inset-0 border border-white/10 rounded-3xl pointer-events-none" />
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/6 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#F5B400]/6 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative p-8 sm:p-12 text-center">
-              <div className="w-20 h-20 bg-[#D4AF37]/15 border border-[#D4AF37]/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                <Navigation className="w-10 h-10 text-[#D4AF37]" />
+              <div className="w-20 h-20 bg-[#F5B400]/15 border border-[#F5B400]/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <Navigation className="w-10 h-10 text-[#F5B400]" />
               </div>
               <h1 className="text-3xl font-black text-white mb-3">Track Your Delivery</h1>
               <p className="text-white/45 mb-8 leading-relaxed">Enter your booking reference to see your driver on the map in real-time.</p>
@@ -67,17 +67,17 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
                   value={trackingId}
                   onChange={(e) => setTrackingId(e.target.value)}
                   placeholder="e.g. FMV-2026-001"
-                  className="flex-1 px-4 py-3.5 bg-white/8 border border-white/12 rounded-2xl text-white placeholder:text-white/30 focus:outline-none focus:border-[#D4AF37]/50 text-sm transition-colors"
+                  className="flex-1 px-4 py-3.5 bg-white/8 border border-white/12 rounded-2xl text-white placeholder:text-white/30 focus:outline-none focus:border-[#F5B400]/50 text-sm transition-colors"
                 />
                 <button
                   onClick={startTracking}
-                  className="bg-[#D4AF37] hover:bg-[#C5A028] text-[#061539] px-6 py-3.5 rounded-2xl font-black text-sm transition-all hover:shadow-lg hover:shadow-[#D4AF37]/30 whitespace-nowrap"
+                  className="bg-[#F5B400] hover:bg-[#E5A000] text-[#071A2F] px-6 py-3.5 rounded-2xl font-black text-sm transition-all hover:shadow-lg hover:shadow-[#F5B400]/30 whitespace-nowrap"
                 >
                   Track
                 </button>
               </div>
 
-              <button onClick={startTracking} className="text-white/35 hover:text-[#D4AF37] text-sm font-medium transition-colors">
+              <button onClick={startTracking} className="text-white/35 hover:text-[#F5B400] text-sm font-medium transition-colors">
                 View live demo →
               </button>
 
@@ -109,7 +109,7 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => onNavigate('home')}
-              className="w-9 h-9 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-gray-600 hover:text-[#0A2463] hover:border-[#0A2463]/30 transition-all shadow-sm"
+              className="w-9 h-9 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-gray-600 hover:text-[#0E2A47] hover:border-[#0E2A47]/30 transition-all shadow-sm"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
@@ -142,8 +142,8 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
                 {/* Driver marker */}
                 <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-[#0A2463] rounded-full animate-ping opacity-30 scale-150" />
-                    <div className="relative w-12 h-12 bg-[#0A2463] rounded-full flex items-center justify-center shadow-xl border-3 border-white">
+                    <div className="absolute inset-0 bg-[#0E2A47] rounded-full animate-ping opacity-30 scale-150" />
+                    <div className="relative w-12 h-12 bg-[#0E2A47] rounded-full flex items-center justify-center shadow-xl border-3 border-white">
                       <Truck className="w-5 h-5 text-white" />
                     </div>
                   </div>
@@ -159,18 +159,18 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
                 {/* ETA card */}
                 <div className="absolute bottom-4 left-4 bg-white rounded-2xl shadow-xl border border-gray-100 p-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 bg-[#D4AF37] rounded-xl flex items-center justify-center shadow-md">
-                      <Clock className="w-5 h-5 text-[#061539]" />
+                    <div className="w-11 h-11 bg-[#F5B400] rounded-xl flex items-center justify-center shadow-md">
+                      <Clock className="w-5 h-5 text-[#071A2F]" />
                     </div>
                     <div>
                       <p className="text-gray-400 text-xs font-medium">Estimated Arrival</p>
-                      <p className="text-2xl font-black text-[#0A2463]">{eta} min</p>
+                      <p className="text-2xl font-black text-[#0E2A47]">{eta} min</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Distance badge */}
-                <div className="absolute bottom-4 right-4 bg-[#061539]/85 backdrop-blur-sm rounded-xl px-3.5 py-2 border border-white/10">
+                <div className="absolute bottom-4 right-4 bg-[#071A2F]/85 backdrop-blur-sm rounded-xl px-3.5 py-2 border border-white/10">
                   <p className="text-white/50 text-[10px] uppercase tracking-wider">Distance left</p>
                   <p className="text-white font-black text-sm">{Math.round((100 - progress) * 0.42)} mi</p>
                 </div>
@@ -180,15 +180,15 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
               <div className="px-5 py-4">
                 <div className="flex items-center justify-between text-xs text-gray-500 mb-2.5">
                   <span className="flex items-center gap-1 font-semibold"><span className="w-2 h-2 bg-green-500 rounded-full" />Pickup</span>
-                  <span className="font-bold text-[#0A2463]">{progress}% complete</span>
+                  <span className="font-bold text-[#0E2A47]">{progress}% complete</span>
                   <span className="flex items-center gap-1 font-semibold"><span className="w-2 h-2 bg-red-500 rounded-full" />Delivery</span>
                 </div>
                 <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-[#0A2463] to-[#1B3A8C] rounded-full transition-all duration-1000 relative"
+                    className="h-full bg-gradient-to-r from-[#0E2A47] to-[#0F3558] rounded-full transition-all duration-1000 relative"
                     style={{ width: `${progress}%` }}
                   >
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-[#D4AF37] rounded-full border-2 border-white shadow-md" />
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-[#F5B400] rounded-full border-2 border-white shadow-md" />
                   </div>
                 </div>
               </div>
@@ -229,7 +229,7 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
 
             {/* Driver Card */}
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="bg-gradient-to-r from-[#061539] to-[#0A2463] px-5 py-4">
+              <div className="bg-gradient-to-r from-[#071A2F] to-[#0E2A47] px-5 py-4">
                 <p className="text-white/40 text-xs font-black tracking-widest uppercase mb-0.5">Your Driver</p>
                 <div className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
@@ -240,15 +240,15 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
                 <div className="flex items-center gap-4 mb-5">
                   <div className="relative">
                     <img src={driverInfo.image} alt={driverInfo.name} className="w-14 h-14 rounded-2xl object-cover" />
-                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#D4AF37] rounded-full flex items-center justify-center border-2 border-white">
-                      <Star className="w-2.5 h-2.5 text-[#061539] fill-[#061539]" />
+                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#F5B400] rounded-full flex items-center justify-center border-2 border-white">
+                      <Star className="w-2.5 h-2.5 text-[#071A2F] fill-[#071A2F]" />
                     </div>
                   </div>
                   <div className="flex-1">
                     <h3 className="font-black text-gray-900">{driverInfo.name}</h3>
                     <div className="flex items-center gap-1.5 mt-0.5">
                       <div className="flex gap-0.5">
-                        {[...Array(5)].map((_, i) => <Star key={i} className="w-2.5 h-2.5 text-[#D4AF37] fill-[#D4AF37]" />)}
+                        {[...Array(5)].map((_, i) => <Star key={i} className="w-2.5 h-2.5 text-[#F5B400] fill-[#F5B400]" />)}
                       </div>
                       <span className="text-gray-700 font-bold text-xs">{driverInfo.rating}</span>
                       <span className="text-gray-400 text-xs">({driverInfo.trips} trips)</span>
@@ -265,7 +265,7 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
                 <div className="flex gap-2.5">
                   <a
                     href={`tel:${driverInfo.phone}`}
-                    className="flex-1 flex items-center justify-center gap-2 bg-[#0A2463] hover:bg-[#1B3A8C] text-white py-3 rounded-2xl text-sm font-bold transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 bg-[#0E2A47] hover:bg-[#0F3558] text-white py-3 rounded-2xl text-sm font-bold transition-colors"
                   >
                     <Phone className="w-4 h-4" /> Call
                   </a>
@@ -292,7 +292,7 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
                         item.status === 'completed'
                           ? 'bg-green-500 border-green-500'
                           : item.status === 'active'
-                          ? 'bg-[#0A2463] border-[#0A2463]'
+                          ? 'bg-[#0E2A47] border-[#0E2A47]'
                           : 'bg-white border-gray-200'
                       }`}>
                         {item.status === 'completed' ? (
@@ -310,7 +310,7 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
                     <div className="flex-1 pt-0.5 pb-2">
                       <div className="flex items-center justify-between gap-2">
                         <p className={`text-sm font-bold leading-tight ${
-                          item.status === 'active' ? 'text-[#0A2463]' : item.status === 'completed' ? 'text-gray-700' : 'text-gray-300'
+                          item.status === 'active' ? 'text-[#0E2A47]' : item.status === 'completed' ? 'text-gray-700' : 'text-gray-300'
                         }`}>
                           {item.label}
                         </p>
@@ -319,7 +319,7 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
                         </span>
                       </div>
                       {item.status === 'active' && (
-                        <p className="text-xs text-[#0A2463]/60 mt-0.5">{item.desc}</p>
+                        <p className="text-xs text-[#0E2A47]/60 mt-0.5">{item.desc}</p>
                       )}
                     </div>
                   </div>

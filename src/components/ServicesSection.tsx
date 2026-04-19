@@ -8,7 +8,7 @@ const services = [
     title: 'House Moving',
     desc: 'Full house moves from studio flats to 5-bed homes, with professional drivers and optional helpers.',
     tag: 'Most Popular',
-    tagStyle: 'bg-[#D4AF37] text-[#061539]',
+    tagStyle: 'bg-[#F5B400] text-[#071A2F]',
     image: SERVICE_IMAGES.houseMoving,
     alt: 'House moving service',
   },
@@ -73,7 +73,7 @@ const ServicesSection: React.FC = () => {
 
         {/* Header */}
         <div className="text-center mb-10">
-          <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-3">Our Services</span>
+          <span className="inline-block text-[#0E2A47] text-xs font-bold tracking-[0.2em] uppercase mb-3">Our Services</span>
           <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">
             Transport solutions for every need
           </h2>
@@ -100,7 +100,7 @@ const ServicesSection: React.FC = () => {
                     target.style.display = 'none';
                     const parent = target.parentElement;
                     if (parent) {
-                      parent.style.background = 'linear-gradient(135deg, #0A2463 0%, #1B3A8C 100%)';
+                      parent.style.background = 'linear-gradient(135deg, #0E2A47 0%, #0F3558 100%)';
                     }
                   }}
                 />
@@ -116,8 +116,8 @@ const ServicesSection: React.FC = () => {
               <div className="flex flex-col flex-1 p-5">
                 {/* Icon + title */}
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-9 h-9 bg-[#0A2463]/8 group-hover:bg-[#0A2463] rounded-xl flex items-center justify-center shrink-0 transition-colors">
-                    <s.icon className="w-4 h-4 text-[#0A2463] group-hover:text-white transition-colors" />
+                  <div className="w-9 h-9 bg-[#0E2A47]/8 group-hover:bg-[#0E2A47] rounded-xl flex items-center justify-center shrink-0 transition-colors">
+                    <s.icon className="w-4 h-4 text-[#0E2A47] group-hover:text-white transition-colors" />
                   </div>
                   <h3 className="text-lg font-black text-gray-900">{s.title}</h3>
                 </div>
@@ -126,7 +126,7 @@ const ServicesSection: React.FC = () => {
                 <p className="text-gray-500 text-sm leading-relaxed flex-1 mb-5">{s.desc}</p>
 
                 {/* CTA */}
-                <div className="flex items-center gap-1.5 text-[#0A2463] text-sm font-bold group-hover:gap-3 transition-all">
+                <div className="flex items-center gap-1.5 text-[#0E2A47] text-sm font-bold group-hover:gap-3 transition-all">
                   Book now
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -138,12 +138,12 @@ const ServicesSection: React.FC = () => {
         {/* Vehicle fleet — dark banner */}
         <div className="relative rounded-3xl overflow-hidden">
           <img src={FEATURE_IMAGES.vanLoaded} alt="Van fleet" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#061539]/98 via-[#0A2463]/90 to-[#0A2463]/50" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#071A2F]/98 via-[#0E2A47]/90 to-[#0E2A47]/50" />
 
           <div className="relative p-8 sm:p-10">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-4">Our Fleet</span>
+                <span className="inline-block text-[#F5B400] text-xs font-bold tracking-[0.2em] uppercase mb-4">Our Fleet</span>
                 <h3 className="text-3xl sm:text-4xl font-black text-white mb-5 leading-tight">
                   Every vehicle type<br />available, right now
                 </h3>
@@ -158,15 +158,15 @@ const ServicesSection: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {vehicles.map((v, idx) => (
-                  <div key={idx} className="bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#D4AF37]/30 rounded-2xl p-5 transition-all">
+                  <div key={idx} className="bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#F5B400]/30 rounded-2xl p-5 transition-all">
                     <div className="flex items-center gap-2 mb-3">
-                      <Truck className="w-4 h-4 text-[#D4AF37]" />
+                      <Truck className="w-4 h-4 text-[#F5B400]" />
                       <span className="text-white font-bold text-sm">{v.name}</span>
                     </div>
                     <p className="text-white/45 text-xs mb-3 leading-snug">{v.detail}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-white/40 text-xs">{v.capacity}</span>
-                      <span className="text-[#D4AF37] font-bold text-sm">{v.price}</span>
+                      <span className="text-[#F5B400] font-bold text-sm">{v.price}</span>
                     </div>
                   </div>
                 ))}

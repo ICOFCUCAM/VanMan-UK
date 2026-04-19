@@ -13,7 +13,7 @@ interface PaymentModalProps {
 const stripeAppearance = {
   theme: 'stripe' as const,
   variables: {
-    colorPrimary: '#0A2463',
+    colorPrimary: '#0E2A47',
     colorBackground: '#ffffff',
     colorText: '#1f2937',
     colorDanger: '#ef4444',
@@ -79,7 +79,7 @@ const PaymentForm: React.FC<{ amount: number; onSuccess: () => void; onClose: ()
         <button
           type="submit"
           disabled={!stripe || isSubmitting}
-          className="flex-1 bg-[#0A2463] hover:bg-[#1B3A8C] disabled:opacity-60 disabled:cursor-not-allowed text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+          className="flex-1 bg-[#0E2A47] hover:bg-[#0F3558] disabled:opacity-60 disabled:cursor-not-allowed text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
         >
           {isSubmitting ? (
             <><Loader2 className="w-5 h-5 animate-spin" /> Processing…</>
@@ -112,14 +112,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ amount, onSuccess, onClose 
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#0A2463] to-[#1B3A8C] px-6 py-5 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#0E2A47] to-[#0F3558] px-6 py-5 flex items-center justify-between">
           <div>
             <h2 className="text-white font-bold text-lg">Secure Payment</h2>
             <p className="text-white/70 text-sm mt-0.5">FAST MAN & VAN</p>
           </div>
           <div className="text-right">
             <p className="text-white/60 text-xs">Amount due</p>
-            <p className="text-[#D4AF37] font-bold text-2xl">£{amount}</p>
+            <p className="text-[#F5B400] font-bold text-2xl">£{amount}</p>
           </div>
         </div>
 
@@ -129,13 +129,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ amount, onSuccess, onClose 
               <AlertCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />
               <p className="text-gray-700 font-semibold mb-1">Payment unavailable</p>
               <p className="text-gray-500 text-sm mb-4">{loadError}</p>
-              <button onClick={onClose} className="text-[#0A2463] font-semibold text-sm hover:underline">
+              <button onClick={onClose} className="text-[#0E2A47] font-semibold text-sm hover:underline">
                 Go back
               </button>
             </div>
           ) : !clientSecret ? (
             <div className="flex flex-col items-center justify-center py-10 gap-3">
-              <Loader2 className="w-8 h-8 text-[#0A2463] animate-spin" />
+              <Loader2 className="w-8 h-8 text-[#0E2A47] animate-spin" />
               <p className="text-gray-500 text-sm">Setting up secure payment…</p>
             </div>
           ) : (

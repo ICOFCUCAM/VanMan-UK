@@ -45,13 +45,13 @@ const NetworkMap: React.FC = () => {
         if (!from || !to) return null;
         return (
           <line key={i} x1={from.x} y1={from.y} x2={to.x} y2={to.y}
-            stroke="#D4AF37" strokeWidth="0.8" strokeDasharray="4 6" opacity="0.3" />
+            stroke="#F5B400" strokeWidth="0.8" strokeDasharray="4 6" opacity="0.3" />
         );
       })}
       {CITY_NODES.map(node => (
         <g key={node.id}>
-          <circle cx={node.x} cy={node.y} r={node.r + 4} fill="#D4AF37" opacity="0.06" />
-          <circle cx={node.x} cy={node.y} r={node.r} fill="#D4AF37" opacity="0.55" />
+          <circle cx={node.x} cy={node.y} r={node.r + 4} fill="#F5B400" opacity="0.06" />
+          <circle cx={node.x} cy={node.y} r={node.r} fill="#F5B400" opacity="0.55" />
         </g>
       ))}
     </svg>
@@ -60,14 +60,16 @@ const NetworkMap: React.FC = () => {
 
 const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, bookingRef }) => {
   return (
-    <section className="relative bg-[#061539] overflow-hidden pt-[88px]">
+    <section className="relative bg-[#071A2F] overflow-hidden pt-[88px]">
       {/* SVG network map background */}
       <div className="absolute inset-0 pointer-events-none" style={{ opacity: 0.18 }}>
         <NetworkMap />
       </div>
       {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#061539]/90 via-[#061539]/50 to-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#061539] pointer-events-none opacity-70" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#071A2F]/90 via-[#071A2F]/50 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#071A2F] pointer-events-none opacity-70" />
+      {/* Radial glow behind quote widget */}
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 72% 40%, rgba(245,180,0,0.11), transparent 42%)' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-14 items-start py-12 lg:py-16">
@@ -84,7 +86,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, bookingRef }) => {
 
             <h1 className="text-4xl sm:text-5xl lg:text-[3.1rem] font-black text-white leading-[1.07] tracking-tight mb-5">
               Instant UK Van<br />
-              <span className="text-[#D4AF37]">Transport Network</span>
+              <span className="text-[#F5B400]">Transport Network</span>
             </h1>
 
             <p className="text-white/50 text-[15px] leading-relaxed mb-8 max-w-md">
@@ -99,8 +101,8 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, bookingRef }) => {
                 { icon: Users,  label: '10k+ Drivers',      sub: 'Gold & silver tier network' },
               ].map(({ icon: Icon, label, sub }, i) => (
                 <div key={i} className="flex items-start gap-3 bg-white/[0.04] border border-white/[0.07] rounded-xl p-3.5">
-                  <div className="w-8 h-8 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                    <Icon className="w-4 h-4 text-[#D4AF37]" />
+                  <div className="w-8 h-8 bg-[#F5B400]/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                    <Icon className="w-4 h-4 text-[#F5B400]" />
                   </div>
                   <div>
                     <div className="text-white text-xs font-bold">{label}</div>

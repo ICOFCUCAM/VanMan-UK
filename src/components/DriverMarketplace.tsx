@@ -147,9 +147,9 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
               <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-white animate-pulse' : 'bg-gray-400'}`} />
               {isOnline ? 'Online' : 'Go Online'}
             </button>
-            <button onClick={() => setShowWallet(!showWallet)} className="bg-[#D4AF37] hover:bg-[#C5A028] text-[#0A2463] px-4 py-2.5 rounded-lg font-semibold text-sm transition-colors flex items-center gap-2">
+            <button onClick={() => setShowWallet(!showWallet)} className="bg-[#F5B400] hover:bg-[#E5A000] text-[#0E2A47] px-4 py-2.5 rounded-lg font-semibold text-sm transition-colors flex items-center gap-2">
               <Wallet className="w-4 h-4" /> £{walletBalance.toFixed(2)}
-              {walletPending > 0 && <span className="text-[#0A2463]/70 text-xs">(+£{walletPending.toFixed(2)} pending)</span>}
+              {walletPending > 0 && <span className="text-[#0E2A47]/70 text-xs">(+£{walletPending.toFixed(2)} pending)</span>}
             </button>
             <button onClick={() => onNavigate('home')} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors">
               Back
@@ -173,9 +173,9 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                 <p className="text-xs text-blue-600 font-medium">In Escrow</p>
                 <p className="text-xl font-bold text-blue-700">£{walletPending.toFixed(2)}</p>
               </div>
-              <div className="bg-[#D4AF37]/10 rounded-xl p-4">
-                <p className="text-xs text-[#0A2463] font-medium">Total Earned</p>
-                <p className="text-xl font-bold text-[#0A2463]">£{(wallet?.total_earned ?? driver.total_earnings).toFixed(2)}</p>
+              <div className="bg-[#F5B400]/10 rounded-xl p-4">
+                <p className="text-xs text-[#0E2A47] font-medium">Total Earned</p>
+                <p className="text-xl font-bold text-[#0E2A47]">£{(wallet?.total_earned ?? driver.total_earnings).toFixed(2)}</p>
               </div>
               <div className="bg-gray-50 rounded-xl p-4">
                 <p className="text-xs text-gray-600 font-medium">Tier</p>
@@ -184,8 +184,8 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
               </div>
             </div>
             <div className="flex gap-3">
-              <button className="bg-[#0A2463] hover:bg-[#1B3A8C] text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors">Bank Transfer</button>
-              <button className="bg-[#D4AF37] hover:bg-[#C5A028] text-[#0A2463] px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors">Instant Payout</button>
+              <button className="bg-[#0E2A47] hover:bg-[#0F3558] text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors">Bank Transfer</button>
+              <button className="bg-[#F5B400] hover:bg-[#E5A000] text-[#0E2A47] px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors">Instant Payout</button>
             </div>
           </div>
         )}
@@ -213,15 +213,15 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
         <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-6 w-fit">
           <button
             onClick={() => setActiveTab('marketplace')}
-            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'marketplace' ? 'bg-white text-[#0A2463] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'marketplace' ? 'bg-white text-[#0E2A47] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            Available Jobs {filteredJobs.length > 0 && <span className="ml-1.5 bg-[#0A2463] text-white text-xs rounded-full px-1.5 py-0.5">{filteredJobs.length}</span>}
+            Available Jobs {filteredJobs.length > 0 && <span className="ml-1.5 bg-[#0E2A47] text-white text-xs rounded-full px-1.5 py-0.5">{filteredJobs.length}</span>}
           </button>
           <button
             onClick={() => setActiveTab('my-jobs')}
-            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'my-jobs' ? 'bg-white text-[#0A2463] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'my-jobs' ? 'bg-white text-[#0E2A47] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            My Jobs {myBookings.length > 0 && <span className="ml-1.5 bg-[#0A2463] text-white text-xs rounded-full px-1.5 py-0.5">{myBookings.length}</span>}
+            My Jobs {myBookings.length > 0 && <span className="ml-1.5 bg-[#0E2A47] text-white text-xs rounded-full px-1.5 py-0.5">{myBookings.length}</span>}
           </button>
         </div>
 
@@ -266,7 +266,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-xs font-mono text-gray-400">{job.id.slice(0, 8).toUpperCase()}</span>
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${job.tier === 'gold' ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${job.tier === 'gold' ? 'bg-[#F5B400]/10 text-[#F5B400]' : 'bg-gray-100 text-gray-600'}`}>
                           {job.tier === 'gold' ? '⭐ Golden Star' : '🥈 Silver Star'}
                         </span>
                       </div>
@@ -290,7 +290,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                           <p className="text-xs font-semibold text-gray-700">{job.duration}</p>
                         </div>
                         <div className="text-center bg-gray-50 rounded-lg p-2">
-                          <Star className="w-4 h-4 text-[#D4AF37] mx-auto mb-0.5" />
+                          <Star className="w-4 h-4 text-[#F5B400] mx-auto mb-0.5" />
                           <p className="text-xs font-semibold text-gray-700">{job.customerRating}</p>
                         </div>
                         <div className="text-center bg-gray-50 rounded-lg p-2">
@@ -303,12 +303,12 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                         <span className="text-sm text-gray-600">{job.items}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <p className="text-2xl font-bold text-[#0A2463]">£{job.price}</p>
+                        <p className="text-2xl font-bold text-[#0E2A47]">£{job.price}</p>
                         <div className="flex gap-2">
                           <button onClick={() => handleDecline(job.id)} className="px-4 py-2 rounded-lg border-2 border-gray-200 text-gray-500 hover:border-red-300 hover:text-red-500 text-sm font-medium transition-colors">
                             Decline
                           </button>
-                          <button onClick={() => handleAccept(job)} className="px-6 py-2 rounded-lg bg-[#0A2463] hover:bg-[#1B3A8C] text-white text-sm font-semibold transition-colors">
+                          <button onClick={() => handleAccept(job)} className="px-6 py-2 rounded-lg bg-[#0E2A47] hover:bg-[#0F3558] text-white text-sm font-semibold transition-colors">
                             Accept
                           </button>
                         </div>
@@ -354,7 +354,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                             {booking.status === 'assigned' ? 'Assigned' : booking.status === 'in_progress' ? 'In Progress' : 'Completed'}
                           </span>
                         </div>
-                        <p className="text-2xl font-bold text-[#0A2463]">£{booking.estimated_price}</p>
+                        <p className="text-2xl font-bold text-[#0E2A47]">£{booking.estimated_price}</p>
                       </div>
 
                       <div className="space-y-2 mb-4">
@@ -384,7 +384,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                         {canStart && (
                           <button
                             onClick={() => handleStartJob(booking.id)}
-                            className="flex-1 bg-[#0A2463] hover:bg-[#1B3A8C] text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                            className="flex-1 bg-[#0E2A47] hover:bg-[#0F3558] text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                           >
                             <Navigation className="w-4 h-4" /> Start Journey
                           </button>

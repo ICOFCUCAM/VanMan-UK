@@ -10,11 +10,11 @@ export const BRAND = {
 };
 
 export const COLORS = {
-  deepBlue: '#0A2463',
-  gold: '#D4AF37',
+  deepBlue: '#0E2A47',
+  gold: '#F5B400',
   white: '#FFFFFF',
-  lightBlue: '#1B3A8C',
-  darkBlue: '#061539',
+  lightBlue: '#0F3558',
+  darkBlue: '#071A2F',
 };
 
 export const HERO_IMAGES = [

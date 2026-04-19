@@ -65,7 +65,7 @@ const LEGAL: FooterLink[] = [
 ];
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => (
-  <footer className="bg-[#040e27] text-white">
+  <footer className="bg-[#071A2F] text-white">
 
     {/* Main grid */}
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-10">
@@ -74,12 +74,12 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => (
         {/* Brand column */}
         <div className="col-span-2 sm:col-span-3 lg:col-span-1 lg:pr-4">
           <button onClick={() => onNavigate('home')} className="flex items-center gap-2.5 mb-4 group">
-            <div className="w-8 h-8 bg-[#D4AF37] rounded-lg flex items-center justify-center shadow-md shadow-[#D4AF37]/20 group-hover:scale-105 transition-transform">
-              <Truck className="w-4 h-4 text-[#061539]" />
+            <div className="w-8 h-8 bg-[#F5B400] rounded-lg flex items-center justify-center shadow-md shadow-[#F5B400]/20 group-hover:scale-105 transition-transform">
+              <Truck className="w-4 h-4 text-[#071A2F]" />
             </div>
             <div>
               <span className="text-white font-black text-[13px] tracking-wide block leading-tight">FAST MAN & VAN</span>
-              <span className="text-[#D4AF37]/40 text-[8px] font-semibold tracking-[0.2em] uppercase block">UK Transport Network</span>
+              <span className="text-[#F5B400]/40 text-[8px] font-semibold tracking-[0.2em] uppercase block">UK Transport Network</span>
             </div>
           </button>
           <p className="text-white/28 text-[12.5px] leading-relaxed">
@@ -97,12 +97,12 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => (
                   {link.soon ? (
                     <span className="text-[12.5px] text-white/18 flex items-center gap-2">
                       {link.label}
-                      <span className="text-[9px] text-[#D4AF37]/25 font-bold tracking-widest uppercase">Soon</span>
+                      <span className="text-[9px] text-[#F5B400]/25 font-bold tracking-widest uppercase">Soon</span>
                     </span>
                   ) : (
                     <button
                       onClick={() => onNavigate(link.page)}
-                      className="text-[12.5px] text-white/35 hover:text-[#D4AF37] transition-colors text-left"
+                      className="text-[12.5px] text-white/35 hover:text-[#F5B400] transition-colors text-left"
                     >
                       {link.label}
                     </button>

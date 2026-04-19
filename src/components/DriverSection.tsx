@@ -21,10 +21,10 @@ const tiers = [
     subtitle: 'Premium Drivers',
     commission: '15%',
     commissionLabel: 'commission rate',
-    color: 'border-[#D4AF37]/40 bg-[#D4AF37]/8',
-    iconBg: 'bg-[#D4AF37]',
-    iconColor: 'text-[#061539]',
-    checkColor: 'text-[#D4AF37]',
+    color: 'border-[#F5B400]/40 bg-[#F5B400]/8',
+    iconBg: 'bg-[#F5B400]',
+    iconColor: 'text-[#071A2F]',
+    checkColor: 'text-[#F5B400]',
     perks: ['Commercial insurance required', 'Priority job access', 'Highest earnings per delivery', 'Premium customer base'],
   },
   {
@@ -42,10 +42,10 @@ const tiers = [
 
 const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
   return (
-    <section className="py-16 bg-[#061539] relative overflow-hidden">
+    <section className="py-16 bg-[#071A2F] relative overflow-hidden">
       {/* Background decorations */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#0A2463] rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#0E2A47] rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#F5B400]/5 rounded-full blur-3xl" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
@@ -53,9 +53,9 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center mb-10">
           {/* Left: content */}
           <div>
-            <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-6">For Drivers</span>
+            <span className="inline-block text-[#F5B400] text-xs font-bold tracking-[0.2em] uppercase mb-6">For Drivers</span>
             <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">
-              Drive with us. <span className="text-[#D4AF37]">Earn more.</span>
+              Drive with us. <span className="text-[#F5B400]">Earn more.</span>
             </h2>
             <p className="text-white/55 text-base mb-8 leading-relaxed">
               Join thousands of independent drivers earning great money on their own schedule. Whether you have a small van or a Luton truck, there's work waiting.
@@ -64,7 +64,7 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-7">
               {benefits.map((b, idx) => (
                 <div key={idx} className="group flex gap-3 p-3.5 rounded-xl bg-white/3 hover:bg-white/6 border border-white/6 hover:border-white/12 transition-all">
-                  <b.icon className="w-5 h-5 text-[#D4AF37] mt-0.5 shrink-0" />
+                  <b.icon className="w-5 h-5 text-[#F5B400] mt-0.5 shrink-0" />
                   <div>
                     <p className="text-white font-semibold text-sm">{b.title}</p>
                     <p className="text-white/40 text-xs mt-0.5 leading-snug">{b.desc}</p>
@@ -75,7 +75,7 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
 
             <button
               onClick={() => onNavigate('driver-register')}
-              className="group inline-flex items-center gap-3 bg-[#D4AF37] hover:bg-[#C5A028] text-[#061539] px-8 py-4 rounded-2xl font-black text-base transition-all hover:shadow-2xl hover:shadow-[#D4AF37]/25 hover:-translate-y-0.5"
+              className="group inline-flex items-center gap-3 bg-[#F5B400] hover:bg-[#E5A000] text-[#071A2F] px-8 py-4 rounded-2xl font-black text-base transition-all hover:shadow-2xl hover:shadow-[#F5B400]/25 hover:-translate-y-0.5"
             >
               Apply to Drive
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -87,10 +87,10 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
             <div className="space-y-4">
               <div className="relative rounded-2xl overflow-hidden">
                 <img src={DRIVER_IMAGES[0]} alt="Driver" className="w-full h-40 object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#061539]/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#071A2F]/40 to-transparent" />
               </div>
-              <div className="bg-white/5 border border-[#D4AF37]/20 rounded-2xl p-5">
-                <p className="text-[#D4AF37] text-3xl font-black">£1,200+</p>
+              <div className="bg-white/5 border border-[#F5B400]/20 rounded-2xl p-5">
+                <p className="text-[#F5B400] text-3xl font-black">£1,200+</p>
                 <p className="text-white/50 text-sm">Average weekly earnings</p>
               </div>
             </div>
@@ -101,7 +101,7 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
               </div>
               <div className="relative rounded-2xl overflow-hidden">
                 <img src={DRIVER_IMAGES[1]} alt="Driver" className="w-full h-40 object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#061539]/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#071A2F]/40 to-transparent" />
               </div>
             </div>
           </div>
@@ -118,7 +118,7 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
                 <div>
                   <h3 className="text-xl font-black text-white">{tier.name}</h3>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[#D4AF37] font-black text-sm">{tier.commission}</span>
+                    <span className="text-[#F5B400] font-black text-sm">{tier.commission}</span>
                     <span className="text-white/35 text-xs">{tier.commissionLabel}</span>
                   </div>
                 </div>

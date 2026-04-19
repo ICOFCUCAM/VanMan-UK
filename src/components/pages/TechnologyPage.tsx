@@ -11,9 +11,9 @@ const TechnologyPage: React.FC<TechnologyPageProps> = ({ onNavigate, onScrollToB
   return (
     <>
       {/* Page header */}
-      <div className="bg-[#061539] pt-24 pb-10 border-b border-white/5">
+      <div className="bg-[#071A2F] pt-24 pb-10 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-3 block">Platform Technology</span>
+          <span className="text-[#F5B400] text-xs font-bold tracking-[0.2em] uppercase mb-3 block">Platform Technology</span>
           <h1 className="text-3xl sm:text-4xl font-black text-white mb-3">Intelligent logistics infrastructure</h1>
           <p className="text-white/45 text-sm max-w-lg leading-relaxed">
             AI dispatch, real-time GPS, OSRM route optimisation, and full goods-in-transit insurance — built into every booking.

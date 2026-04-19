@@ -103,7 +103,7 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
             <p className="text-gray-600 mb-4">Thank you for applying to drive with Fast Man & Van. Our team will review your documents and get back to you within 48 hours.</p>
             {driverId && <p className="text-sm text-gray-500 mb-6 font-mono bg-gray-50 inline-block px-4 py-2 rounded-lg">Application Ref: {driverId.slice(0, 8).toUpperCase()}</p>}
             <p className="text-sm text-gray-500 mb-8">You'll receive an email confirmation shortly.</p>
-            <button onClick={() => onNavigate('home')} className="bg-[#0A2463] hover:bg-[#1B3A8C] text-white px-8 py-3 rounded-xl font-semibold transition-colors">
+            <button onClick={() => onNavigate('home')} className="bg-[#0E2A47] hover:bg-[#0F3558] text-white px-8 py-3 rounded-xl font-semibold transition-colors">
               Return to Home
             </button>
           </div>
@@ -134,7 +134,7 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
               <button
                 onClick={() => setStep(s.num)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  step === s.num ? 'bg-[#0A2463] text-white' : step > s.num ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'
+                  step === s.num ? 'bg-[#0E2A47] text-white' : step > s.num ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'
                 }`}
               >
                 <s.icon className="w-4 h-4" />
@@ -153,33 +153,33 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                  <input type="text" value={formData.firstName} onChange={(e) => updateField('firstName', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="John" />
+                  <input type="text" value={formData.firstName} onChange={(e) => updateField('firstName', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="John" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                  <input type="text" value={formData.lastName} onChange={(e) => updateField('lastName', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="Smith" />
+                  <input type="text" value={formData.lastName} onChange={(e) => updateField('lastName', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="Smith" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input type="email" value={formData.email} onChange={(e) => updateField('email', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="john@example.com" />
+                <input type="email" value={formData.email} onChange={(e) => updateField('email', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="john@example.com" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                <input type="tel" value={formData.phone} onChange={(e) => updateField('phone', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="+44 7xxx xxx xxx" />
+                <input type="tel" value={formData.phone} onChange={(e) => updateField('phone', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="+44 7xxx xxx xxx" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <input type="text" value={formData.address} onChange={(e) => updateField('address', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="Street address" />
+                <input type="text" value={formData.address} onChange={(e) => updateField('address', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="Street address" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                  <input type="text" value={formData.city} onChange={(e) => updateField('city', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="London" />
+                  <input type="text" value={formData.city} onChange={(e) => updateField('city', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="London" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Postcode</label>
-                  <input type="text" value={formData.postcode} onChange={(e) => updateField('postcode', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="SW1A 1AA" />
+                  <input type="text" value={formData.postcode} onChange={(e) => updateField('postcode', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="SW1A 1AA" />
                 </div>
               </div>
             </div>
@@ -191,17 +191,17 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
               <h3 className="text-xl font-bold text-gray-900 mb-4">Vehicle Details</h3>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Driving License Number</label>
-                <input type="text" value={formData.licenseNumber} onChange={(e) => updateField('licenseNumber', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="SMITH901234AB5CD" />
+                <input type="text" value={formData.licenseNumber} onChange={(e) => updateField('licenseNumber', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="SMITH901234AB5CD" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">License Expiry Date</label>
-                <input type="date" value={formData.licenseExpiry} onChange={(e) => updateField('licenseExpiry', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" />
+                <input type="date" value={formData.licenseExpiry} onChange={(e) => updateField('licenseExpiry', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Type</label>
                 <div className="grid grid-cols-2 gap-3">
                   {['Small Van', 'Medium Van', 'Large Van', 'Luton Van'].map((type) => (
-                    <button key={type} onClick={() => updateField('vehicleType', type)} className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${formData.vehicleType === type ? 'border-[#0A2463] bg-[#0A2463]/5 text-[#0A2463]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                    <button key={type} onClick={() => updateField('vehicleType', type)} className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${formData.vehicleType === type ? 'border-[#0E2A47] bg-[#0E2A47]/5 text-[#0E2A47]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
                       {type}
                     </button>
                   ))}
@@ -210,20 +210,20 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Make</label>
-                  <input type="text" value={formData.vehicleMake} onChange={(e) => updateField('vehicleMake', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="Ford" />
+                  <input type="text" value={formData.vehicleMake} onChange={(e) => updateField('vehicleMake', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="Ford" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Model</label>
-                  <input type="text" value={formData.vehicleModel} onChange={(e) => updateField('vehicleModel', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="Transit" />
+                  <input type="text" value={formData.vehicleModel} onChange={(e) => updateField('vehicleModel', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="Transit" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
-                  <input type="text" value={formData.vehicleYear} onChange={(e) => updateField('vehicleYear', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="2023" />
+                  <input type="text" value={formData.vehicleYear} onChange={(e) => updateField('vehicleYear', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="2023" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Vehicle Registration</label>
-                <input type="text" value={formData.vehicleReg} onChange={(e) => updateField('vehicleReg', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0A2463] outline-none" placeholder="AB12 CDE" />
+                <input type="text" value={formData.vehicleReg} onChange={(e) => updateField('vehicleReg', e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#0E2A47] outline-none" placeholder="AB12 CDE" />
               </div>
             </div>
           )}
@@ -239,13 +239,13 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
                 { key: 'vehiclePhotos', label: 'Vehicle Photos', desc: 'Clear photos of your vehicle (front, back, sides)' },
                 { key: 'insuranceDoc', label: 'Insurance Documentation', desc: 'Valid vehicle insurance certificate' },
               ].map((doc) => (
-                <div key={doc.key} className="border-2 border-dashed border-gray-200 rounded-xl p-6 hover:border-[#0A2463]/30 transition-colors">
+                <div key={doc.key} className="border-2 border-dashed border-gray-200 rounded-xl p-6 hover:border-[#0E2A47]/30 transition-colors">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-semibold text-gray-900">{doc.label}</p>
                       <p className="text-gray-500 text-sm">{doc.desc}</p>
                     </div>
-                    <label className="cursor-pointer bg-[#0A2463]/10 hover:bg-[#0A2463]/20 text-[#0A2463] px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                    <label className="cursor-pointer bg-[#0E2A47]/10 hover:bg-[#0E2A47]/20 text-[#0E2A47] px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
                       <Upload className="w-4 h-4" />
                       {(formData as any)[doc.key] ? 'Uploaded' : 'Upload'}
                       <input type="file" className="hidden" onChange={(e) => updateField(doc.key, e.target.files?.[0] || null)} />
@@ -267,10 +267,10 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
                     <p className="font-semibold text-gray-900 text-sm">Third-Party Insurance</p>
                     <p className="text-gray-500 text-xs">Silver Star tier access</p>
                   </button>
-                  <button onClick={() => updateField('insuranceType', 'comprehensive')} className={`p-4 rounded-xl border-2 text-left transition-all ${formData.insuranceType === 'comprehensive' ? 'border-[#D4AF37] bg-[#D4AF37]/5' : 'border-gray-200'}`}>
-                    <Shield className="w-6 h-6 text-[#D4AF37] mb-2" />
+                  <button onClick={() => updateField('insuranceType', 'comprehensive')} className={`p-4 rounded-xl border-2 text-left transition-all ${formData.insuranceType === 'comprehensive' ? 'border-[#F5B400] bg-[#F5B400]/5' : 'border-gray-200'}`}>
+                    <Shield className="w-6 h-6 text-[#F5B400] mb-2" />
                     <p className="font-semibold text-gray-900 text-sm">Comprehensive Insurance</p>
-                    <p className="text-[#D4AF37] text-xs font-medium">Golden Star tier access</p>
+                    <p className="text-[#F5B400] text-xs font-medium">Golden Star tier access</p>
                   </button>
                 </div>
               </div>
@@ -296,11 +296,11 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
                 </ul>
               </div>
               <label className="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50">
-                <input type="checkbox" checked={formData.agreeTerms} onChange={(e) => updateField('agreeTerms', e.target.checked)} className="w-5 h-5 rounded mt-0.5 text-[#0A2463]" />
+                <input type="checkbox" checked={formData.agreeTerms} onChange={(e) => updateField('agreeTerms', e.target.checked)} className="w-5 h-5 rounded mt-0.5 text-[#0E2A47]" />
                 <span className="text-sm text-gray-700">I agree to the Terms and Conditions, Privacy Policy, and Driver Agreement.</span>
               </label>
               <label className="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50">
-                <input type="checkbox" checked={formData.agreeContractor} onChange={(e) => updateField('agreeContractor', e.target.checked)} className="w-5 h-5 rounded mt-0.5 text-[#0A2463]" />
+                <input type="checkbox" checked={formData.agreeContractor} onChange={(e) => updateField('agreeContractor', e.target.checked)} className="w-5 h-5 rounded mt-0.5 text-[#0E2A47]" />
                 <span className="text-sm text-gray-700">I confirm that I am registering as an independent contractor and understand that I am not an employee of Fast Man & Van.</span>
               </label>
               {(!formData.agreeTerms || !formData.agreeContractor) && (
@@ -330,14 +330,14 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
               </button>
             )}
             {step < 4 ? (
-              <button onClick={() => setStep(step + 1)} className="flex items-center gap-2 bg-[#0A2463] hover:bg-[#1B3A8C] text-white px-6 py-3 rounded-xl font-semibold transition-colors">
+              <button onClick={() => setStep(step + 1)} className="flex items-center gap-2 bg-[#0E2A47] hover:bg-[#0F3558] text-white px-6 py-3 rounded-xl font-semibold transition-colors">
                 Next <ArrowRight className="w-4 h-4" />
               </button>
             ) : (
               <button
                 onClick={handleSubmit}
                 disabled={!formData.agreeTerms || !formData.agreeContractor || isSubmitting}
-                className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#C5A028] disabled:bg-gray-300 disabled:cursor-not-allowed text-[#0A2463] px-8 py-3 rounded-xl font-bold transition-colors"
+                className="flex items-center gap-2 bg-[#F5B400] hover:bg-[#E5A000] disabled:bg-gray-300 disabled:cursor-not-allowed text-[#0E2A47] px-8 py-3 rounded-xl font-bold transition-colors"
               >
                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 {isSubmitting ? 'Submitting...' : 'Submit Application'} {!isSubmitting && <ArrowRight className="w-4 h-4" />}

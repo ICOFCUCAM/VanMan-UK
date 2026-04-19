@@ -99,7 +99,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
   }, [bookings]);
 
   const vehicleData = useMemo(() => {
-    const palette = ['#0A2463', '#1B3A8C', '#D4AF37', '#C5A028', '#2563EB'];
+    const palette = ['#0E2A47', '#0F3558', '#F5B400', '#E5A000', '#2563EB'];
     const counts = new Map<string, number>();
     bookings.forEach(b => counts.set(b.vehicle_type, (counts.get(b.vehicle_type) ?? 0) + 1));
     return [...counts.entries()]
@@ -133,7 +133,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     { label: 'Total Revenue', value: `£${bookings.reduce((s, b) => s + b.estimated_price, 0).toLocaleString()}`, change: 'live', icon: DollarSign, color: 'bg-green-500' },
     { label: 'Total Drivers', value: drivers.length.toString(), change: `${drivers.filter(d => d.status === 'active' || d.status === 'approved').length} active`, icon: Truck, color: 'bg-blue-500' },
     { label: 'Total Bookings', value: bookings.length.toString(), change: `${bookings.filter(b => b.status === 'completed').length} completed`, icon: BarChart3, color: 'bg-purple-500' },
-    { label: 'Avg Rating', value: drivers.length ? (drivers.reduce((s, d) => s + d.rating, 0) / drivers.length).toFixed(2) : '—', change: 'avg', icon: Star, color: 'bg-[#D4AF37]' },
+    { label: 'Avg Rating', value: drivers.length ? (drivers.reduce((s, d) => s + d.rating, 0) / drivers.length).toFixed(2) : '—', change: 'avg', icon: Star, color: 'bg-[#F5B400]' },
     { label: 'In Progress', value: bookings.filter(b => b.status === 'in_progress').length.toString(), change: 'live', icon: Activity, color: 'bg-red-500' },
     { label: 'Pending Approvals', value: pendingDrivers.length.toString(), change: pendingDrivers.length > 0 ? 'action needed' : 'all clear', icon: Clock, color: 'bg-orange-500' },
   ];
@@ -142,10 +142,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     <div className="min-h-screen bg-gray-100 pt-20">
       <div className="flex">
         {/* Sidebar */}
-        <aside className="hidden lg:block w-64 bg-[#0A2463] min-h-screen p-4 fixed left-0 top-20">
+        <aside className="hidden lg:block w-64 bg-[#0E2A47] min-h-screen p-4 fixed left-0 top-20">
           <div className="mb-6">
             <div className="flex items-center gap-2 px-3 py-2">
-              <Shield className="w-5 h-5 text-[#D4AF37]" />
+              <Shield className="w-5 h-5 text-[#F5B400]" />
               <span className="text-white font-bold">Admin Panel</span>
             </div>
           </div>
@@ -182,7 +182,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
             {tabs.map(tab => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  activeTab === tab.id ? 'bg-[#0A2463] text-white' : 'bg-white text-gray-600'
+                  activeTab === tab.id ? 'bg-[#0E2A47] text-white' : 'bg-white text-gray-600'
                 }`}>
                 <tab.icon className="w-4 h-4" />
                 {tab.label}
@@ -223,7 +223,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                       <XAxis dataKey="month" fontSize={12} />
                       <YAxis fontSize={12} tickFormatter={v => v === 0 ? '£0' : `£${(v / 1000).toFixed(0)}k`} />
                       <Tooltip formatter={(v: number) => [`£${v.toLocaleString()}`, 'Revenue']} />
-                      <Bar dataKey="revenue" fill="#0A2463" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="revenue" fill="#0E2A47" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -235,7 +235,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                       <XAxis dataKey="day" fontSize={12} />
                       <YAxis fontSize={12} />
                       <Tooltip />
-                      <Line type="monotone" dataKey="bookings" stroke="#D4AF37" strokeWidth={3} dot={{ fill: '#D4AF37', r: 5 }} />
+                      <Line type="monotone" dataKey="bookings" stroke="#F5B400" strokeWidth={3} dot={{ fill: '#F5B400', r: 5 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -260,7 +260,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                 <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <h3 className="font-bold text-gray-900 mb-4">Recent Bookings</h3>
                   {loadingBookings ? (
-                    <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 text-[#0A2463] animate-spin" /></div>
+                    <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 text-[#0E2A47] animate-spin" /></div>
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
@@ -308,7 +308,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                       <XAxis dataKey="month" fontSize={12} />
                       <YAxis fontSize={12} tickFormatter={v => v === 0 ? '£0' : `£${(v / 1000).toFixed(0)}k`} />
                       <Tooltip formatter={(v: number) => [`£${v.toLocaleString()}`, 'Revenue']} />
-                      <Bar dataKey="revenue" fill="#0A2463" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="revenue" fill="#0E2A47" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -322,7 +322,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                       <XAxis dataKey="day" fontSize={12} />
                       <YAxis fontSize={12} />
                       <Tooltip />
-                      <Bar dataKey="bookings" fill="#D4AF37" radius={[4, 4, 0, 0]} name="Bookings" />
+                      <Bar dataKey="bookings" fill="#F5B400" radius={[4, 4, 0, 0]} name="Bookings" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -361,7 +361,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                 <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <h3 className="font-bold text-gray-900 mb-4">Driver Performance</h3>
                   {loadingDrivers ? (
-                    <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 text-[#0A2463] animate-spin" /></div>
+                    <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 text-[#0E2A47] animate-spin" /></div>
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
@@ -382,14 +382,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                               <td className="py-2.5 font-medium text-gray-900">{d.first_name} {d.last_name}</td>
                               <td className="py-2.5 text-gray-500 text-xs">{d.vehicle_make} {d.vehicle_model}</td>
                               <td className="py-2.5">
-                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${d.tier === 'gold' ? 'bg-[#D4AF37]/20 text-[#8B6914]' : 'bg-gray-100 text-gray-600'}`}>
+                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${d.tier === 'gold' ? 'bg-[#F5B400]/20 text-[#8A6E00]' : 'bg-gray-100 text-gray-600'}`}>
                                   {d.tier}
                                 </span>
                               </td>
                               <td className="py-2.5 font-semibold text-gray-900">{d.total_jobs}</td>
                               <td className="py-2.5 font-semibold text-gray-900">£{d.total_earnings.toLocaleString()}</td>
                               <td className="py-2.5">
-                                <span className="flex items-center gap-1 text-[#D4AF37]">
+                                <span className="flex items-center gap-1 text-[#F5B400]">
                                   <Star className="w-3 h-3 fill-current" />{d.rating.toFixed(1)}
                                 </span>
                               </td>
@@ -424,14 +424,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                 </div>
               </div>
               {loadingDrivers ? (
-                <div className="flex items-center justify-center py-12"><Loader2 className="w-8 h-8 text-[#0A2463] animate-spin" /></div>
+                <div className="flex items-center justify-center py-12"><Loader2 className="w-8 h-8 text-[#0E2A47] animate-spin" /></div>
               ) : (
                 <div className="space-y-3">
                   {filteredDrivers.map(driver => (
                     <div key={driver.id} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-[#0A2463]/10 rounded-full flex items-center justify-center">
-                          <Users className="w-6 h-6 text-[#0A2463]" />
+                        <div className="w-12 h-12 bg-[#0E2A47]/10 rounded-full flex items-center justify-center">
+                          <Users className="w-6 h-6 text-[#0E2A47]" />
                         </div>
                         <div>
                           <p className="font-semibold text-gray-900">{driver.first_name} {driver.last_name}</p>
@@ -440,16 +440,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                           {(driver.license_document_url || driver.insurance_document_url || driver.vehicle_registration_url || driver.vehicle_photo_url) && (
                             <div className="flex flex-wrap gap-2 mt-2">
                               {driver.license_document_url && (
-                                <a href={driver.license_document_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0A2463] underline hover:text-[#1B3A8C]">License</a>
+                                <a href={driver.license_document_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0E2A47] underline hover:text-[#0F3558]">License</a>
                               )}
                               {driver.insurance_document_url && (
-                                <a href={driver.insurance_document_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0A2463] underline hover:text-[#1B3A8C]">Insurance</a>
+                                <a href={driver.insurance_document_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0E2A47] underline hover:text-[#0F3558]">Insurance</a>
                               )}
                               {driver.vehicle_registration_url && (
-                                <a href={driver.vehicle_registration_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0A2463] underline hover:text-[#1B3A8C]">V5C</a>
+                                <a href={driver.vehicle_registration_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0E2A47] underline hover:text-[#0F3558]">V5C</a>
                               )}
                               {driver.vehicle_photo_url && (
-                                <a href={driver.vehicle_photo_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0A2463] underline hover:text-[#1B3A8C]">Vehicle Photo</a>
+                                <a href={driver.vehicle_photo_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0E2A47] underline hover:text-[#0F3558]">Vehicle Photo</a>
                               )}
                             </div>
                           )}
@@ -486,7 +486,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-900">All Bookings</h2>
               {loadingBookings ? (
-                <div className="flex items-center justify-center py-12"><Loader2 className="w-8 h-8 text-[#0A2463] animate-spin" /></div>
+                <div className="flex items-center justify-center py-12"><Loader2 className="w-8 h-8 text-[#0E2A47] animate-spin" /></div>
               ) : (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                   <div className="overflow-x-auto">
@@ -542,7 +542,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                   { label: 'Held in Escrow', count: escrowPayments.filter(e => e.status === 'escrow').length, value: escrowPayments.filter(e => e.status === 'escrow').reduce((s, e) => s + (e.driver_earning ?? 0) + (e.commission_amount ?? 0), 0), color: 'bg-blue-500' },
                   { label: 'Released', count: escrowPayments.filter(e => e.status === 'released').length, value: escrowPayments.filter(e => e.status === 'released').reduce((s, e) => s + (e.driver_earning ?? 0) + (e.commission_amount ?? 0), 0), color: 'bg-green-500' },
                   { label: 'Refunded', count: escrowPayments.filter(e => e.status === 'refunded').length, value: escrowPayments.filter(e => e.status === 'refunded').reduce((s, e) => s + (e.driver_earning ?? 0) + (e.commission_amount ?? 0), 0), color: 'bg-red-500' },
-                  { label: 'Total Commission', count: null, value: escrowPayments.filter(e => e.status === 'released').reduce((s, e) => s + (e.commission_amount ?? 0), 0), color: 'bg-[#D4AF37]' },
+                  { label: 'Total Commission', count: null, value: escrowPayments.filter(e => e.status === 'released').reduce((s, e) => s + (e.commission_amount ?? 0), 0), color: 'bg-[#F5B400]' },
                 ].map((card, i) => (
                   <div key={i} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
                     <div className={`w-8 h-8 ${card.color} rounded-lg flex items-center justify-center mb-3`}>
@@ -556,7 +556,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
               </div>
 
               {loadingEscrow ? (
-                <div className="flex items-center justify-center py-12"><Loader2 className="w-8 h-8 text-[#0A2463] animate-spin" /></div>
+                <div className="flex items-center justify-center py-12"><Loader2 className="w-8 h-8 text-[#0E2A47] animate-spin" /></div>
               ) : (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                   <div className="overflow-x-auto">
@@ -589,7 +589,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                               </td>
                               <td className="px-4 py-3 font-semibold text-gray-900">£{total.toFixed(2)}</td>
                               <td className="px-4 py-3 text-green-700 font-medium">£{(ep.driver_earning ?? 0).toFixed(2)}</td>
-                              <td className="px-4 py-3 text-[#8B6914] font-medium">£{(ep.commission_amount ?? 0).toFixed(2)}</td>
+                              <td className="px-4 py-3 text-[#8A6E00] font-medium">£{(ep.commission_amount ?? 0).toFixed(2)}</td>
                               <td className="px-4 py-3">
                                 <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                                   ep.status === 'escrow'    ? 'bg-blue-100 text-blue-700' :
@@ -658,9 +658,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                   <div key={idx} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-center justify-between">
                     <div>
                       <p className="font-semibold text-gray-900">{rule.label}</p>
-                      <p className="text-[#0A2463] text-xl font-bold mt-1">{rule.value}</p>
+                      <p className="text-[#0E2A47] text-xl font-bold mt-1">{rule.value}</p>
                     </div>
-                    <button className="text-[#0A2463] hover:bg-[#0A2463]/10 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">Edit</button>
+                    <button className="text-[#0E2A47] hover:bg-[#0E2A47]/10 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">Edit</button>
                   </div>
                 ))}
               </div>

@@ -42,7 +42,7 @@ const LEGAL_PAGES = ['terms', 'privacy', 'cookies', 'driver-agreement', 'cancell
 const LoadingScreen = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
     <div className="text-center">
-      <Loader2 className="w-10 h-10 text-[#0A2463] animate-spin mx-auto mb-3" />
+      <Loader2 className="w-10 h-10 text-[#0E2A47] animate-spin mx-auto mb-3" />
       <p className="text-gray-500 text-sm">Loading…</p>
     </div>
   </div>
@@ -56,7 +56,7 @@ const AccessDenied = ({ onNavigate }: { onNavigate: (p: string) => void }) => (
       </div>
       <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
       <p className="text-gray-500 text-sm mb-6">You don't have permission to view this page.</p>
-      <button onClick={() => onNavigate('home')} className="bg-[#0A2463] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#1B3A8C] transition-colors">
+      <button onClick={() => onNavigate('home')} className="bg-[#0E2A47] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#0F3558] transition-colors">
         Back to Home
       </button>
     </div>
