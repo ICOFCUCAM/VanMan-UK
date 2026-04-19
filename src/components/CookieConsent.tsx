@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cookie, X, Settings } from 'lucide-react';
+import { Cookie, X, Settings, Shield, ChevronRight } from 'lucide-react';
 
 const CookieConsent: React.FC = () => {
   const [show, setShow] = useState(false);
@@ -35,62 +35,119 @@ const CookieConsent: React.FC = () => {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-        {!showSettings ? (
-          <div className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 bg-[#0A2463]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Cookie className="w-5 h-5 text-[#0A2463]" />
+    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5">
+      <div className="max-w-3xl mx-auto">
+        <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/30">
+          {/* Dark glassmorphism background */}
+          <div className="absolute inset-0 bg-[#061539]/96 backdrop-blur-xl" />
+          <div className="absolute inset-0 border border-white/8 rounded-2xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none" />
+
+          {!showSettings ? (
+            <div className="relative p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-[#D4AF37]/15 border border-[#D4AF37]/20 rounded-xl flex items-center justify-center shrink-0">
+                  <Cookie className="w-5 h-5 text-[#D4AF37]" />
+                </div>
+                <div className="flex-1 min-w-0 pr-8">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <h3 className="font-black text-white text-sm">We use cookies</h3>
+                    <div className="flex items-center gap-1 bg-green-500/15 border border-green-500/20 rounded-full px-2 py-0.5">
+                      <Shield className="w-2.5 h-2.5 text-green-400" />
+                      <span className="text-green-400 text-[9px] font-bold tracking-wide uppercase">GDPR</span>
+                    </div>
+                  </div>
+                  <p className="text-white/45 text-xs leading-relaxed">We use cookies to enhance your experience, serve personalised content, and analyse traffic. See our <button className="text-[#D4AF37]/80 hover:text-[#D4AF37] underline transition-colors" onClick={() => {}}>Cookie Policy</button> for details.</p>
+                </div>
+                <button onClick={rejectAll} className="absolute top-4 right-4 w-7 h-7 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-white/40 hover:text-white/70 transition-all">
+                  <X className="w-3.5 h-3.5" />
+                </button>
               </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-gray-900 mb-1">We value your privacy</h3>
-                <p className="text-gray-600 text-sm">We use cookies to enhance your browsing experience, serve personalised content, and analyse our traffic. By clicking "Accept All", you consent to our use of cookies in accordance with our Cookie Policy and GDPR regulations.</p>
+
+              <div className="flex flex-wrap items-center gap-2.5 mt-4 ml-14">
+                <button
+                  onClick={acceptAll}
+                  className="bg-[#D4AF37] hover:bg-[#C5A028] text-[#061539] px-5 py-2 rounded-xl font-black text-xs transition-all hover:shadow-lg hover:shadow-[#D4AF37]/25"
+                >
+                  Accept All
+                </button>
+                <button
+                  onClick={rejectAll}
+                  className="bg-white/8 hover:bg-white/12 text-white/70 hover:text-white px-5 py-2 rounded-xl font-semibold text-xs transition-all border border-white/10"
+                >
+                  Reject All
+                </button>
+                <button
+                  onClick={() => setShowSettings(true)}
+                  className="flex items-center gap-1.5 text-white/40 hover:text-white/70 text-xs font-medium transition-colors px-3 py-2"
+                >
+                  <Settings className="w-3.5 h-3.5" /> Manage Preferences <ChevronRight className="w-3 h-3" />
+                </button>
               </div>
-              <button onClick={rejectAll} className="text-gray-400 hover:text-gray-600 flex-shrink-0">
-                <X className="w-5 h-5" />
-              </button>
             </div>
-            <div className="flex flex-wrap gap-3 mt-4 ml-14">
-              <button onClick={acceptAll} className="bg-[#0A2463] hover:bg-[#1B3A8C] text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors">Accept All</button>
-              <button onClick={rejectAll} className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors">Reject All</button>
-              <button onClick={() => setShowSettings(true)} className="flex items-center gap-2 text-gray-500 hover:text-gray-700 px-4 py-2.5 text-sm font-medium transition-colors">
-                <Settings className="w-4 h-4" /> Manage Preferences
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="p-6">
-            <h3 className="font-bold text-gray-900 mb-4">Cookie Preferences</h3>
-            <div className="space-y-4">
-              <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm">Necessary Cookies</p>
-                  <p className="text-gray-500 text-xs">Required for the website to function. Cannot be disabled.</p>
+          ) : (
+            <div className="relative p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-[#D4AF37]/15 border border-[#D4AF37]/20 rounded-lg flex items-center justify-center">
+                    <Settings className="w-4 h-4 text-[#D4AF37]" />
+                  </div>
+                  <h3 className="font-black text-white text-sm">Cookie Preferences</h3>
                 </div>
-                <input type="checkbox" checked disabled className="w-5 h-5 rounded" />
-              </label>
-              <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer">
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm">Analytics Cookies</p>
-                  <p className="text-gray-500 text-xs">Help us understand how visitors interact with our website.</p>
-                </div>
-                <input type="checkbox" checked={preferences.analytics} onChange={(e) => setPreferences({ ...preferences, analytics: e.target.checked })} className="w-5 h-5 rounded text-[#0A2463]" />
-              </label>
-              <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer">
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm">Marketing Cookies</p>
-                  <p className="text-gray-500 text-xs">Used to track visitors across websites for advertising purposes.</p>
-                </div>
-                <input type="checkbox" checked={preferences.marketing} onChange={(e) => setPreferences({ ...preferences, marketing: e.target.checked })} className="w-5 h-5 rounded text-[#0A2463]" />
-              </label>
+                <button onClick={() => setShowSettings(false)} className="text-white/30 hover:text-white/60 transition-colors text-xs font-medium">
+                  ← Back
+                </button>
+              </div>
+
+              <div className="space-y-2.5">
+                {[
+                  { key: 'necessary', label: 'Necessary', desc: 'Required for the website to function. Always active.', locked: true },
+                  { key: 'analytics', label: 'Analytics', desc: 'Help us understand how visitors interact with our site.', locked: false },
+                  { key: 'marketing', label: 'Marketing', desc: 'Used to deliver personalised advertisements.', locked: false },
+                ].map((cookie) => (
+                  <div key={cookie.key} className="flex items-center justify-between bg-white/5 border border-white/8 rounded-xl px-4 py-3">
+                    <div>
+                      <p className="font-bold text-white text-xs">{cookie.label}</p>
+                      <p className="text-white/35 text-xs mt-0.5 leading-snug">{cookie.desc}</p>
+                    </div>
+                    {cookie.locked ? (
+                      <div className="w-10 h-5.5 bg-[#D4AF37]/30 rounded-full flex items-center justify-end pr-0.5 shrink-0 ml-4" style={{ height: '1.375rem' }}>
+                        <div className="w-4 h-4 bg-[#D4AF37] rounded-full" />
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setPreferences(p => ({ ...p, [cookie.key]: !p[cookie.key as keyof typeof p] }))}
+                        className={`shrink-0 ml-4 w-10 rounded-full transition-all flex items-center px-0.5 ${
+                          preferences[cookie.key as keyof typeof preferences]
+                            ? 'bg-[#D4AF37] justify-end'
+                            : 'bg-white/15 justify-start'
+                        }`}
+                        style={{ height: '1.375rem' }}
+                      >
+                        <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-3 mt-4">
+                <button
+                  onClick={savePreferences}
+                  className="flex-1 bg-[#D4AF37] hover:bg-[#C5A028] text-[#061539] py-2.5 rounded-xl font-black text-xs transition-all"
+                >
+                  Save Preferences
+                </button>
+                <button
+                  onClick={acceptAll}
+                  className="px-5 bg-white/8 hover:bg-white/12 text-white/70 hover:text-white py-2.5 rounded-xl font-semibold text-xs transition-all border border-white/10"
+                >
+                  Accept All
+                </button>
+              </div>
             </div>
-            <div className="flex gap-3 mt-4">
-              <button onClick={savePreferences} className="bg-[#0A2463] hover:bg-[#1B3A8C] text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors">Save Preferences</button>
-              <button onClick={() => setShowSettings(false)} className="text-gray-500 hover:text-gray-700 px-4 py-2.5 text-sm font-medium transition-colors">Back</button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
