@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2, CreditCard, Calendar, Repeat } from 'lucide-react';
 import { PRICING, VEHICLE_TYPES } from '@/lib/constants';
-import { geocodeUK, haversineMiles } from '@/lib/geocoding';
+import { geocodeUK } from '@/lib/geocoding';
+import { getRoute } from '@/lib/routing';
 import { useAppContext } from '@/contexts/AppContext';
 import { createBooking } from '@/services/bookings';
 import type { PaymentMethod, QuoteData } from '@/types';
@@ -62,10 +63,10 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate })
     }
 
     const vehicle = VEHICLE_TYPES.find(v => v.id === selectedVehicle)!;
-    const baseMiles = haversineMiles(fromCoords[0], fromCoords[1], toCoords[0], toCoords[1]);
-    const extraStopMiles = addStops ? stopAddresses.filter(s => s).length * 8 : 0;
-    const totalMiles = Math.max(1, Math.round((baseMiles + extraStopMiles) * 10) / 10);
-    const travelTimeMin = Math.round(totalMiles * 2.2);
+    const route = await getRoute(fromCoords, toCoords);
+    const stopCount = addStops ? stopAddresses.filter(s => s).length : 0;
+    const totalMiles = Math.max(1, Math.round((route.distanceMiles + stopCount * 8) * 10) / 10);
+    const travelTimeMin = route.durationMinutes + stopCount * 10;
     const hours = Math.max(2, Math.ceil(travelTimeMin / 60));
 
     let price = Math.max(PRICING.minimumJobCost, vehicle.basePrice + totalMiles * 1.2);
