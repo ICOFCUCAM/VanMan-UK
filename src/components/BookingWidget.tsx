@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2, CreditCard, Calendar, Repeat, Shield, Clock, Star } from 'lucide-react';
+import React, { useState } from 'react';
+import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2, CreditCard, Calendar, Repeat } from 'lucide-react';
 import { PRICING, VEHICLE_TYPES } from '@/lib/constants';
 import { geocodeUK } from '@/lib/geocoding';
 import { getRoute } from '@/lib/routing';
@@ -13,8 +13,12 @@ interface BookingWidgetProps {
   embedded?: boolean;
 }
 
+const STEPS = ['Route', 'Options', 'Quote'] as const;
+
 const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, embedded = false }) => {
   const { user } = useAppContext();
+
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [collectionAddress, setCollectionAddress] = useState('');
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [hasStairs, setHasStairs] = useState(false);
@@ -23,7 +27,6 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
   const [selectedVehicle, setSelectedVehicle] = useState('medium');
   const [helpers, setHelpers] = useState(0);
   const [deliveryType, setDeliveryType] = useState<'dedicated' | 'shared'>('dedicated');
-  const [showQuote, setShowQuote] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
   const [quoteData, setQuoteData] = useState<QuoteData | null>(null);
   const [geocodeError, setGeocodeError] = useState<string | null>(null);
@@ -89,42 +92,8 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
       vehicleId: selectedVehicle,
       isSurge: surgeMultiplier > 1,
     });
-    setShowQuote(true);
+    setStep(3);
     setIsCalculating(false);
-  };
-
-  const confirmBooking = async (paymentMethod: PaymentMethod) => {
-    if (!quoteData) return;
-    setIsBooking(true);
-    setBookingError(null);
-
-    const { data, error } = await createBooking({
-      collection_address: collectionAddress,
-      delivery_address: deliveryAddress,
-      stop_addresses: addStops ? stopAddresses.filter(s => s.trim()) : [],
-      has_stairs: hasStairs,
-      vehicle_type: quoteData.vehicleId,
-      delivery_type: deliveryType,
-      helpers,
-      distance_miles: quoteData.distance,
-      duration: quoteData.duration,
-      estimated_price: quoteData.basePrice,
-      surge_multiplier: quoteData.surgeMultiplier,
-      payment_method: paymentMethod,
-      customer_id: user?.id,
-      scheduled_at: scheduleForLater && scheduledAt ? new Date(scheduledAt).toISOString() : undefined,
-      is_recurring: isRecurring,
-      recurring_frequency: isRecurring ? recurringFrequency : null,
-    });
-
-    if (error) {
-      setBookingError(error.message || 'Failed to save booking. Please try again.');
-    } else if (data) {
-      setBookingId(data.id);
-      setBookingConfirmed(true);
-    }
-
-    setIsBooking(false);
   };
 
   const handleCardPayment = async () => {
@@ -198,344 +167,322 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
   };
 
   const card = (
-    <div className="bg-white rounded-3xl shadow-2xl shadow-black/15 overflow-hidden border border-gray-100/80">
+    <div className="bg-white rounded-2xl shadow-xl shadow-black/10 overflow-hidden border border-gray-100">
 
-          {/* Header */}
-          <div className="relative bg-gradient-to-r from-[#071A2F] via-[#0E2A47] to-[#0F3558] px-5 sm:px-6 py-5 overflow-hidden">
-            <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle at 80% 50%, #F5B400 0%, transparent 55%)' }} />
-            <div className="relative flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">Instant Van Quote</h2>
-                <p className="text-white/55 mt-0.5 text-xs">Real-time pricing · No hidden fees · Verified drivers</p>
-              </div>
-              <div className="hidden sm:flex items-center gap-4 shrink-0">
-                {[
-                  { icon: Shield, label: 'Insured' },
-                  { icon: Star, label: '4.9★' },
-                  { icon: Clock, label: '60 sec' },
-                ].map((item, i) => (
-                  <div key={i} className="flex flex-col items-center gap-1">
-                    <div className="w-9 h-9 bg-white/8 rounded-xl flex items-center justify-center border border-white/10">
-                      <item.icon className="w-4 h-4 text-[#F5B400]" />
-                    </div>
-                    <span className="text-white/40 text-[10px] font-semibold tracking-wide">{item.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+      {/* Header with step indicator */}
+      <div className="relative bg-gradient-to-r from-[#071A2F] via-[#0E2A47] to-[#0F3558] px-5 py-4 overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle at 85% 50%, #F5B400 0%, transparent 55%)' }} />
+        <div className="relative flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-black text-white tracking-tight">Instant Van Quote</h2>
+            <p className="text-white/40 text-[11px] mt-0.5">No hidden fees · Verified drivers</p>
           </div>
-
-          <div className="p-5 sm:p-6 space-y-5">
-
-            {/* Address Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-black text-gray-500 tracking-widest uppercase mb-2">Collection Address</label>
-                <div className="relative">
-                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-green-50 rounded-lg flex items-center justify-center">
-                    <MapPin className="w-4 h-4 text-green-500" />
-                  </div>
-                  <input
-                    type="text"
-                    value={collectionAddress}
-                    onChange={(e) => setCollectionAddress(e.target.value)}
-                    placeholder="Pickup postcode or address"
-                    className="w-full pl-13 pr-4 py-3.5 border-2 border-gray-150 rounded-2xl focus:border-[#0E2A47] focus:ring-4 focus:ring-[#0E2A47]/8 outline-none transition-all text-gray-800 placeholder:text-gray-350 text-sm font-medium bg-gray-50/50 focus:bg-white"
-                    style={{ paddingLeft: '3.25rem' }}
-                  />
-                </div>
+          <div className="flex items-center gap-1">
+            {STEPS.map((label, i) => (
+              <div key={label} className="flex items-center gap-1">
+                <div className={`h-1.5 rounded-full transition-all duration-300 ${i + 1 === step ? 'w-7 bg-[#F5B400]' : i + 1 < step ? 'w-3 bg-[#F5B400]/55' : 'w-3 bg-white/20'}`} />
               </div>
-              <div>
-                <label className="block text-xs font-black text-gray-500 tracking-widest uppercase mb-2">Delivery Address</label>
-                <div className="relative">
-                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-red-50 rounded-lg flex items-center justify-center">
-                    <MapPin className="w-4 h-4 text-red-500" />
-                  </div>
-                  <input
-                    type="text"
-                    value={deliveryAddress}
-                    onChange={(e) => setDeliveryAddress(e.target.value)}
-                    placeholder="Destination postcode or address"
-                    className="w-full pr-4 py-3.5 border-2 border-gray-150 rounded-2xl focus:border-[#0E2A47] focus:ring-4 focus:ring-[#0E2A47]/8 outline-none transition-all text-gray-800 placeholder:text-gray-350 text-sm font-medium bg-gray-50/50 focus:bg-white"
-                    style={{ paddingLeft: '3.25rem' }}
-                  />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="p-5">
+
+        {/* ── STEP 1: Route ── */}
+        {step === 1 && (
+          <div className="space-y-3.5">
+            <div>
+              <label className="block text-[10px] font-black text-gray-400 tracking-[0.18em] uppercase mb-1.5">Collection</label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-green-50 rounded-md flex items-center justify-center">
+                  <MapPin className="w-3.5 h-3.5 text-green-500" />
                 </div>
+                <input
+                  type="text"
+                  value={collectionAddress}
+                  onChange={(e) => setCollectionAddress(e.target.value)}
+                  placeholder="Pickup postcode or address"
+                  className="w-full py-3 border border-gray-200 rounded-xl focus:border-[#0E2A47] focus:ring-2 focus:ring-[#0E2A47]/8 outline-none transition-all text-gray-800 placeholder:text-gray-400 text-sm bg-gray-50/50 focus:bg-white"
+                  style={{ paddingLeft: '2.75rem', paddingRight: '1rem' }}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-gray-400 tracking-[0.18em] uppercase mb-1.5">Delivery</label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-red-50 rounded-md flex items-center justify-center">
+                  <MapPin className="w-3.5 h-3.5 text-red-500" />
+                </div>
+                <input
+                  type="text"
+                  value={deliveryAddress}
+                  onChange={(e) => setDeliveryAddress(e.target.value)}
+                  placeholder="Destination postcode or address"
+                  className="w-full py-3 border border-gray-200 rounded-xl focus:border-[#0E2A47] focus:ring-2 focus:ring-[#0E2A47]/8 outline-none transition-all text-gray-800 placeholder:text-gray-400 text-sm bg-gray-50/50 focus:bg-white"
+                  style={{ paddingLeft: '2.75rem', paddingRight: '1rem' }}
+                />
               </div>
             </div>
 
-            {/* Stop Points */}
+            <label className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border cursor-pointer transition-all text-sm select-none ${addStops ? 'border-[#0E2A47] bg-[#0E2A47]/5 text-[#0E2A47]' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
+              <input type="checkbox" checked={addStops} onChange={(e) => setAddStops(e.target.checked)} className="sr-only" />
+              <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${addStops ? 'bg-[#0E2A47] border-[#0E2A47]' : 'border-gray-300'}`}>
+                {addStops && <CheckCircle2 className="w-3 h-3 text-white" />}
+              </div>
+              <span className="font-medium">Add stop points</span>
+            </label>
+
             {addStops && (
-              <div className="space-y-3 bg-amber-50/60 border border-amber-100 rounded-2xl p-4">
-                <p className="text-xs font-black text-amber-700 tracking-widest uppercase">Additional Stop Points</p>
+              <div className="space-y-2 bg-amber-50/60 border border-amber-100 rounded-xl p-3">
                 {stopAddresses.map((stop, idx) => (
                   <div key={idx} className="flex gap-2">
                     <div className="relative flex-1">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#F5B400]" />
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#F5B400]" />
                       <input
                         type="text"
                         value={stop}
                         onChange={(e) => updateStop(idx, e.target.value)}
-                        placeholder={`Stop ${idx + 1} address...`}
-                        className="w-full pl-10 pr-4 py-3 border-2 border-amber-200 rounded-xl focus:border-[#0E2A47] outline-none text-sm bg-white"
+                        placeholder={`Stop ${idx + 1}`}
+                        className="w-full pl-9 pr-3 py-2.5 border border-amber-200 rounded-lg focus:border-[#0E2A47] outline-none text-sm bg-white"
                       />
                     </div>
-                    <button onClick={() => removeStop(idx)} className="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors">
+                    <button onClick={() => removeStop(idx)} className="p-2 text-red-400 hover:text-red-600 rounded-lg transition-colors">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
-                <button onClick={addStop} className="flex items-center gap-2 text-[#0E2A47] text-sm font-bold hover:text-[#0F3558] transition-colors">
-                  <Plus className="w-4 h-4" /> Add another stop
+                <button onClick={addStop} className="flex items-center gap-1.5 text-[#0E2A47] text-xs font-bold hover:text-[#0F3558]">
+                  <Plus className="w-3.5 h-3.5" /> Add stop
                 </button>
               </div>
             )}
 
-            {/* Options Row */}
-            <div className="flex flex-wrap gap-3">
-              {[
-                { label: 'Stairs at location', checked: hasStairs, onChange: (v: boolean) => setHasStairs(v) },
-                { label: 'Add stop points', checked: addStops, onChange: (v: boolean) => setAddStops(v) },
-              ].map((opt, i) => (
-                <label key={i} className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border-2 cursor-pointer transition-all select-none ${opt.checked ? 'border-[#0E2A47] bg-[#0E2A47]/5 text-[#0E2A47]' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
-                  <input type="checkbox" checked={opt.checked} onChange={(e) => opt.onChange(e.target.checked)} className="sr-only" />
-                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${opt.checked ? 'bg-[#0E2A47] border-[#0E2A47]' : 'border-gray-300'}`}>
-                    {opt.checked && <CheckCircle2 className="w-3 h-3 text-white" />}
-                  </div>
-                  <span className="text-sm font-semibold">{opt.label}</span>
-                </label>
-              ))}
-            </div>
+            <button
+              onClick={() => setStep(2)}
+              disabled={!collectionAddress || !deliveryAddress}
+              className="w-full bg-[#0E2A47] hover:bg-[#0F3558] disabled:bg-gray-100 disabled:cursor-not-allowed text-white disabled:text-gray-400 py-3.5 rounded-xl font-bold text-sm transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+            >
+              Next: Choose Vehicle <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
-            {/* Vehicle Selection */}
+        {/* ── STEP 2: Options ── */}
+        {step === 2 && (
+          <div className="space-y-4">
             <div>
-              <label className="block text-xs font-black text-gray-500 tracking-widest uppercase mb-3">Vehicle Type</label>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <label className="block text-[10px] font-black text-gray-400 tracking-[0.18em] uppercase mb-2">Vehicle</label>
+              <div className="grid grid-cols-2 gap-2">
                 {VEHICLE_TYPES.map((v) => (
                   <button
                     key={v.id}
                     onClick={() => setSelectedVehicle(v.id)}
-                    className={`group relative p-4 rounded-2xl border-2 text-left transition-all ${
-                      selectedVehicle === v.id
-                        ? 'border-[#0E2A47] bg-[#0E2A47] shadow-lg shadow-[#0E2A47]/20'
-                        : 'border-gray-200 hover:border-[#0E2A47]/40 hover:bg-gray-50'
-                    }`}
+                    className={`relative p-3 rounded-xl border-2 text-left transition-all ${selectedVehicle === v.id ? 'border-[#0E2A47] bg-[#0E2A47]' : 'border-gray-200 hover:border-[#0E2A47]/30'}`}
                   >
                     {selectedVehicle === v.id && (
-                      <div className="absolute top-2 right-2 w-5 h-5 bg-[#F5B400] rounded-full flex items-center justify-center">
-                        <CheckCircle2 className="w-3 h-3 text-[#071A2F]" />
+                      <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#F5B400] rounded-full flex items-center justify-center">
+                        <CheckCircle2 className="w-2.5 h-2.5 text-[#071A2F]" />
                       </div>
                     )}
-                    <Truck className={`w-7 h-7 mb-2.5 transition-colors ${selectedVehicle === v.id ? 'text-[#F5B400]' : 'text-gray-400 group-hover:text-[#0E2A47]'}`} />
-                    <p className={`font-black text-sm transition-colors ${selectedVehicle === v.id ? 'text-white' : 'text-gray-800'}`}>{v.name}</p>
-                    <p className={`text-xs mt-0.5 transition-colors ${selectedVehicle === v.id ? 'text-white/60' : 'text-gray-400'}`}>{v.capacity}</p>
-                    <p className={`font-black text-sm mt-1.5 transition-colors ${selectedVehicle === v.id ? 'text-[#F5B400]' : 'text-[#F5B400]'}`}>From £{v.basePrice}</p>
+                    <Truck className={`w-5 h-5 mb-1.5 ${selectedVehicle === v.id ? 'text-[#F5B400]' : 'text-gray-400'}`} />
+                    <p className={`font-black text-xs ${selectedVehicle === v.id ? 'text-white' : 'text-gray-800'}`}>{v.name}</p>
+                    <p className={`text-[11px] ${selectedVehicle === v.id ? 'text-white/50' : 'text-gray-400'}`}>{v.capacity}</p>
+                    <p className="font-black text-xs text-[#F5B400] mt-1">From £{v.basePrice}</p>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Delivery Type & Helpers */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-black text-gray-500 tracking-widest uppercase mb-3">Delivery Type</label>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setDeliveryType('dedicated')}
-                    className={`flex-1 p-3.5 rounded-2xl border-2 text-center transition-all ${deliveryType === 'dedicated' ? 'border-[#0E2A47] bg-[#0E2A47]/5' : 'border-gray-200 hover:border-gray-300'}`}
-                  >
-                    <Truck className={`w-5 h-5 mx-auto mb-1.5 ${deliveryType === 'dedicated' ? 'text-[#0E2A47]' : 'text-gray-400'}`} />
-                    <p className={`text-sm font-black ${deliveryType === 'dedicated' ? 'text-[#0E2A47]' : 'text-gray-700'}`}>Dedicated</p>
-                    <p className="text-xs text-gray-400 mt-0.5">Full vehicle</p>
-                  </button>
-                  <button
-                    onClick={() => setDeliveryType('shared')}
-                    className={`flex-1 p-3.5 rounded-2xl border-2 text-center transition-all ${deliveryType === 'shared' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-gray-300'}`}
-                  >
-                    <Building2 className={`w-5 h-5 mx-auto mb-1.5 ${deliveryType === 'shared' ? 'text-green-600' : 'text-gray-400'}`} />
-                    <p className={`text-sm font-black ${deliveryType === 'shared' ? 'text-green-700' : 'text-gray-700'}`}>Shared</p>
-                    <p className="text-xs text-green-600 font-bold mt-0.5">Save 30%</p>
-                  </button>
-                </div>
+            <div>
+              <label className="block text-[10px] font-black text-gray-400 tracking-[0.18em] uppercase mb-2">Delivery type</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setDeliveryType('dedicated')}
+                  className={`p-3 rounded-xl border-2 text-center transition-all ${deliveryType === 'dedicated' ? 'border-[#0E2A47] bg-[#0E2A47]/5' : 'border-gray-200 hover:border-gray-300'}`}
+                >
+                  <Truck className={`w-4 h-4 mx-auto mb-1 ${deliveryType === 'dedicated' ? 'text-[#0E2A47]' : 'text-gray-400'}`} />
+                  <p className={`text-xs font-black ${deliveryType === 'dedicated' ? 'text-[#0E2A47]' : 'text-gray-700'}`}>Dedicated</p>
+                  <p className="text-[11px] text-gray-400">Full van</p>
+                </button>
+                <button
+                  onClick={() => setDeliveryType('shared')}
+                  className={`p-3 rounded-xl border-2 text-center transition-all ${deliveryType === 'shared' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-gray-300'}`}
+                >
+                  <Building2 className={`w-4 h-4 mx-auto mb-1 ${deliveryType === 'shared' ? 'text-green-600' : 'text-gray-400'}`} />
+                  <p className={`text-xs font-black ${deliveryType === 'shared' ? 'text-green-700' : 'text-gray-700'}`}>Shared</p>
+                  <p className="text-[11px] text-green-600 font-bold">Save 30%</p>
+                </button>
               </div>
-              <div>
-                <label className="block text-xs font-black text-gray-500 tracking-widest uppercase mb-3">Additional Helpers</label>
-                <div className="flex items-center gap-3 bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                  <button
-                    onClick={() => setHelpers(Math.max(0, helpers - 1))}
-                    className="w-10 h-10 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-600 hover:border-[#0E2A47] hover:text-[#0E2A47] transition-all font-black text-lg"
-                  >−</button>
-                  <div className="flex-1 text-center">
-                    <p className="text-3xl font-black text-[#0E2A47]">{helpers}</p>
-                    <p className="text-xs text-gray-400 font-semibold">helpers</p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <label className={`flex-1 flex items-center gap-2 px-3 py-2.5 rounded-xl border cursor-pointer text-xs transition-all ${hasStairs ? 'border-[#0E2A47] bg-[#0E2A47]/5 text-[#0E2A47]' : 'border-gray-200 text-gray-500'}`}>
+                <input type="checkbox" checked={hasStairs} onChange={(e) => setHasStairs(e.target.checked)} className="sr-only" />
+                <div className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center shrink-0 ${hasStairs ? 'bg-[#0E2A47] border-[#0E2A47]' : 'border-gray-300'}`}>
+                  {hasStairs && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
+                </div>
+                <span className="font-medium">Stairs (+£20)</span>
+              </label>
+              <div className="flex items-center gap-2 bg-gray-50 rounded-xl border border-gray-100 px-3 py-2">
+                <button onClick={() => setHelpers(Math.max(0, helpers - 1))} className="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-600 font-black hover:border-[#0E2A47] transition-colors">−</button>
+                <div className="text-center w-10">
+                  <p className="text-sm font-black text-[#0E2A47]">{helpers}</p>
+                  <p className="text-[10px] text-gray-400">helper{helpers !== 1 ? 's' : ''}</p>
+                </div>
+                <button onClick={() => setHelpers(Math.min(3, helpers + 1))} className="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-600 font-black hover:border-[#0E2A47] transition-colors">+</button>
+              </div>
+            </div>
+
+            {geocodeError && (
+              <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-3.5 py-3">
+                <AlertTriangle className="w-4 h-4 text-red-500 shrink-0" />
+                <p className="text-red-700 text-xs">{geocodeError}</p>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <button onClick={() => setStep(1)} className="px-4 py-3.5 rounded-xl border border-gray-200 text-gray-500 font-semibold text-sm hover:bg-gray-50 transition-all">← Back</button>
+              <button
+                onClick={calculateQuote}
+                disabled={isCalculating}
+                className="flex-1 bg-[#F5B400] hover:bg-[#E5A000] disabled:bg-gray-100 disabled:cursor-not-allowed text-[#071A2F] disabled:text-gray-400 py-3.5 rounded-xl font-black text-sm transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+              >
+                {isCalculating ? <><Loader2 className="w-4 h-4 animate-spin" /> Calculating…</> : <>Get Quote <ArrowRight className="w-4 h-4" /></>}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── STEP 3: Quote ── */}
+        {step === 3 && quoteData && !bookingConfirmed && (
+          <div className="space-y-4">
+            <div className="relative rounded-2xl overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#071A2F] via-[#0E2A47] to-[#0F3558]" />
+              <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 90% 10%, #F5B400 0%, transparent 50%)' }} />
+              <div className="relative p-4">
+                {quoteData.isSurge && (
+                  <div className="flex items-center gap-2 bg-orange-500/15 border border-orange-400/20 rounded-lg px-3 py-2 mb-3">
+                    <AlertTriangle className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                    <span className="text-orange-300 text-xs font-semibold">Surge pricing ({quoteData.surgeMultiplier}×) — peak demand</span>
                   </div>
-                  <button
-                    onClick={() => setHelpers(Math.min(3, helpers + 1))}
-                    className="w-10 h-10 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-600 hover:border-[#0E2A47] hover:text-[#0E2A47] transition-all font-black text-lg"
-                  >+</button>
-                  <div className="text-center ml-1">
-                    <p className="text-[#F5B400] font-black text-sm">£25</p>
-                    <p className="text-gray-400 text-xs">each</p>
-                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { label: 'Distance', value: `${quoteData.distance} mi` },
+                    { label: 'Duration', value: quoteData.duration },
+                    { label: 'Vehicle', value: quoteData.vehicle },
+                    { label: 'Total', value: `£${quoteData.basePrice}`, highlight: true },
+                  ].map((stat, i) => (
+                    <div key={i} className={`rounded-xl p-3 text-center ${stat.highlight ? 'bg-[#F5B400]/15 border border-[#F5B400]/25' : 'bg-white/5 border border-white/8'}`}>
+                      <p className="text-white/45 text-[10px] uppercase tracking-wider mb-0.5">{stat.label}</p>
+                      <p className={`font-black text-lg ${stat.highlight ? 'text-[#F5B400]' : 'text-white'}`}>{stat.value}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* Geocode error */}
-            {geocodeError && (
-              <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-2xl px-4 py-3.5">
-                <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
-                <p className="text-red-700 text-sm font-medium">{geocodeError}</p>
-              </div>
-            )}
-
-            {/* Get Quote Button */}
-            <button
-              onClick={calculateQuote}
-              disabled={!collectionAddress || !deliveryAddress || isCalculating}
-              className="w-full bg-[#F5B400] hover:bg-[#E5A000] disabled:bg-gray-200 disabled:cursor-not-allowed text-[#071A2F] py-4.5 rounded-2xl font-black text-lg transition-all hover:shadow-2xl hover:shadow-[#F5B400]/30 hover:-translate-y-0.5 flex items-center justify-center gap-3 disabled:text-gray-400"
-              style={{ paddingTop: '1.1rem', paddingBottom: '1.1rem' }}
-            >
-              {isCalculating ? (
-                <><Loader2 className="w-5 h-5 animate-spin" /> Calculating best route…</>
-              ) : (
-                <>Get Instant Quote <ArrowRight className="w-5 h-5" /></>
+            <div className="bg-gray-50 border border-gray-100 rounded-xl p-3.5 space-y-3">
+              <label className="flex items-center gap-2.5 cursor-pointer">
+                <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${scheduleForLater ? 'bg-[#F5B400] border-[#F5B400]' : 'border-gray-300'}`}>
+                  {scheduleForLater && <CheckCircle2 className="w-2.5 h-2.5 text-[#071A2F]" />}
+                </div>
+                <input type="checkbox" checked={scheduleForLater} onChange={e => { setScheduleForLater(e.target.checked); if (!e.target.checked) setIsRecurring(false); }} className="sr-only" />
+                <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                <span className="text-gray-700 text-xs font-semibold">Schedule for a later date</span>
+              </label>
+              {scheduleForLater && (
+                <>
+                  <input
+                    type="datetime-local"
+                    value={scheduledAt}
+                    onChange={e => setScheduledAt(e.target.value)}
+                    min={new Date().toISOString().slice(0, 16)}
+                    className="w-full bg-white border border-gray-200 text-gray-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-[#0E2A47]"
+                  />
+                  <label className="flex items-center gap-2.5 cursor-pointer">
+                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${isRecurring ? 'bg-[#F5B400] border-[#F5B400]' : 'border-gray-300'}`}>
+                      {isRecurring && <CheckCircle2 className="w-2.5 h-2.5 text-[#071A2F]" />}
+                    </div>
+                    <input type="checkbox" checked={isRecurring} onChange={e => setIsRecurring(e.target.checked)} className="sr-only" />
+                    <Repeat className="w-3.5 h-3.5 text-gray-400" />
+                    <span className="text-gray-700 text-xs font-semibold">Repeat this booking</span>
+                  </label>
+                  {isRecurring && (
+                    <div className="flex gap-1.5 pl-6">
+                      {(['weekly', 'biweekly', 'monthly'] as const).map(freq => (
+                        <button
+                          key={freq}
+                          type="button"
+                          onClick={() => setRecurringFrequency(freq)}
+                          className={`px-3 py-1 rounded-lg text-xs font-bold ${recurringFrequency === freq ? 'bg-[#F5B400] text-[#0E2A47]' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'}`}
+                        >
+                          {freq === 'biweekly' ? 'Bi-weekly' : freq.charAt(0).toUpperCase() + freq.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
-            </button>
+            </div>
 
-            {/* Quote Result */}
-            {showQuote && quoteData && !bookingConfirmed && (
-              <div className="relative rounded-3xl overflow-hidden animate-in slide-in-from-bottom-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#071A2F] via-[#0E2A47] to-[#0F3558]" />
-                <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 90% 10%, #F5B400 0%, transparent 50%)' }} />
-                <div className="relative p-6">
-                  {quoteData.isSurge && (
-                    <div className="flex items-center gap-2.5 bg-orange-500/15 border border-orange-400/20 rounded-xl px-4 py-2.5 mb-5">
-                      <AlertTriangle className="w-4 h-4 text-orange-400 shrink-0" />
-                      <span className="text-orange-300 text-sm font-semibold">Surge pricing active ({quoteData.surgeMultiplier}×) — peak demand period</span>
-                    </div>
-                  )}
-
-                  {/* Quote stats */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-                    {[
-                      { label: 'Distance', value: `${quoteData.distance} mi` },
-                      { label: 'Est. Duration', value: quoteData.duration },
-                      { label: 'Vehicle', value: quoteData.vehicle },
-                      { label: 'Your Price', value: `£${quoteData.basePrice}`, highlight: true },
-                    ].map((stat, i) => (
-                      <div key={i} className={`rounded-2xl p-3.5 text-center ${stat.highlight ? 'bg-[#F5B400]/15 border border-[#F5B400]/25' : 'bg-white/5 border border-white/8'}`}>
-                        <p className="text-white/45 text-xs uppercase tracking-wider mb-1">{stat.label}</p>
-                        <p className={`font-black text-xl ${stat.highlight ? 'text-[#F5B400]' : 'text-white'}`}>{stat.value}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Schedule / Recurring options */}
-                  <div className="bg-white/5 border border-white/8 rounded-2xl p-4 mb-4 space-y-3">
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${scheduleForLater ? 'bg-[#F5B400] border-[#F5B400]' : 'border-white/30'}`}>
-                        {scheduleForLater && <CheckCircle2 className="w-3.5 h-3.5 text-[#071A2F]" />}
-                      </div>
-                      <input type="checkbox" checked={scheduleForLater} onChange={e => { setScheduleForLater(e.target.checked); if (!e.target.checked) setIsRecurring(false); }} className="sr-only" />
-                      <Calendar className="w-4 h-4 text-white/60" />
-                      <span className="text-white/85 text-sm font-semibold">Schedule for a specific date & time</span>
-                    </label>
-                    {scheduleForLater && (
-                      <>
-                        <input
-                          type="datetime-local"
-                          value={scheduledAt}
-                          onChange={e => setScheduledAt(e.target.value)}
-                          min={new Date().toISOString().slice(0, 16)}
-                          className="w-full bg-white/8 border border-white/15 text-white rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#F5B400] transition-colors"
-                        />
-                        <label className="flex items-center gap-3 cursor-pointer">
-                          <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${isRecurring ? 'bg-[#F5B400] border-[#F5B400]' : 'border-white/30'}`}>
-                            {isRecurring && <CheckCircle2 className="w-3.5 h-3.5 text-[#071A2F]" />}
-                          </div>
-                          <input type="checkbox" checked={isRecurring} onChange={e => setIsRecurring(e.target.checked)} className="sr-only" />
-                          <Repeat className="w-4 h-4 text-white/60" />
-                          <span className="text-white/85 text-sm font-semibold">Repeat this booking</span>
-                        </label>
-                        {isRecurring && (
-                          <div className="flex gap-2 pl-8">
-                            {(['weekly', 'biweekly', 'monthly'] as const).map(freq => (
-                              <button
-                                key={freq}
-                                type="button"
-                                onClick={() => setRecurringFrequency(freq)}
-                                className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all capitalize ${
-                                  recurringFrequency === freq
-                                    ? 'bg-[#F5B400] text-[#0E2A47]'
-                                    : 'bg-white/8 text-white/60 hover:bg-white/15'
-                                }`}
-                              >
-                                {freq === 'biweekly' ? 'Bi-weekly' : freq.charAt(0).toUpperCase() + freq.slice(1)}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-
-                  {bookingError && (
-                    <div className="flex items-center gap-2.5 bg-red-500/15 border border-red-400/20 rounded-xl px-4 py-3 mb-4">
-                      <AlertTriangle className="w-4 h-4 text-red-300 shrink-0" />
-                      <span className="text-red-200 text-sm">{bookingError}</span>
-                    </div>
-                  )}
-
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <button
-                      onClick={handleCardPayment}
-                      disabled={isRedirecting || isBooking}
-                      className="flex-1 bg-[#F5B400] hover:bg-[#E5A000] disabled:opacity-60 disabled:cursor-not-allowed text-[#071A2F] py-4 rounded-2xl font-black transition-all hover:shadow-xl hover:shadow-[#F5B400]/25 flex items-center justify-center gap-2.5"
-                    >
-                      {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
-                      {isRedirecting ? 'Preparing…' : `Pay by Card — £${quoteData.basePrice}`}
-                    </button>
-                    <button
-                      onClick={handleCashPayment}
-                      disabled={isBooking || isRedirecting}
-                      className="sm:w-40 px-6 py-4 bg-white/8 hover:bg-white/15 disabled:opacity-60 rounded-2xl font-bold transition-all border border-white/15 flex items-center justify-center gap-2"
-                    >
-                      {isBooking ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                      Cash
-                    </button>
-                  </div>
-                </div>
+            {bookingError && (
+              <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-3.5 py-3">
+                <AlertTriangle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                <span className="text-red-700 text-xs">{bookingError}</span>
               </div>
             )}
 
-            {/* Booking Confirmed */}
-            {bookingConfirmed && (
-              <div className="relative rounded-3xl overflow-hidden animate-in slide-in-from-bottom-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-green-700" />
-                <div className="relative p-8 text-center">
-                  <div className="w-16 h-16 bg-white/15 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle2 className="w-9 h-9 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-black text-white mb-2">Booking Confirmed!</h3>
-                  <p className="text-white/75 text-sm mb-4">Your booking is saved — a driver will be assigned shortly.</p>
-                  {bookingId && (
-                    <div className="inline-block bg-white/10 border border-white/20 rounded-xl px-5 py-2.5 mb-6">
-                      <p className="text-white/60 text-xs uppercase tracking-widest mb-0.5">Booking Reference</p>
-                      <p className="text-white font-black font-mono tracking-widest">{bookingId.slice(0, 8).toUpperCase()}</p>
-                    </div>
-                  )}
-                  <div>
-                    <button
-                      onClick={() => { setShowQuote(false); setBookingConfirmed(false); setCollectionAddress(''); setDeliveryAddress(''); setQuoteData(null); }}
-                      className="text-white/80 font-semibold text-sm hover:text-white transition-colors border border-white/20 hover:border-white/40 rounded-xl px-6 py-2.5"
-                    >
-                      Make another booking
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
+            <div className="flex gap-2">
+              <button onClick={() => setStep(2)} className="px-4 py-3.5 rounded-xl border border-gray-200 text-gray-500 font-semibold text-sm hover:bg-gray-50 transition-all shrink-0">← Back</button>
+              <button
+                onClick={handleCardPayment}
+                disabled={isRedirecting || isBooking}
+                className="flex-1 bg-[#F5B400] hover:bg-[#E5A000] disabled:opacity-60 text-[#071A2F] py-3.5 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2"
+              >
+                {isRedirecting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
+                {isRedirecting ? 'Preparing…' : `Pay £${quoteData.basePrice}`}
+              </button>
+              <button
+                onClick={handleCashPayment}
+                disabled={isBooking || isRedirecting}
+                className="px-4 py-3.5 bg-gray-100 hover:bg-gray-200 disabled:opacity-60 rounded-xl font-bold text-sm text-gray-700 transition-all shrink-0 flex items-center gap-1.5"
+              >
+                {isBooking ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                Cash
+              </button>
+            </div>
           </div>
+        )}
+
+        {/* ── Booking confirmed ── */}
+        {step === 3 && bookingConfirmed && (
+          <div className="relative rounded-2xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-green-700" />
+            <div className="relative p-6 text-center">
+              <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <CheckCircle2 className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-lg font-black text-white mb-1.5">Booking Confirmed!</h3>
+              <p className="text-white/70 text-xs mb-4">A driver will be assigned shortly.</p>
+              {bookingId && (
+                <div className="inline-block bg-white/10 border border-white/20 rounded-lg px-4 py-2 mb-5">
+                  <p className="text-white/50 text-[10px] uppercase tracking-widest mb-0.5">Reference</p>
+                  <p className="text-white font-black font-mono tracking-widest text-sm">{bookingId.slice(0, 8).toUpperCase()}</p>
+                </div>
+              )}
+              <button
+                onClick={() => { setStep(1); setBookingConfirmed(false); setCollectionAddress(''); setDeliveryAddress(''); setQuoteData(null); }}
+                className="text-white/80 text-xs font-semibold border border-white/20 hover:border-white/40 rounded-lg px-5 py-2 transition-all"
+              >
+                New booking
+              </button>
+            </div>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 
@@ -544,13 +491,11 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
   }
 
   return (
-    <>
     <section ref={bookingRef} className="relative -mt-20 z-20 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {card}
       </div>
     </section>
-    </>
   );
 };
 
