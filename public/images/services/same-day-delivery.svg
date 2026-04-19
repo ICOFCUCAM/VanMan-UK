@@ -1,19 +1,170 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#7C2D12" stop-opacity="1"/>
-      <stop offset="1" stop-color="#7C2D12" stop-opacity="0.85"/>
+    <linearGradient id="sky5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1A2E"/>
+      <stop offset="50%" stop-color="#16213E"/>
+      <stop offset="100%" stop-color="#0F3460"/>
     </linearGradient>
-    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#FCA5A5" stop-opacity="0.12"/>
-      <stop offset="1" stop-color="#FCA5A5" stop-opacity="0"/>
+    <linearGradient id="road5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2A2A3A"/>
+      <stop offset="100%" stop-color="#1A1A28"/>
+    </linearGradient>
+    <linearGradient id="van5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A2463"/>
+      <stop offset="100%" stop-color="#061539"/>
+    </linearGradient>
+    <linearGradient id="speedglow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FF8C00" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#FF8C00" stop-opacity="0.4"/>
+    </linearGradient>
+    <filter id="blur5">
+      <feGaussianBlur stdDeviation="2.5"/>
+    </filter>
+    <linearGradient id="sunrise" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="100%" stop-color="#FFB347"/>
     </linearGradient>
   </defs>
-  <rect width="100" height="100" fill="url(#bg)"/>
-  <rect width="100" height="100" fill="url(#glow)"/>
-  <circle cx="80" cy="20" r="30" fill="#FCA5A5" opacity="0.06"/>
-  <circle cx="15" cy="85" r="20" fill="#FCA5A5" opacity="0.05"/>
-  <path d="M12,52 L12,65 L88,65 L88,52 L72,52 L72,38 L28,38 L28,52 Z" stroke="#FCA5A5" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
-  <path d="M22,65 A7,7 0 1,0 36,65 M64,65 A7,7 0 1,0 78,65" stroke="#FCA5A5" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
-  <text x="50" y="95" font-family="system-ui,sans-serif" font-size="5.5" font-weight="700" fill="#FCA5A5" text-anchor="middle" opacity="0.7" letter-spacing="0.5">SAME DAY DELIVERY</text>
+
+  <!-- Dark dramatic sky -->
+  <rect width="360" height="240" fill="url(#sky5)"/>
+
+  <!-- Sunrise glow on horizon -->
+  <ellipse cx="330" cy="165" rx="55" ry="30" fill="#FF8C00" opacity="0.2" filter="url(#blur5)"/>
+  <ellipse cx="330" cy="160" rx="35" ry="20" fill="#FF8C00" opacity="0.25" filter="url(#blur5)"/>
+
+  <!-- Stars -->
+  <g fill="white" opacity="0.6">
+    <circle cx="20" cy="15" r="1"/>
+    <circle cx="55" cy="8" r="1.2"/>
+    <circle cx="100" cy="20" r="0.8"/>
+    <circle cx="140" cy="10" r="1"/>
+    <circle cx="180" cy="25" r="0.8"/>
+    <circle cx="200" cy="12" r="1.2"/>
+    <circle cx="240" cy="8" r="0.8"/>
+    <circle cx="260" cy="20" r="1"/>
+  </g>
+
+  <!-- City skyline silhouette -->
+  <g fill="#0D1A30" opacity="0.9">
+    <rect x="0" y="110" width="30" height="80"/>
+    <rect x="25" y="90" width="25" height="100"/>
+    <rect x="45" y="105" width="20" height="85"/>
+    <rect x="280" y="100" width="25" height="90"/>
+    <rect x="300" y="80" width="30" height="110"/>
+    <rect x="325" y="95" width="35" height="95"/>
+  </g>
+  <!-- Building windows (faint lights) -->
+  <g fill="#FFE090" opacity="0.3">
+    <rect x="27" y="95" width="4" height="5"/>
+    <rect x="35" y="95" width="4" height="5"/>
+    <rect x="27" y="107" width="4" height="5"/>
+    <rect x="35" y="107" width="4" height="5"/>
+    <rect x="27" y="119" width="4" height="5"/>
+    <rect x="302" y="85" width="4" height="5"/>
+    <rect x="312" y="85" width="4" height="5"/>
+    <rect x="302" y="98" width="4" height="5"/>
+    <rect x="330" y="100" width="4" height="5"/>
+    <rect x="340" y="100" width="4" height="5"/>
+    <rect x="330" y="113" width="4" height="5"/>
+  </g>
+
+  <!-- Road -->
+  <rect x="0" y="175" width="360" height="65" fill="url(#road5)"/>
+  <rect x="0" y="175" width="360" height="3" fill="#3A3A4A"/>
+
+  <!-- Road lane markings -->
+  <rect x="0" y="198" width="35" height="5" fill="white" opacity="0.4"/>
+  <rect x="50" y="198" width="35" height="5" fill="white" opacity="0.4"/>
+  <rect x="100" y="198" width="35" height="5" fill="white" opacity="0.4"/>
+  <rect x="150" y="198" width="35" height="5" fill="white" opacity="0.4"/>
+  <rect x="200" y="198" width="35" height="5" fill="white" opacity="0.4"/>
+  <rect x="250" y="198" width="35" height="5" fill="white" opacity="0.4"/>
+  <rect x="300" y="198" width="35" height="5" fill="white" opacity="0.4"/>
+
+  <!-- Speed motion blur trails -->
+  <rect x="0" y="170" width="180" height="8" fill="url(#speedglow)" opacity="0.5"/>
+  <rect x="0" y="178" width="150" height="4" fill="url(#speedglow)" opacity="0.3"/>
+  <!-- Headlight beams -->
+  <polygon points="55,170 55,185 0,200 0,190" fill="#FFE090" opacity="0.12"/>
+  <polygon points="75,170 75,185 0,208 0,198" fill="#FFE090" opacity="0.08"/>
+
+  <!-- === VAN (speeding) === -->
+  <!-- Motion blur effect (dark copies offset left) -->
+  <rect x="8" y="142" width="115" height="50" rx="3" fill="#0A2463" opacity="0.25"/>
+  <rect x="4" y="144" width="115" height="50" rx="3" fill="#0A2463" opacity="0.15"/>
+
+  <!-- Main van body -->
+  <rect x="18" y="140" width="120" height="50" rx="3" fill="url(#van5)"/>
+
+  <!-- Van cab -->
+  <rect x="110" y="147" width="35" height="43" rx="3" fill="#0E2E7A"/>
+
+  <!-- Headlights glow -->
+  <ellipse cx="148" cy="175" rx="10" ry="5" fill="#FFE090" opacity="0.3" filter="url(#blur5)"/>
+
+  <!-- Windscreen -->
+  <rect x="113" y="151" width="28" height="18" rx="2" fill="#4A7AAA" opacity="0.9"/>
+  <line x1="127" y1="151" x2="127" y2="169" stroke="#3A6A9A" stroke-width="0.8"/>
+
+  <!-- Headlights -->
+  <rect x="143" y="153" width="6" height="5" rx="1" fill="#FFE090"/>
+  <rect x="143" y="163" width="6" height="4" rx="1" fill="#FFA030" opacity="0.9"/>
+
+  <!-- Gold stripe -->
+  <rect x="18" y="158" width="120" height="6" fill="#D4AF37" opacity="0.95"/>
+
+  <!-- EXPRESS badge on van side -->
+  <rect x="22" y="145" width="48" height="11" rx="5" fill="#FF6B00" opacity="0.95"/>
+  <text x="46" y="153" font-family="system-ui,Arial,sans-serif" font-size="6.5" font-weight="900" fill="white" text-anchor="middle" letter-spacing="0.8">EXPRESS</text>
+
+  <!-- Fast Man & Van text -->
+  <text x="78" y="155" font-family="system-ui,Arial,sans-serif" font-size="5.5" font-weight="700" fill="#D4AF37" text-anchor="middle" letter-spacing="0.3">FAST MAN &amp; VAN</text>
+
+  <!-- Van door line -->
+  <line x1="68" y1="140" x2="68" y2="190" stroke="#1B3A8C" stroke-width="1.5"/>
+  <line x1="18" y1="166" x2="110" y2="166" stroke="#1B3A8C" stroke-width="1"/>
+
+  <!-- Wheels with spin effect -->
+  <circle cx="43" cy="193" r="14" fill="#0A0A18"/>
+  <circle cx="43" cy="193" r="10" fill="#1A1A30"/>
+  <circle cx="43" cy="193" r="4.5" fill="#D4AF37"/>
+  <line x1="43" y1="183" x2="43" y2="203" stroke="#888" stroke-width="1.5" opacity="0.5"/>
+  <line x1="33" y1="193" x2="53" y2="193" stroke="#888" stroke-width="1.5" opacity="0.5"/>
+
+  <circle cx="108" cy="193" r="14" fill="#0A0A18"/>
+  <circle cx="108" cy="193" r="10" fill="#1A1A30"/>
+  <circle cx="108" cy="193" r="4.5" fill="#D4AF37"/>
+  <line x1="108" y1="183" x2="108" y2="203" stroke="#888" stroke-width="1.5" opacity="0.5"/>
+  <line x1="98" y1="193" x2="118" y2="193" stroke="#888" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Speed lines -->
+  <g stroke="#FF8C00" stroke-linecap="round" opacity="0.45">
+    <line x1="0" y1="148" x2="15" y2="148" stroke-width="2"/>
+    <line x1="0" y1="155" x2="12" y2="155" stroke-width="1.5"/>
+    <line x1="0" y1="162" x2="10" y2="162" stroke-width="1"/>
+    <line x1="0" y1="170" x2="16" y2="170" stroke-width="2"/>
+    <line x1="0" y1="176" x2="8" y2="176" stroke-width="1"/>
+  </g>
+
+  <!-- Delivery destination house (right side) -->
+  <rect x="250" y="120" width="60" height="65" fill="#D4896A" opacity="0.8"/>
+  <polygon points="244,122 280,95 316,122" fill="#8B4513" opacity="0.8"/>
+  <rect x="258" y="138" width="16" height="14" fill="#B8D4E8" opacity="0.7"/>
+  <rect x="280" y="138" width="16" height="14" fill="#B8D4E8" opacity="0.7"/>
+  <rect x="264" y="158" width="18" height="27" fill="#8B3A3A" opacity="0.7"/>
+
+  <!-- Porch light on house -->
+  <circle cx="280" cy="160" r="5" fill="#FFE090" opacity="0.7" filter="url(#blur5)"/>
+  <circle cx="280" cy="160" r="2.5" fill="#FFE090" opacity="0.9"/>
+
+  <!-- Clock/timer badge -->
+  <circle cx="318" cy="48" r="28" fill="#FF6B00" opacity="0.92"/>
+  <circle cx="318" cy="48" r="23" fill="#FF5500" opacity="0.8"/>
+  <circle cx="318" cy="48" r="20" fill="none" stroke="white" stroke-width="1.5" opacity="0.6"/>
+  <!-- Clock face -->
+  <line x1="318" y1="48" x2="318" y2="32" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="318" y1="48" x2="328" y2="54" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="318" cy="48" r="2.5" fill="white"/>
+  <text x="318" y="78" font-family="system-ui,Arial,sans-serif" font-size="7" font-weight="900" fill="white" text-anchor="middle" letter-spacing="0.3">SAME DAY</text>
 </svg>
