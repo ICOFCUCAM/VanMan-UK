@@ -1,15 +1,60 @@
 import React from 'react';
-import { ArrowRight, Home, Package, Building2 } from 'lucide-react';
+import { ArrowRight, Home, Package, Building2, GraduationCap, Sofa, CalendarDays } from 'lucide-react';
 import { SERVICE_IMAGES } from '@/lib/constants';
 
 interface ServicesPreviewProps {
   onNavigate: (page: string) => void;
 }
 
-const preview = [
-  { icon: Home,      title: 'House Moving',      desc: 'Full house moves from studio flats to 5-bed homes.',    tag: 'Most Popular', tagStyle: 'bg-[#F5B400] text-[#0B2239]', image: SERVICE_IMAGES.houseMoving },
-  { icon: Package,   title: 'Same Day Delivery', desc: 'Urgent deliveries within hours. Express dispatch.',      tag: 'Express',      tagStyle: 'bg-orange-500 text-white',       image: SERVICE_IMAGES.sameDayDelivery },
-  { icon: Building2, title: 'Office Relocation', desc: 'Efficient office moves with minimal downtime.',          tag: null,           tagStyle: '',                               image: SERVICE_IMAGES.officeRelocation },
+const SERVICES = [
+  {
+    icon: Home,
+    title: 'House Moving',
+    desc: 'Full house moves from studio flats to 5-bed homes. Careful, insured, stress-free.',
+    tag: 'Most Popular',
+    tagStyle: 'bg-[#F5B400] text-[#0B2239]',
+    image: SERVICE_IMAGES.houseMoving,
+  },
+  {
+    icon: Package,
+    title: 'Same Day Delivery',
+    desc: 'Urgent parcel and furniture deliveries within hours. Express dispatch guaranteed.',
+    tag: 'Express',
+    tagStyle: 'bg-orange-500 text-white',
+    image: SERVICE_IMAGES.sameDayDelivery,
+  },
+  {
+    icon: Building2,
+    title: 'Office Relocation',
+    desc: 'Efficient office moves with minimal downtime. Weekend and out-of-hours available.',
+    tag: null,
+    tagStyle: '',
+    image: SERVICE_IMAGES.officeRelocation,
+  },
+  {
+    icon: GraduationCap,
+    title: 'Student Moves',
+    desc: 'Affordable moves for students. Halls, shared houses, and storage — 10% discount applied.',
+    tag: '10% Off',
+    tagStyle: 'bg-blue-600 text-white',
+    image: SERVICE_IMAGES.studentMoves,
+  },
+  {
+    icon: Sofa,
+    title: 'Furniture Delivery',
+    desc: 'Single-item deliveries and flat-pack assembly. Perfect for marketplace and retailer purchases.',
+    tag: null,
+    tagStyle: '',
+    image: SERVICE_IMAGES.furnitureDelivery,
+  },
+  {
+    icon: CalendarDays,
+    title: 'Scheduled Deliveries',
+    desc: 'Plan ahead with scheduled slots. Ideal for businesses and regular delivery runs.',
+    tag: 'Business',
+    tagStyle: 'bg-[#0E2A47] text-white',
+    image: SERVICE_IMAGES.scheduled,
+  },
 ];
 
 const ServicesPreview: React.FC<ServicesPreviewProps> = ({ onNavigate }) => (
@@ -25,25 +70,24 @@ const ServicesPreview: React.FC<ServicesPreviewProps> = ({ onNavigate }) => (
           onClick={() => onNavigate('services')}
           className="flex items-center gap-2 text-[#0E2A47] text-sm font-semibold hover:gap-3 transition-all shrink-0"
         >
-          View all 6 services
+          View all services
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        {preview.map((s, idx) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {SERVICES.map((s, idx) => (
           <button
             key={idx}
             onClick={() => onNavigate('services')}
             className="group bg-white rounded-2xl overflow-hidden border border-gray-100/80 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 text-left"
-            style={{ boxShadow: '0px 4px 20px rgba(0,0,0,0.06)' }}
           >
             <div className="relative overflow-hidden h-[180px]">
               <img
                 src={s.image}
                 alt={s.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                onError={(e) => {
+                onError={e => {
                   const t = e.currentTarget;
                   t.style.display = 'none';
                   const p = t.parentElement;

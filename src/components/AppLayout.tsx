@@ -15,10 +15,9 @@ import TrustMetricsStrip from './TrustMetricsStrip';
 import StatsSection from './StatsSection';
 import HowItWorks from './HowItWorks';
 import ServicesPreview from './ServicesPreview';
+import VanTypesSection from './VanTypesSection';
 import EnterprisePreview from './EnterprisePreview';
 import CustomerRatingSummary from './CustomerRatingSummary';
-import VanCalculator from './VanCalculator';
-import BookingChecklist from './BookingChecklist';
 import MovingToolsSection from './MovingToolsSection';
 import CitiesSection from './CitiesSection';
 import SubscriptionTeaser from './SubscriptionTeaser';
@@ -29,14 +28,14 @@ import DriverSubscriptionPage from './pages/DriverSubscriptionPage';
 import MovingChecklistPage from './pages/MovingChecklistPage';
 import VanGuidePage from './pages/VanGuidePage';
 
-// New content pages
+// Content pages
 import ServicesPage from './pages/ServicesPage';
 import TechnologyPage from './pages/TechnologyPage';
 import DriversPage from './pages/DriversPage';
 import StudentsPage from './pages/StudentsPage';
 import EnterprisePage from './pages/EnterprisePage';
 
-// Other app pages
+// Functional pages
 import DriverRegistration from './DriverRegistration';
 import DriverMarketplace from './DriverMarketplace';
 import TrackingView from './TrackingView';
@@ -102,15 +101,24 @@ const AppLayout: React.FC = () => {
     if (currentPage === 'login' || currentPage === 'driver-login') return <LoginPage onNavigate={navigate} />;
     if (currentPage === 'driver-register') return <DriverRegistration onNavigate={navigate} />;
 
-    // Content pages (new multi-page structure)
+    // Content pages
     if (currentPage === 'services') return <ServicesPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
     if (currentPage === 'technology') return <TechnologyPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
     if (currentPage === 'drivers') return <DriversPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
     if (currentPage === 'students') return <StudentsPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
     if (currentPage === 'enterprise') return <EnterprisePage onNavigate={navigate} />;
-    if (currentPage === 'driver-subscription') return <DriverSubscriptionPage onNavigate={navigate} />;
+
+    // Tools pages (public)
     if (currentPage === 'moving-checklist') return <MovingChecklistPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
     if (currentPage === 'van-guide') return <VanGuidePage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
+
+    // Driver subscription — requires authentication + driver role
+    if (currentPage === 'driver-subscription') {
+      if (isLoading) return <LoadingScreen />;
+      if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
+      if (role !== 'driver' && role !== 'admin') return <AccessDenied onNavigate={navigate} />;
+      return <DriverSubscriptionPage onNavigate={navigate} />;
+    }
 
     // Public functional pages
     if (currentPage === 'tracking') return <TrackingView onNavigate={navigate} />;
@@ -150,11 +158,10 @@ const AppLayout: React.FC = () => {
         <StatsSection />
         <ServicesPreview onNavigate={navigate} />
         <HowItWorks />
-        <VanCalculator onNavigate={navigate} />
+        <VanTypesSection onNavigate={navigate} onScrollToBooking={scrollToBooking} />
         <MovingToolsSection onNavigate={navigate} />
         <CitiesSection onNavigate={navigate} onScrollToBooking={scrollToBooking} />
         <CustomerRatingSummary />
-        <BookingChecklist onNavigate={navigate} onScrollToBooking={scrollToBooking} />
         <SubscriptionTeaser onNavigate={navigate} />
         <EnterprisePreview onNavigate={navigate} />
         <DriverCTA onNavigate={navigate} />
