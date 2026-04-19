@@ -76,6 +76,58 @@ export async function getWalletTransactions(driverId: string): Promise<{ data: W
   }
 }
 
+export interface EscrowPayment {
+  id: string;
+  booking_id: string;
+  status: 'held' | 'escrow' | 'released' | 'refunded';
+  driver_earning: number | null;
+  commission_amount: number | null;
+  refund_amount: number | null;
+  created_at: string;
+  released_at: string | null;
+  booking?: {
+    booking_ref: string | null;
+    collection_address: string;
+    delivery_address: string;
+    estimated_price: number;
+    payment_method: string;
+    driver_id: string | null;
+  };
+}
+
+export async function getEscrowPayments(): Promise<{ data: EscrowPayment[]; error: Error | null }> {
+  try {
+    const { data, error } = await supabase
+      .from('escrow_payments')
+      .select('*, booking:bookings(booking_ref, collection_address, delivery_address, estimated_price, payment_method, driver_id)')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return { data: (data ?? []) as EscrowPayment[], error: null };
+  } catch (err) {
+    return { data: [], error: err as Error };
+  }
+}
+
+export async function releaseEscrowManually(bookingId: string): Promise<ServiceResult<null>> {
+  try {
+    const { error } = await supabase.rpc('release_escrow_manually', { p_booking_id: bookingId });
+    if (error) throw error;
+    return { data: null, error: null };
+  } catch (err) {
+    return { data: null, error: err as Error };
+  }
+}
+
+export async function refundEscrowManually(bookingId: string): Promise<ServiceResult<null>> {
+  try {
+    const { error } = await supabase.rpc('refund_escrow_manually', { p_booking_id: bookingId });
+    if (error) throw error;
+    return { data: null, error: null };
+  } catch (err) {
+    return { data: null, error: err as Error };
+  }
+}
+
 // Fallback: update payment_status directly (dev/testing — no real money moves)
 export async function activateEscrowFallback(bookingId: string, price: number): Promise<ServiceResult<null>> {
   try {

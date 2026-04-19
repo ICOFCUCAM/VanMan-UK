@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BarChart3, Users, Truck, DollarSign, CheckCircle, XCircle, Clock, AlertTriangle, Star, Shield, Search, Eye, TrendingUp, Activity, Loader2, AlertCircle } from 'lucide-react';
+import { BarChart3, Users, Truck, DollarSign, CheckCircle, XCircle, Clock, AlertTriangle, Star, Shield, Search, TrendingUp, Activity, Loader2, AlertCircle, Lock, Unlock, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { getAllDrivers, updateDriverStatus } from '@/services/drivers';
 import { getAllBookings } from '@/services/bookings';
+import { getEscrowPayments, releaseEscrowManually, refundEscrowManually, type EscrowPayment } from '@/services/escrow';
 import type { Driver, Booking } from '@/types';
 
 interface AdminDashboardProps {
@@ -23,14 +24,23 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [escrowPayments, setEscrowPayments] = useState<EscrowPayment[]>([]);
   const [loadingDrivers, setLoadingDrivers] = useState(true);
   const [loadingBookings, setLoadingBookings] = useState(true);
+  const [loadingEscrow, setLoadingEscrow] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [actionError, setActionError] = useState<string | null>(null);
+  const [escrowActionId, setEscrowActionId] = useState<string | null>(null);
+
+  const refreshEscrow = () => {
+    setLoadingEscrow(true);
+    getEscrowPayments().then(({ data }) => { setEscrowPayments(data); setLoadingEscrow(false); });
+  };
 
   useEffect(() => {
     getAllDrivers().then(({ data }) => { setDrivers(data); setLoadingDrivers(false); });
     getAllBookings().then(({ data }) => { setBookings(data); setLoadingBookings(false); });
+    refreshEscrow();
   }, []);
 
   const approveDriver = async (id: string) => {
@@ -45,6 +55,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     const { error } = await updateDriverStatus(id, 'rejected');
     if (error) { setActionError(error.message); return; }
     setDrivers(prev => prev.map(d => d.id === id ? { ...d, status: 'rejected' } : d));
+  };
+
+  const handleReleaseEscrow = async (bookingId: string) => {
+    setActionError(null);
+    setEscrowActionId(bookingId);
+    const { error } = await releaseEscrowManually(bookingId);
+    setEscrowActionId(null);
+    if (error) { setActionError(error.message); return; }
+    refreshEscrow();
+  };
+
+  const handleRefundEscrow = async (bookingId: string) => {
+    if (!confirm('Refund this payment? The driver\'s pending balance will be reversed. You must also refund the customer via the Stripe Dashboard.')) return;
+    setActionError(null);
+    setEscrowActionId(bookingId);
+    const { error } = await refundEscrowManually(bookingId);
+    setEscrowActionId(null);
+    if (error) { setActionError(error.message); return; }
+    refreshEscrow();
   };
 
   const revenueData = useMemo(() => {
@@ -88,11 +117,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     d.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const escrowHeld = escrowPayments.filter(e => e.status === 'escrow');
+
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'analytics', label: 'Analytics', icon: TrendingUp },
     { id: 'drivers', label: 'Driver Approvals', icon: Users },
     { id: 'bookings', label: 'Bookings', icon: Truck },
+    { id: 'escrow', label: 'Escrow', icon: Lock },
     { id: 'pricing', label: 'Pricing Rules', icon: DollarSign },
     { id: 'disputes', label: 'Disputes', icon: AlertTriangle },
   ];
@@ -127,6 +159,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                 {tab.label}
                 {tab.id === 'drivers' && pendingDrivers.length > 0 && (
                   <span className="ml-auto bg-orange-400 text-white text-xs rounded-full px-1.5 py-0.5">{pendingDrivers.length}</span>
+                )}
+                {tab.id === 'escrow' && escrowHeld.length > 0 && (
+                  <span className="ml-auto bg-blue-400 text-white text-xs rounded-full px-1.5 py-0.5">{escrowHeld.length}</span>
                 )}
               </button>
             ))}
@@ -482,6 +517,127 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                       </tbody>
                     </table>
                     {bookings.length === 0 && <p className="text-center text-gray-400 text-sm py-8">No bookings yet.</p>}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Escrow Management */}
+          {activeTab === 'escrow' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Escrow Management</h2>
+                  <p className="text-gray-500 text-sm mt-0.5">Release or refund payments held in escrow</p>
+                </div>
+                <button onClick={refreshEscrow} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-white border border-gray-200 px-3 py-2 rounded-lg transition-colors">
+                  <RefreshCw className="w-4 h-4" /> Refresh
+                </button>
+              </div>
+
+              {/* Summary cards */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: 'Held in Escrow', count: escrowPayments.filter(e => e.status === 'escrow').length, value: escrowPayments.filter(e => e.status === 'escrow').reduce((s, e) => s + (e.driver_earning ?? 0) + (e.commission_amount ?? 0), 0), color: 'bg-blue-500' },
+                  { label: 'Released', count: escrowPayments.filter(e => e.status === 'released').length, value: escrowPayments.filter(e => e.status === 'released').reduce((s, e) => s + (e.driver_earning ?? 0) + (e.commission_amount ?? 0), 0), color: 'bg-green-500' },
+                  { label: 'Refunded', count: escrowPayments.filter(e => e.status === 'refunded').length, value: escrowPayments.filter(e => e.status === 'refunded').reduce((s, e) => s + (e.driver_earning ?? 0) + (e.commission_amount ?? 0), 0), color: 'bg-red-500' },
+                  { label: 'Total Commission', count: null, value: escrowPayments.filter(e => e.status === 'released').reduce((s, e) => s + (e.commission_amount ?? 0), 0), color: 'bg-[#D4AF37]' },
+                ].map((card, i) => (
+                  <div key={i} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div className={`w-8 h-8 ${card.color} rounded-lg flex items-center justify-center mb-3`}>
+                      <Lock className="w-4 h-4 text-white" />
+                    </div>
+                    <p className="text-2xl font-bold text-gray-900">£{card.value.toFixed(2)}</p>
+                    <p className="text-gray-500 text-xs mt-0.5">{card.label}</p>
+                    {card.count !== null && <p className="text-xs text-gray-400">{card.count} payment{card.count !== 1 ? 's' : ''}</p>}
+                  </div>
+                ))}
+              </div>
+
+              {loadingEscrow ? (
+                <div className="flex items-center justify-center py-12"><Loader2 className="w-8 h-8 text-[#0A2463] animate-spin" /></div>
+              ) : (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50">
+                        <tr className="text-left text-gray-500">
+                          <th className="px-4 py-3 font-medium">Booking</th>
+                          <th className="px-4 py-3 font-medium">Route</th>
+                          <th className="px-4 py-3 font-medium">Total</th>
+                          <th className="px-4 py-3 font-medium">Driver Earns</th>
+                          <th className="px-4 py-3 font-medium">Commission</th>
+                          <th className="px-4 py-3 font-medium">Status</th>
+                          <th className="px-4 py-3 font-medium">Date</th>
+                          <th className="px-4 py-3 font-medium">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {escrowPayments.map(ep => {
+                          const total = (ep.driver_earning ?? 0) + (ep.commission_amount ?? 0);
+                          const isProcessing = escrowActionId === ep.booking_id;
+                          return (
+                            <tr key={ep.id} className="border-t border-gray-100 hover:bg-gray-50">
+                              <td className="px-4 py-3 font-mono text-xs text-gray-400">
+                                {ep.booking?.booking_ref ?? ep.booking_id.slice(0, 8).toUpperCase()}
+                              </td>
+                              <td className="px-4 py-3 text-xs text-gray-600 max-w-[180px] truncate">
+                                {ep.booking
+                                  ? `${ep.booking.collection_address.split(',')[0]} → ${ep.booking.delivery_address.split(',')[0]}`
+                                  : '—'}
+                              </td>
+                              <td className="px-4 py-3 font-semibold text-gray-900">£{total.toFixed(2)}</td>
+                              <td className="px-4 py-3 text-green-700 font-medium">£{(ep.driver_earning ?? 0).toFixed(2)}</td>
+                              <td className="px-4 py-3 text-[#8B6914] font-medium">£{(ep.commission_amount ?? 0).toFixed(2)}</td>
+                              <td className="px-4 py-3">
+                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  ep.status === 'escrow'    ? 'bg-blue-100 text-blue-700' :
+                                  ep.status === 'released'  ? 'bg-green-100 text-green-700' :
+                                  ep.status === 'refunded'  ? 'bg-red-100 text-red-700' :
+                                  'bg-gray-100 text-gray-600'
+                                }`}>{ep.status}</span>
+                              </td>
+                              <td className="px-4 py-3 text-xs text-gray-400">
+                                {new Date(ep.created_at).toLocaleDateString('en-GB')}
+                              </td>
+                              <td className="px-4 py-3">
+                                {ep.status === 'escrow' ? (
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      onClick={() => handleReleaseEscrow(ep.booking_id)}
+                                      disabled={isProcessing}
+                                      className="flex items-center gap-1 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                                    >
+                                      {isProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Unlock className="w-3 h-3" />}
+                                      Release
+                                    </button>
+                                    <button
+                                      onClick={() => handleRefundEscrow(ep.booking_id)}
+                                      disabled={isProcessing}
+                                      className="flex items-center gap-1 bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                                    >
+                                      {isProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : <XCircle className="w-3 h-3" />}
+                                      Refund
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <span className="text-gray-400 text-xs italic">
+                                    {ep.status === 'released' ? `Released ${ep.released_at ? new Date(ep.released_at).toLocaleDateString('en-GB') : ''}` : ep.status}
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    {escrowPayments.length === 0 && (
+                      <div className="text-center py-12">
+                        <Lock className="w-10 h-10 text-gray-200 mx-auto mb-3" />
+                        <p className="text-gray-400 text-sm">No escrow payments yet.</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
