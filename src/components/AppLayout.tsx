@@ -11,16 +11,23 @@ import CookieConsent from './CookieConsent';
 // Homepage sections
 import HeroSlider from './HeroSlider';
 import BookingWidget from './BookingWidget';
-import DriverSubscriptionPage from './pages/DriverSubscriptionPage';
 import TrustMetricsStrip from './TrustMetricsStrip';
+import StatsSection from './StatsSection';
 import HowItWorks from './HowItWorks';
-import NationwideCoverageStrip from './NationwideCoverageStrip';
 import ServicesPreview from './ServicesPreview';
 import EnterprisePreview from './EnterprisePreview';
 import CustomerRatingSummary from './CustomerRatingSummary';
-import FinalCTA from './FinalCTA';
 import VanCalculator from './VanCalculator';
 import BookingChecklist from './BookingChecklist';
+import MovingToolsSection from './MovingToolsSection';
+import CitiesSection from './CitiesSection';
+import SubscriptionTeaser from './SubscriptionTeaser';
+import DriverCTA from './DriverCTA';
+
+// App pages
+import DriverSubscriptionPage from './pages/DriverSubscriptionPage';
+import MovingChecklistPage from './pages/MovingChecklistPage';
+import VanGuidePage from './pages/VanGuidePage';
 
 // New content pages
 import ServicesPage from './pages/ServicesPage';
@@ -29,7 +36,7 @@ import DriversPage from './pages/DriversPage';
 import StudentsPage from './pages/StudentsPage';
 import EnterprisePage from './pages/EnterprisePage';
 
-// App pages
+// Other app pages
 import DriverRegistration from './DriverRegistration';
 import DriverMarketplace from './DriverMarketplace';
 import TrackingView from './TrackingView';
@@ -102,6 +109,8 @@ const AppLayout: React.FC = () => {
     if (currentPage === 'students') return <StudentsPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
     if (currentPage === 'enterprise') return <EnterprisePage onNavigate={navigate} />;
     if (currentPage === 'driver-subscription') return <DriverSubscriptionPage onNavigate={navigate} />;
+    if (currentPage === 'moving-checklist') return <MovingChecklistPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
+    if (currentPage === 'van-guide') return <VanGuidePage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
 
     // Public functional pages
     if (currentPage === 'tracking') return <TrackingView onNavigate={navigate} />;
@@ -132,20 +141,23 @@ const AppLayout: React.FC = () => {
     // Payment
     if (currentPage === 'payment') return <PaymentPage onNavigate={navigate} />;
 
-    // Home — simplified platform entry
+    // Home
     return (
       <>
         <HeroSlider onNavigate={navigate} bookingRef={bookingRef} />
         <BookingWidget bookingRef={bookingRef} onNavigate={navigate} />
         <TrustMetricsStrip />
+        <StatsSection />
+        <ServicesPreview onNavigate={navigate} />
         <HowItWorks />
         <VanCalculator onNavigate={navigate} />
-        <NationwideCoverageStrip />
-        <ServicesPreview onNavigate={navigate} />
-        <BookingChecklist onNavigate={navigate} onScrollToBooking={scrollToBooking} />
-        <EnterprisePreview onNavigate={navigate} />
+        <MovingToolsSection onNavigate={navigate} />
+        <CitiesSection onNavigate={navigate} onScrollToBooking={scrollToBooking} />
         <CustomerRatingSummary />
-        <FinalCTA onScrollToBooking={scrollToBooking} onNavigate={navigate} />
+        <BookingChecklist onNavigate={navigate} onScrollToBooking={scrollToBooking} />
+        <SubscriptionTeaser onNavigate={navigate} />
+        <EnterprisePreview onNavigate={navigate} />
+        <DriverCTA onNavigate={navigate} />
       </>
     );
   };

@@ -15,6 +15,15 @@ interface BookingWidgetProps {
 
 const STEPS = ['Route', 'Options', 'Quote'] as const;
 
+const MOVE_TYPE_OPTIONS = [
+  { value: 'single-item', label: 'Single item / boxes', vehicle: 'small' },
+  { value: 'student', label: 'Student move', vehicle: 'small' },
+  { value: 'apartment', label: '1–2 bed flat', vehicle: 'medium' },
+  { value: 'house', label: '2–3 bed house', vehicle: 'large' },
+  { value: 'large-house', label: '3+ bed house', vehicle: 'luton' },
+  { value: 'office', label: 'Office move', vehicle: 'large' },
+];
+
 const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, embedded = false }) => {
   const { user } = useAppContext();
 
@@ -39,6 +48,8 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
   const [scheduledAt, setScheduledAt] = useState('');
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurringFrequency, setRecurringFrequency] = useState<'weekly' | 'biweekly' | 'monthly'>('weekly');
+  const [moveType, setMoveType] = useState('apartment');
+  const [moveDate, setMoveDate] = useState('');
 
   const addStop = () => setStopAddresses([...stopAddresses, '']);
   const removeStop = (idx: number) => setStopAddresses(stopAddresses.filter((_, i) => i !== idx));
@@ -167,69 +178,120 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
   };
 
   const card = (
-    <div className="bg-white rounded-2xl shadow-xl shadow-black/10 overflow-hidden border border-gray-100">
+    <div className="bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100">
 
       {/* Header with step indicator */}
-      <div className="relative bg-gradient-to-r from-[#071A2F] via-[#0E2A47] to-[#0F3558] px-5 py-4 overflow-hidden">
+      <div className="relative bg-gradient-to-r from-[#071A2F] via-[#0E2A47] to-[#0F3558] rounded-t-2xl px-6 sm:px-8 py-5 overflow-hidden">
         <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle at 85% 50%, #F5B400 0%, transparent 55%)' }} />
-        <div className="relative flex items-center justify-between">
+        <div className="relative flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h2 className="text-sm font-black text-white tracking-tight">Instant Van Quote</h2>
-            <p className="text-white/40 text-[11px] mt-0.5">No hidden fees · Verified drivers</p>
+            <h2 className="text-white text-xl font-bold">Get an instant quote</h2>
+            <p className="text-white/60 text-sm mt-0.5">No hidden fees · Verified UK drivers · Fully insured</p>
           </div>
-          <div className="flex items-center gap-1">
-            {STEPS.map((label, i) => (
-              <div key={label} className="flex items-center gap-1">
-                <div className={`h-1.5 rounded-full transition-all duration-300 ${i + 1 === step ? 'w-7 bg-[#F5B400]' : i + 1 < step ? 'w-3 bg-[#F5B400]/55' : 'w-3 bg-white/20'}`} />
-              </div>
+          <div className="hidden sm:flex items-center gap-5 text-sm text-white/70">
+            {[
+              { label: 'Fully insured', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
+              { label: '2 hr minimum', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
+              { label: 'VAT included', icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z' },
+            ].map(({ label, icon }) => (
+              <span key={label} className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-[#F5B400]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} /></svg>
+                {label}
+              </span>
             ))}
           </div>
+          {/* Step progress pills (only visible in steps 2/3) */}
+          {step > 1 && (
+            <div className="flex items-center gap-1">
+              {STEPS.map((label, i) => (
+                <div key={label} className={`h-1.5 rounded-full transition-all duration-300 ${i + 1 === step ? 'w-7 bg-[#F5B400]' : i + 1 < step ? 'w-3 bg-[#F5B400]/55' : 'w-3 bg-white/20'}`} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="p-5">
+      <div className="px-6 sm:px-8 py-6">
 
         {/* ── STEP 1: Route ── */}
         {step === 1 && (
-          <div className="space-y-3.5">
-            <div>
-              <label className="block text-[10px] font-black text-gray-400 tracking-[0.18em] uppercase mb-1.5">Collection</label>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-green-50 rounded-md flex items-center justify-center">
-                  <MapPin className="w-3.5 h-3.5 text-green-500" />
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Pickup */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Collection address</label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-green-50 rounded flex items-center justify-center pointer-events-none">
+                    <MapPin className="w-3.5 h-3.5 text-green-500" />
+                  </div>
+                  <input
+                    type="text"
+                    value={collectionAddress}
+                    onChange={(e) => setCollectionAddress(e.target.value)}
+                    placeholder="Pickup postcode or address"
+                    className="w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0E2A47]/20 focus:border-[#0E2A47] outline-none text-sm transition-colors"
+                  />
                 </div>
-                <input
-                  type="text"
-                  value={collectionAddress}
-                  onChange={(e) => setCollectionAddress(e.target.value)}
-                  placeholder="Pickup postcode or address"
-                  className="w-full py-3 border border-gray-200 rounded-xl focus:border-[#0E2A47] focus:ring-2 focus:ring-[#0E2A47]/8 outline-none transition-all text-gray-800 placeholder:text-gray-400 text-sm bg-gray-50/50 focus:bg-white"
-                  style={{ paddingLeft: '2.75rem', paddingRight: '1rem' }}
-                />
               </div>
-            </div>
-            <div>
-              <label className="block text-[10px] font-black text-gray-400 tracking-[0.18em] uppercase mb-1.5">Delivery</label>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-red-50 rounded-md flex items-center justify-center">
-                  <MapPin className="w-3.5 h-3.5 text-red-500" />
+              {/* Delivery */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Delivery address</label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-red-50 rounded flex items-center justify-center pointer-events-none">
+                    <MapPin className="w-3.5 h-3.5 text-red-500" />
+                  </div>
+                  <input
+                    type="text"
+                    value={deliveryAddress}
+                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                    placeholder="Destination postcode or address"
+                    className="w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0E2A47]/20 focus:border-[#0E2A47] outline-none text-sm transition-colors"
+                  />
                 </div>
-                <input
-                  type="text"
-                  value={deliveryAddress}
-                  onChange={(e) => setDeliveryAddress(e.target.value)}
-                  placeholder="Destination postcode or address"
-                  className="w-full py-3 border border-gray-200 rounded-xl focus:border-[#0E2A47] focus:ring-2 focus:ring-[#0E2A47]/8 outline-none transition-all text-gray-800 placeholder:text-gray-400 text-sm bg-gray-50/50 focus:bg-white"
-                  style={{ paddingLeft: '2.75rem', paddingRight: '1rem' }}
-                />
+              </div>
+              {/* Move type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Move type</label>
+                <div className="relative">
+                  <Truck className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                  <select
+                    value={moveType}
+                    onChange={(e) => {
+                      setMoveType(e.target.value);
+                      const opt = MOVE_TYPE_OPTIONS.find(o => o.value === e.target.value);
+                      if (opt) setSelectedVehicle(opt.vehicle);
+                    }}
+                    className="w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0E2A47]/20 focus:border-[#0E2A47] outline-none text-sm bg-white appearance-none"
+                  >
+                    {MOVE_TYPE_OPTIONS.map(o => (
+                      <option key={o.value} value={o.value}>{o.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {/* Date */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Moving date</label>
+                <div className="relative">
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                  <input
+                    type="date"
+                    value={moveDate}
+                    onChange={(e) => setMoveDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0E2A47]/20 focus:border-[#0E2A47] outline-none text-sm"
+                  />
+                </div>
               </div>
             </div>
 
-            <label className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border cursor-pointer transition-all text-sm select-none ${addStops ? 'border-[#0E2A47] bg-[#0E2A47]/5 text-[#0E2A47]' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
+            {/* Add stops toggle */}
+            <label className={`inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl border cursor-pointer transition-all text-sm select-none ${addStops ? 'border-[#0E2A47] bg-[#0E2A47]/5 text-[#0E2A47]' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
               <input type="checkbox" checked={addStops} onChange={(e) => setAddStops(e.target.checked)} className="sr-only" />
               <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${addStops ? 'bg-[#0E2A47] border-[#0E2A47]' : 'border-gray-300'}`}>
                 {addStops && <CheckCircle2 className="w-3 h-3 text-white" />}
               </div>
+              <Plus className="w-3.5 h-3.5" />
               <span className="font-medium">Add stop points</span>
             </label>
 
@@ -239,32 +301,35 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                   <div key={idx} className="flex gap-2">
                     <div className="relative flex-1">
                       <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#F5B400]" />
-                      <input
-                        type="text"
-                        value={stop}
-                        onChange={(e) => updateStop(idx, e.target.value)}
-                        placeholder={`Stop ${idx + 1}`}
-                        className="w-full pl-9 pr-3 py-2.5 border border-amber-200 rounded-lg focus:border-[#0E2A47] outline-none text-sm bg-white"
-                      />
+                      <input type="text" value={stop} onChange={(e) => updateStop(idx, e.target.value)} placeholder={`Stop ${idx + 1}`} className="w-full pl-9 pr-3 py-2.5 border border-amber-200 rounded-lg focus:border-[#0E2A47] outline-none text-sm bg-white" />
                     </div>
-                    <button onClick={() => removeStop(idx)} className="p-2 text-red-400 hover:text-red-600 rounded-lg transition-colors">
-                      <X className="w-4 h-4" />
-                    </button>
+                    <button onClick={() => removeStop(idx)} className="p-2 text-red-400 hover:text-red-600 rounded-lg transition-colors"><X className="w-4 h-4" /></button>
                   </div>
                 ))}
-                <button onClick={addStop} className="flex items-center gap-1.5 text-[#0E2A47] text-xs font-bold hover:text-[#0F3558]">
-                  <Plus className="w-3.5 h-3.5" /> Add stop
-                </button>
+                <button onClick={addStop} className="flex items-center gap-1.5 text-[#0E2A47] text-xs font-bold hover:text-[#0F3558]"><Plus className="w-3.5 h-3.5" /> Add stop</button>
               </div>
             )}
 
-            <button
-              onClick={() => setStep(2)}
-              disabled={!collectionAddress || !deliveryAddress}
-              className="w-full bg-[#0E2A47] hover:bg-[#0F3558] disabled:bg-gray-100 disabled:cursor-not-allowed text-white disabled:text-gray-400 py-3.5 rounded-xl font-bold text-sm transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
-            >
-              Next: Choose Vehicle <ArrowRight className="w-4 h-4" />
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+              <div className="text-xs text-gray-400 min-h-[20px]" />
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <button
+                  onClick={() => setStep(2)}
+                  disabled={!collectionAddress || !deliveryAddress}
+                  className="flex-1 sm:flex-none px-5 py-3 bg-[#0E2A47] hover:bg-[#0F3558] disabled:bg-gray-100 disabled:cursor-not-allowed text-white disabled:text-gray-400 rounded-xl font-semibold text-sm transition-all"
+                >
+                  Get Estimate
+                </button>
+                <button
+                  onClick={() => setStep(2)}
+                  disabled={!collectionAddress || !deliveryAddress}
+                  className="group flex-1 sm:flex-none px-6 py-3 bg-[#F5B400] hover:bg-[#FFD24A] disabled:opacity-40 disabled:cursor-not-allowed text-[#0B2239] rounded-xl font-black text-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#F5B400]/25 flex items-center justify-center gap-2"
+                >
+                  Book Now
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -491,8 +556,8 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
   }
 
   return (
-    <section ref={bookingRef} className="relative -mt-20 z-20 pb-20">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={bookingRef} className="relative -mt-20 z-20 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {card}
       </div>
     </section>
