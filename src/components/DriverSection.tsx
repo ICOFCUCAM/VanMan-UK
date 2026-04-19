@@ -42,7 +42,7 @@ const tiers = [
 
 const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
   return (
-    <section className="py-24 bg-[#061539] relative overflow-hidden">
+    <section className="py-16 bg-[#061539] relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#0A2463] rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl" />
@@ -50,21 +50,20 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Top section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center mb-10">
           {/* Left: content */}
           <div>
             <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-6">For Drivers</span>
-            <h2 className="text-4xl sm:text-5xl font-black text-white mb-6 leading-tight">
-              Drive with us.<br />
-              <span className="text-[#D4AF37]">Earn more.</span>
+            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">
+              Drive with us. <span className="text-[#D4AF37]">Earn more.</span>
             </h2>
-            <p className="text-white/55 text-lg mb-10 leading-relaxed">
+            <p className="text-white/55 text-base mb-8 leading-relaxed">
               Join thousands of independent drivers earning great money on their own schedule. Whether you have a small van or a Luton truck, there's work waiting.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-7">
               {benefits.map((b, idx) => (
-                <div key={idx} className="group flex gap-3 p-4 rounded-2xl bg-white/3 hover:bg-white/6 border border-white/6 hover:border-white/12 transition-all">
+                <div key={idx} className="group flex gap-3 p-3.5 rounded-xl bg-white/3 hover:bg-white/6 border border-white/6 hover:border-white/12 transition-all">
                   <b.icon className="w-5 h-5 text-[#D4AF37] mt-0.5 shrink-0" />
                   <div>
                     <p className="text-white font-semibold text-sm">{b.title}</p>
@@ -87,7 +86,7 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
               <div className="relative rounded-2xl overflow-hidden">
-                <img src={DRIVER_IMAGES[0]} alt="Driver" className="w-full h-52 object-cover" />
+                <img src={DRIVER_IMAGES[0]} alt="Driver" className="w-full h-40 object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#061539]/40 to-transparent" />
               </div>
               <div className="bg-white/5 border border-[#D4AF37]/20 rounded-2xl p-5">
@@ -101,7 +100,7 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
                 <p className="text-white/50 text-sm">Active drivers</p>
               </div>
               <div className="relative rounded-2xl overflow-hidden">
-                <img src={DRIVER_IMAGES[1]} alt="Driver" className="w-full h-52 object-cover" />
+                <img src={DRIVER_IMAGES[1]} alt="Driver" className="w-full h-40 object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#061539]/40 to-transparent" />
               </div>
             </div>
@@ -111,7 +110,7 @@ const DriverSection: React.FC<DriverSectionProps> = ({ onNavigate }) => {
         {/* Driver tiers */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {tiers.map((tier, idx) => (
-            <div key={idx} className={`rounded-3xl p-8 border ${tier.color}`}>
+            <div key={idx} className={`rounded-2xl p-6 border ${tier.color}`}>
               <div className="flex items-center gap-4 mb-6">
                 <div className={`w-12 h-12 ${tier.iconBg} rounded-2xl flex items-center justify-center shadow-lg`}>
                   <Star className={`w-6 h-6 ${tier.iconColor}`} />

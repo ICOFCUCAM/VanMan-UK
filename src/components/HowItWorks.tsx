@@ -11,23 +11,22 @@ const steps = [
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="bg-[#061539] pt-16 pb-24">
+    <section className="bg-[#061539] py-14">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
           <div>
-            <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-4">How It Works</span>
-            <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight">
-              Book your van in<br />
-              <span className="text-[#D4AF37]">4 simple steps</span>
+            <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-3">How It Works</span>
+            <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight">
+              Book your van in <span className="text-[#D4AF37]">4 simple steps</span>
             </h2>
           </div>
-          <p className="text-white/50 max-w-sm text-base leading-relaxed">Our technology makes booking as easy as ordering a ride. From quote to delivery in minutes.</p>
+          <p className="text-white/50 max-w-xs text-sm leading-relaxed">From quote to delivery in minutes — as easy as ordering a ride.</p>
         </div>
 
         {/* Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {steps.map((step, idx) => (
             <div key={idx} className="relative group">
               {/* Connector line */}
@@ -40,7 +39,7 @@ const HowItWorks: React.FC = () => {
                 </div>
               )}
 
-              <div className="relative bg-white/3 hover:bg-white/6 border border-white/8 hover:border-[#D4AF37]/20 rounded-2xl p-6 transition-all duration-300 h-full overflow-hidden">
+              <div className="relative bg-white/3 hover:bg-white/6 border border-white/8 hover:border-[#D4AF37]/20 rounded-2xl p-5 transition-all duration-300 h-full overflow-hidden">
                 {/* Decorative number */}
                 <span className="absolute -top-4 -right-2 text-8xl font-black text-white/4 leading-none select-none group-hover:text-white/6 transition-colors">
                   {step.number}

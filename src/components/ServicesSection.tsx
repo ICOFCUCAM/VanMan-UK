@@ -68,29 +68,29 @@ const vehicles = [
 
 const ServicesSection: React.FC = () => {
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <div className="text-center mb-14">
-          <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-4">Our Services</span>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5">
-            Transport solutions<br />for every need
+        <div className="text-center mb-10">
+          <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-3">Our Services</span>
+          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">
+            Transport solutions for every need
           </h2>
-          <p className="text-gray-500 max-w-xl mx-auto leading-relaxed">
+          <p className="text-gray-500 max-w-lg mx-auto text-sm leading-relaxed">
             From single item deliveries to full house moves — we connect you with the right driver for any job.
           </p>
         </div>
 
         {/* Service cards — image top layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
           {services.map((s, idx) => (
             <div
               key={idx}
-              className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/60 hover:-translate-y-1 transition-all duration-300 flex flex-col"
+              className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-gray-200/60 hover:-translate-y-0.5 transition-all duration-300 flex flex-col"
             >
               {/* Image */}
-              <div className="relative overflow-hidden h-[220px] shrink-0">
+              <div className="relative overflow-hidden h-[190px] shrink-0">
                 <img
                   src={s.image}
                   alt={s.alt}
@@ -113,7 +113,7 @@ const ServicesSection: React.FC = () => {
               </div>
 
               {/* Content */}
-              <div className="flex flex-col flex-1 p-6">
+              <div className="flex flex-col flex-1 p-5">
                 {/* Icon + title */}
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-9 h-9 bg-[#0A2463]/8 group-hover:bg-[#0A2463] rounded-xl flex items-center justify-center shrink-0 transition-colors">
@@ -140,7 +140,7 @@ const ServicesSection: React.FC = () => {
           <img src={FEATURE_IMAGES.vanLoaded} alt="Van fleet" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#061539]/98 via-[#0A2463]/90 to-[#0A2463]/50" />
 
-          <div className="relative p-8 sm:p-12 lg:p-16">
+          <div className="relative p-8 sm:p-10">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-4">Our Fleet</span>

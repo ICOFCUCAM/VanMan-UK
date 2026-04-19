@@ -17,14 +17,14 @@ const corpFeatures = [
 
 const CorporateSection: React.FC<CorporateSectionProps> = ({ onNavigate }) => {
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
 
           {/* Left: image */}
           <div className="relative order-2 lg:order-1">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-gray-900/15">
-              <img src={FEATURE_IMAGES.corporate} alt="Corporate logistics dashboard" className="w-full h-80 lg:h-[480px] object-cover" />
+              <img src={FEATURE_IMAGES.corporate} alt="Corporate logistics dashboard" className="w-full h-64 lg:h-[360px] object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#061539]/60 to-transparent" />
             </div>
 
@@ -48,15 +48,14 @@ const CorporateSection: React.FC<CorporateSectionProps> = ({ onNavigate }) => {
           {/* Right: content */}
           <div className="order-1 lg:order-2">
             <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-5">For Business</span>
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-6 leading-tight">
-              Enterprise logistics<br />
-              <span className="text-[#D4AF37]">made simple</span>
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4 leading-tight">
+              Enterprise logistics <span className="text-[#D4AF37]">made simple</span>
             </h2>
-            <p className="text-gray-500 text-lg mb-10 leading-relaxed">
+            <p className="text-gray-500 text-base mb-7 leading-relaxed">
               Streamline your business deliveries with our corporate portal — from bulk bookings to detailed analytics.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-7">
               {corpFeatures.map((f, idx) => (
                 <div key={idx} className="group flex gap-3 p-4 rounded-2xl hover:bg-white hover:shadow-md border border-transparent hover:border-gray-100 transition-all">
                   <div className="w-9 h-9 bg-[#0A2463]/8 group-hover:bg-[#0A2463] rounded-xl flex items-center justify-center shrink-0 transition-colors">

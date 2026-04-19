@@ -38,12 +38,12 @@ export const FEATURE_IMAGES = {
 };
 
 export const SERVICE_IMAGES = {
-  houseMoving:      '/images/services/house-moving.svg',
-  officeRelocation: '/images/services/office-relocation.svg',
-  furnitureDelivery:'/images/services/furniture-delivery.svg',
-  studentMoves:     '/images/services/student-moves.svg',
-  sameDayDelivery:  '/images/services/same-day-delivery.svg',
-  scheduled:        '/images/services/scheduled-transport.svg',
+  houseMoving:       'https://images.pexels.com/photos/7464232/pexels-photo-7464232.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+  officeRelocation:  'https://images.pexels.com/photos/4487362/pexels-photo-4487362.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+  furnitureDelivery: 'https://images.pexels.com/photos/7464662/pexels-photo-7464662.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+  studentMoves:      'https://images.pexels.com/photos/7683887/pexels-photo-7683887.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+  sameDayDelivery:   'https://images.pexels.com/photos/6169047/pexels-photo-6169047.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+  scheduled:         'https://images.pexels.com/photos/13811650/pexels-photo-13811650.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
 };
 
 export const PRICING = {

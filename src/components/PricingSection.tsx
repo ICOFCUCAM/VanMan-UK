@@ -70,22 +70,22 @@ const plans = [
 
 const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) => {
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <div className="text-center mb-16">
-          <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-4">Pricing</span>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5">Transparent,<br />fair pricing</h2>
-          <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed">No hidden fees. Our AI calculates the best price based on distance, time, and vehicle type.</p>
+        <div className="text-center mb-10">
+          <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-3">Pricing</span>
+          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">Transparent, fair pricing</h2>
+          <p className="text-gray-500 max-w-lg mx-auto text-sm leading-relaxed">No hidden fees. Our AI calculates the best price based on distance, time, and vehicle type.</p>
         </div>
 
         {/* Pricing cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {plans.map((plan, idx) => (
             <div
               key={idx}
-              className={`relative rounded-3xl p-8 flex flex-col transition-all duration-300 hover:-translate-y-1 ${
+              className={`relative rounded-2xl p-6 flex flex-col transition-all duration-300 hover:-translate-y-0.5 ${
                 plan.dark
                   ? 'bg-[#0A2463] shadow-2xl shadow-[#0A2463]/30'
                   : 'bg-white border border-gray-100 hover:shadow-xl hover:shadow-gray-200/60'
@@ -106,12 +106,12 @@ const PricingSection: React.FC<PricingSectionProps> = ({ onNavigate }) => {
               <h3 className={`text-xl font-black mb-1 ${plan.dark ? 'text-white' : 'text-gray-900'}`}>{plan.name}</h3>
               <p className={`text-sm mb-6 ${plan.dark ? 'text-white/50' : 'text-gray-400'}`}>{plan.desc}</p>
 
-              <div className="mb-8">
-                <span className={`text-5xl font-black ${plan.dark ? 'text-white' : 'text-[#0A2463]'}`}>{plan.price}</span>
+              <div className="mb-5">
+                <span className={`text-4xl font-black ${plan.dark ? 'text-white' : 'text-[#0A2463]'}`}>{plan.price}</span>
                 <span className={`text-sm ml-2 ${plan.dark ? 'text-white/40' : 'text-gray-400'}`}>/ {plan.unit}</span>
               </div>
 
-              <ul className="space-y-3 mb-8 flex-1">
+              <ul className="space-y-2.5 mb-5 flex-1">
                 {plan.features.map((f, i) => (
                   <li key={i} className={`flex items-start gap-2.5 text-sm ${plan.dark ? 'text-white/70' : 'text-gray-600'}`}>
                     <CheckCircle className={`w-4 h-4 mt-0.5 shrink-0 ${plan.dark ? 'text-[#D4AF37]' : 'text-green-500'}`} />

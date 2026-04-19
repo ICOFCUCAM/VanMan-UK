@@ -18,7 +18,7 @@ const ReviewsSection: React.FC = () => {
   );
 
   return (
-    <section className="py-24 bg-[#0A2463] relative overflow-hidden">
+    <section className="py-14 bg-[#0A2463] relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4AF37]/3 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
@@ -27,12 +27,12 @@ const ReviewsSection: React.FC = () => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Aggregate rating header */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10 mb-16">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-10">
           <div>
-            <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-6">Customer Reviews</span>
+            <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-4">Customer Reviews</span>
             <div className="flex items-end gap-6">
               <div>
-                <p className="text-7xl font-black text-white leading-none mb-2">4.9</p>
+                <p className="text-6xl font-black text-white leading-none mb-2">4.9</p>
                 <div className="flex gap-1 mb-2">
                   {[1,2,3,4,5].map(s => (
                     <Star key={s} className="w-5 h-5 text-[#D4AF37] fill-[#D4AF37]" />
@@ -72,7 +72,7 @@ const ReviewsSection: React.FC = () => {
         {/* Review cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {SAMPLE_REVIEWS.slice(currentReview, currentReview + visibleCount).map((review, idx) => (
-            <div key={review.id} className={`relative bg-white/5 hover:bg-white/8 border border-white/10 hover:border-[#D4AF37]/20 rounded-2xl p-7 transition-all duration-300 ${idx === 1 ? 'lg:scale-[1.02] lg:shadow-2xl' : ''}`}>
+            <div key={review.id} className="relative bg-white/5 hover:bg-white/8 border border-white/10 hover:border-[#D4AF37]/20 rounded-2xl p-6 transition-all duration-300">
               <Quote className="w-8 h-8 text-[#D4AF37]/20 mb-5" />
               <p className="text-white/70 leading-relaxed mb-6 text-sm">{review.text}</p>
               <div className="flex items-center justify-between pt-5 border-t border-white/8">

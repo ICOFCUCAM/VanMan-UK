@@ -43,22 +43,22 @@ const features = [
 
 const FeaturesSection: React.FC = () => {
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <div className="text-center mb-14">
-          <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-4">Why Choose Us</span>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5">Built for trust<br />and reliability</h2>
-          <p className="text-gray-500 max-w-xl mx-auto leading-relaxed">Enterprise-grade technology and rigorous driver standards — every delivery backed by our guarantee.</p>
+        <div className="text-center mb-10">
+          <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-3">Why Choose Us</span>
+          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">Built for trust and reliability</h2>
+          <p className="text-gray-500 max-w-lg mx-auto text-sm leading-relaxed">Enterprise-grade technology and rigorous driver standards — every delivery backed by our guarantee.</p>
         </div>
 
         {/* 4 key features — 2x2 clean white cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
           {features.map((f, idx) => (
             <div
               key={idx}
-              className={`bg-white rounded-3xl p-8 border border-gray-100 shadow-sm border-l-4 ${f.border} hover:shadow-md transition-shadow`}
+              className={`bg-white rounded-2xl p-6 border border-gray-100 shadow-sm border-l-4 ${f.border} hover:shadow-md transition-shadow`}
             >
               <div className="flex items-start justify-between gap-4 mb-5">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${f.accent}`}>
@@ -85,7 +85,7 @@ const FeaturesSection: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-[#061539]/95 via-[#0A2463]/80 to-transparent" />
 
           <div className="absolute inset-0 flex items-center">
-            <div className="p-8 sm:p-14 max-w-2xl">
+            <div className="p-8 sm:p-10 max-w-2xl">
               <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-4">Intelligent Routing</span>
               <h3 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">Route optimised<br />for real UK roads</h3>
               <p className="text-white/60 mb-8 leading-relaxed max-w-md">OSRM-powered routing calculates real road distances across the entire UK — transparent pricing before you confirm.</p>
