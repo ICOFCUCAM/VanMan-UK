@@ -158,6 +158,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
       `Man & Van – ${collectionAddress} → ${deliveryAddress}`,
       `${origin}?payment=success`,
       `${origin}?payment=cancelled`,
+      user?.email,
     );
     if (error || !url) {
       setBookingError(error?.message ?? 'Could not start payment. Please try again.');
