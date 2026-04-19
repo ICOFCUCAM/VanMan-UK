@@ -9,20 +9,17 @@ const metrics = [
 ];
 
 const TrustMetricsStrip: React.FC = () => (
-  <section
-    className="border-y border-white/[0.07] py-5"
-    style={{ background: 'rgba(11,34,57,0.97)' }}
-  >
+  <section className="bg-white border-b border-gray-100/80 py-4">
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 sm:gap-x-14">
         {metrics.map((m, i) => (
           <React.Fragment key={i}>
             <div className="flex items-center gap-2.5">
-              <p className="text-base font-black text-[#F5B400] leading-none">{m.value}</p>
-              <p className="text-xs text-[#8FA9C4] font-medium leading-none">{m.label}</p>
+              <p className="text-sm font-black text-[#0B2239] leading-none">{m.value}</p>
+              <p className="text-xs text-gray-400 font-medium leading-none">{m.label}</p>
             </div>
             {i < metrics.length - 1 && (
-              <span className="hidden sm:block w-px h-4 bg-white/[0.08]" />
+              <span className="hidden sm:block w-px h-4 bg-gray-200" />
             )}
           </React.Fragment>
         ))}
