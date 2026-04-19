@@ -1,59 +1,81 @@
 import React from 'react';
-import { MapPin, Search, Truck, CheckCircle, Star, Shield, Clock, CreditCard } from 'lucide-react';
+import { MapPin, Search, Truck, CheckCircle, Star, Shield, Clock, CreditCard, ArrowRight } from 'lucide-react';
 
 const steps = [
-  { icon: MapPin, title: 'Enter Your Addresses', desc: 'Tell us where to pick up and deliver your goods. Add multiple stops if needed.', color: 'bg-blue-500' },
-  { icon: Search, title: 'Get Instant Quote', desc: 'Our AI calculates distance, time, and gives you a transparent price instantly.', color: 'bg-[#D4AF37]' },
-  { icon: Truck, title: 'Driver Matched', desc: 'Our smart dispatch matches you with the nearest top-rated available driver.', color: 'bg-green-500' },
-  { icon: CheckCircle, title: 'Goods Delivered', desc: 'Track your driver in real-time. Rate the service when your goods arrive safely.', color: 'bg-purple-500' },
+  { icon: MapPin, number: '01', title: 'Enter Your Addresses', desc: 'Tell us where to collect and deliver. Add multiple stops or extra helpers.', color: 'text-blue-400' },
+  { icon: Search, number: '02', title: 'Get Instant Quote', desc: 'Our routing engine calculates the real road distance and gives a transparent price instantly.', color: 'text-[#D4AF37]' },
+  { icon: Truck, number: '03', title: 'Driver Matched', desc: 'Smart dispatch connects you with the nearest top-rated available driver.', color: 'text-green-400' },
+  { icon: CheckCircle, number: '04', title: 'Goods Delivered', desc: 'Track live on the map. Rate the service when your goods arrive safely.', color: 'text-purple-400' },
 ];
 
 const stats = [
-  { icon: Truck, value: '10,000+', label: 'Active Drivers' },
-  { icon: Star, value: '4.9/5', label: 'Average Rating' },
-  { icon: Shield, value: '100%', label: 'Insured Deliveries' },
-  { icon: Clock, value: '<15min', label: 'Avg. Response Time' },
-  { icon: CreditCard, value: '£50', label: 'Starting From' },
-  { icon: MapPin, value: 'UK Wide', label: 'Coverage' },
+  { value: '10,000+', label: 'Active Drivers', icon: Truck },
+  { value: '4.9 / 5', label: 'Average Rating', icon: Star },
+  { value: '100%', label: 'Insured Deliveries', icon: Shield },
+  { value: '<15 min', label: 'Avg Response Time', icon: Clock },
+  { value: '£50', label: 'Starting From', icon: CreditCard },
+  { value: 'UK Wide', label: 'Coverage', icon: MapPin },
 ];
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="bg-[#061539] pt-16 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* How It Works */}
-        <div className="text-center mb-16">
-          <span className="inline-block bg-[#0A2463]/10 text-[#0A2463] text-sm font-semibold px-4 py-1.5 rounded-full mb-4">HOW IT WORKS</span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Book Your Van in 4 Simple Steps</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">Our technology-driven platform makes booking a van as easy as ordering a ride.</p>
+
+        {/* Section header */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+          <div>
+            <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-4">How It Works</span>
+            <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight">
+              Book your van in<br />
+              <span className="text-[#D4AF37]">4 simple steps</span>
+            </h2>
+          </div>
+          <p className="text-white/50 max-w-sm text-base leading-relaxed">Our technology makes booking as easy as ordering a ride. From quote to delivery in minutes.</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+        {/* Steps */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {steps.map((step, idx) => (
             <div key={idx} className="relative group">
+              {/* Connector line */}
               {idx < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-gray-300 to-transparent" />
-              )}
-              <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
-                <div className={`w-14 h-14 ${step.color} rounded-xl flex items-center justify-center mb-4 shadow-lg`}>
-                  <step.icon className="w-7 h-7 text-white" />
+                <div className="hidden lg:block absolute top-10 left-[calc(100%-12px)] w-[calc(100%-60px)] z-10">
+                  <div className="flex items-center gap-1">
+                    <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-white/5" />
+                    <ArrowRight className="w-3 h-3 text-white/10 shrink-0" />
+                  </div>
                 </div>
-                <div className="text-xs font-bold text-gray-400 mb-2">STEP {idx + 1}</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{step.desc}</p>
+              )}
+
+              <div className="relative bg-white/3 hover:bg-white/6 border border-white/8 hover:border-[#D4AF37]/20 rounded-2xl p-6 transition-all duration-300 h-full overflow-hidden">
+                {/* Decorative number */}
+                <span className="absolute -top-4 -right-2 text-8xl font-black text-white/4 leading-none select-none group-hover:text-white/6 transition-colors">
+                  {step.number}
+                </span>
+
+                <div className={`w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center mb-5 ${step.color}`}>
+                  <step.icon className="w-5 h-5" />
+                </div>
+
+                <p className="text-[#D4AF37]/60 text-xs font-bold tracking-widest mb-2">STEP {step.number}</p>
+                <h3 className="text-lg font-bold text-white mb-3 leading-snug">{step.title}</h3>
+                <p className="text-white/45 text-sm leading-relaxed">{step.desc}</p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Stats */}
-        <div className="bg-gradient-to-r from-[#0A2463] to-[#1B3A8C] rounded-2xl p-8 sm:p-12">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+        {/* Stats bar */}
+        <div className="relative rounded-2xl overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/10 to-transparent" />
+          <div className="absolute inset-0 border border-[#D4AF37]/15 rounded-2xl" />
+          <div className="relative grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-x divide-y sm:divide-y-0 divide-white/8">
             {stats.map((stat, idx) => (
-              <div key={idx} className="text-center">
-                <stat.icon className="w-8 h-8 text-[#D4AF37] mx-auto mb-3" />
-                <p className="text-2xl sm:text-3xl font-bold text-white">{stat.value}</p>
-                <p className="text-white/60 text-sm mt-1">{stat.label}</p>
+              <div key={idx} className="flex flex-col items-center justify-center py-8 px-4 text-center hover:bg-white/3 transition-colors">
+                <stat.icon className="w-5 h-5 text-[#D4AF37] mb-3 opacity-70" />
+                <p className="text-2xl font-black text-white">{stat.value}</p>
+                <p className="text-white/40 text-xs mt-1 font-medium">{stat.label}</p>
               </div>
             ))}
           </div>

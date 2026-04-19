@@ -12,42 +12,82 @@ const ReviewsSection: React.FC = () => {
   const renderStars = (rating: number) => (
     <div className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((s) => (
-        <Star key={s} className={`w-4 h-4 ${s <= rating ? 'text-[#D4AF37] fill-[#D4AF37]' : 'text-gray-300'}`} />
+        <Star key={s} className={`w-3.5 h-3.5 ${s <= rating ? 'text-[#D4AF37] fill-[#D4AF37]' : 'text-white/20'}`} />
       ))}
     </div>
   );
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-12">
+    <section className="py-24 bg-[#0A2463] relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4AF37]/3 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
+      <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: 'radial-gradient(circle, #D4AF37 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Aggregate rating header */}
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10 mb-16">
           <div>
-            <span className="inline-block bg-[#0A2463]/10 text-[#0A2463] text-sm font-semibold px-4 py-1.5 rounded-full mb-4">REVIEWS</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">What Our Customers Say</h2>
+            <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-6">Customer Reviews</span>
+            <div className="flex items-end gap-6">
+              <div>
+                <p className="text-7xl font-black text-white leading-none mb-2">4.9</p>
+                <div className="flex gap-1 mb-2">
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} className="w-5 h-5 text-[#D4AF37] fill-[#D4AF37]" />
+                  ))}
+                </div>
+                <p className="text-white/40 text-sm">From 2,500+ verified reviews</p>
+              </div>
+              <div className="hidden sm:block pb-1">
+                <div className="space-y-1.5">
+                  {[5,4,3].map((stars, i) => (
+                    <div key={stars} className="flex items-center gap-3">
+                      <span className="text-white/40 text-xs w-2">{stars}</span>
+                      <div className="w-28 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full bg-[#D4AF37] rounded-full" style={{ width: i === 0 ? '87%' : i === 1 ? '10%' : '3%' }} />
+                      </div>
+                      <span className="text-white/30 text-xs">{i === 0 ? '87%' : i === 1 ? '10%' : '3%'}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="hidden sm:flex gap-2">
-            <button onClick={prev} disabled={currentReview === 0} className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center hover:border-[#0A2463] disabled:opacity-30 transition-colors">
-              <ChevronLeft className="w-5 h-5 text-gray-600" />
-            </button>
-            <button onClick={next} disabled={currentReview >= SAMPLE_REVIEWS.length - visibleCount} className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center hover:border-[#0A2463] disabled:opacity-30 transition-colors">
-              <ChevronRight className="w-5 h-5 text-gray-600" />
-            </button>
+
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white/80 max-w-xs">What our customers say about us</h2>
+            <div className="flex gap-2 shrink-0">
+              <button onClick={prev} disabled={currentReview === 0} className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 disabled:opacity-20 transition-all">
+                <ChevronLeft className="w-5 h-5 text-white" />
+              </button>
+              <button onClick={next} disabled={currentReview >= SAMPLE_REVIEWS.length - visibleCount} className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 disabled:opacity-20 transition-all">
+                <ChevronRight className="w-5 h-5 text-white" />
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {SAMPLE_REVIEWS.slice(currentReview, currentReview + visibleCount).map((review) => (
-            <div key={review.id} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100">
-              <Quote className="w-8 h-8 text-[#D4AF37]/30 mb-4" />
-              <p className="text-gray-700 leading-relaxed mb-4">{review.text}</p>
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                <div>
-                  <p className="font-semibold text-gray-900">{review.name}</p>
-                  <p className="text-gray-500 text-sm">{review.location}</p>
+        {/* Review cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {SAMPLE_REVIEWS.slice(currentReview, currentReview + visibleCount).map((review, idx) => (
+            <div key={review.id} className={`relative bg-white/5 hover:bg-white/8 border border-white/10 hover:border-[#D4AF37]/20 rounded-2xl p-7 transition-all duration-300 ${idx === 1 ? 'lg:scale-[1.02] lg:shadow-2xl' : ''}`}>
+              <Quote className="w-8 h-8 text-[#D4AF37]/20 mb-5" />
+              <p className="text-white/70 leading-relaxed mb-6 text-sm">{review.text}</p>
+              <div className="flex items-center justify-between pt-5 border-t border-white/8">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-[#D4AF37]/15 flex items-center justify-center text-[#D4AF37] font-bold text-sm">
+                    {review.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white text-sm">{review.name}</p>
+                    <p className="text-white/35 text-xs">{review.location}</p>
+                  </div>
                 </div>
                 <div className="text-right">
                   {renderStars(review.rating)}
-                  <p className="text-gray-400 text-xs mt-1">{review.date}</p>
+                  <p className="text-white/25 text-xs mt-1">{review.date}</p>
                 </div>
               </div>
             </div>
@@ -55,12 +95,12 @@ const ReviewsSection: React.FC = () => {
         </div>
 
         {/* Mobile nav */}
-        <div className="flex sm:hidden justify-center gap-2 mt-6">
-          <button onClick={prev} disabled={currentReview === 0} className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center disabled:opacity-30">
-            <ChevronLeft className="w-5 h-5" />
+        <div className="flex sm:hidden justify-center gap-2 mt-8">
+          <button onClick={prev} disabled={currentReview === 0} className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center disabled:opacity-20">
+            <ChevronLeft className="w-5 h-5 text-white" />
           </button>
-          <button onClick={next} disabled={currentReview >= SAMPLE_REVIEWS.length - visibleCount} className="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center disabled:opacity-30">
-            <ChevronRight className="w-5 h-5" />
+          <button onClick={next} disabled={currentReview >= SAMPLE_REVIEWS.length - visibleCount} className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center disabled:opacity-20">
+            <ChevronRight className="w-5 h-5 text-white" />
           </button>
         </div>
       </div>
