@@ -38,12 +38,12 @@ export const FEATURE_IMAGES = {
 };
 
 export const SERVICE_IMAGES = {
-  houseMoving: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80',
-  officeRelocation: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
-  furnitureDelivery: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
-  studentMoves: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80',
-  sameDayDelivery: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80',
-  scheduled: 'https://images.unsplash.com/photo-1434626881859-541763e61e55?auto=format&fit=crop&w=800&q=80',
+  houseMoving:      '/images/services/house-moving.svg',
+  officeRelocation: '/images/services/office-relocation.svg',
+  furnitureDelivery:'/images/services/furniture-delivery.svg',
+  studentMoves:     '/images/services/student-moves.svg',
+  sameDayDelivery:  '/images/services/same-day-delivery.svg',
+  scheduled:        '/images/services/scheduled-transport.svg',
 };
 
 export const PRICING = {

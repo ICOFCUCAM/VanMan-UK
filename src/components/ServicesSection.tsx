@@ -6,64 +6,64 @@ const services = [
   {
     icon: Home,
     title: 'House Moving',
-    desc: 'Full house moves from studio flats to 5-bed homes. Professional drivers with optional helpers.',
+    desc: 'Full house moves from studio flats to 5-bed homes, with professional drivers and optional helpers.',
     tag: 'Most Popular',
-    tagColor: 'bg-[#D4AF37] text-[#061539]',
+    tagStyle: 'bg-[#D4AF37] text-[#061539]',
     image: SERVICE_IMAGES.houseMoving,
-    featured: true,
+    alt: 'House moving service',
   },
   {
     icon: Building2,
     title: 'Office Relocation',
-    desc: 'Efficient office moves with minimal downtime. IT equipment, furniture, and document transport.',
+    desc: 'Efficient office moves with minimal downtime — IT equipment, furniture, and document transport.',
     tag: null,
-    tagColor: '',
+    tagStyle: '',
     image: SERVICE_IMAGES.officeRelocation,
-    featured: false,
+    alt: 'Office relocation service',
   },
   {
     icon: Sofa,
     title: 'Furniture Delivery',
-    desc: 'Single items or multiple pieces delivered safely with blanket wrapping and care.',
+    desc: 'Single items or multiple pieces delivered safely with blanket wrapping and extra care.',
     tag: null,
-    tagColor: '',
+    tagStyle: '',
     image: SERVICE_IMAGES.furnitureDelivery,
-    featured: false,
+    alt: 'Furniture delivery service',
   },
   {
     icon: GraduationCap,
     title: 'Student Moves',
-    desc: 'Affordable student moving with 10% discount. Perfect for term-time relocations.',
+    desc: 'Affordable student moving with a 10% discount automatically applied to every booking.',
     tag: '10% Off',
-    tagColor: 'bg-purple-500 text-white',
+    tagStyle: 'bg-purple-600 text-white',
     image: SERVICE_IMAGES.studentMoves,
-    featured: false,
+    alt: 'Student moving service',
   },
   {
     icon: Package,
     title: 'Same Day Delivery',
     desc: 'Urgent deliveries within hours. AI dispatch finds the nearest available driver instantly.',
     tag: 'Express',
-    tagColor: 'bg-orange-500 text-white',
+    tagStyle: 'bg-orange-500 text-white',
     image: SERVICE_IMAGES.sameDayDelivery,
-    featured: false,
+    alt: 'Same day delivery service',
   },
   {
     icon: Clock,
     title: 'Scheduled Transport',
     desc: 'Book in advance for planned moves. Set your preferred date, time, and vehicle type.',
     tag: null,
-    tagColor: '',
+    tagStyle: '',
     image: SERVICE_IMAGES.scheduled,
-    featured: false,
+    alt: 'Scheduled transport service',
   },
 ];
 
 const vehicles = [
-  { name: 'Small Van', capacity: 'Up to 2 items', price: 'From £50', detail: 'Perfect for single items or small moves' },
-  { name: 'Medium Van', capacity: '3–8 items', price: 'From £70', detail: 'Ideal for apartment moves' },
-  { name: 'Large Van', capacity: '9–20 items', price: 'From £100', detail: 'Full house moves and large deliveries' },
-  { name: 'Luton Van', capacity: '20+ items', price: 'From £130', detail: 'Maximum capacity for big moves' },
+  { name: 'Small Van',  capacity: 'Up to 2 items', price: 'From £50',  detail: 'Perfect for single items or small moves' },
+  { name: 'Medium Van', capacity: '3–8 items',     price: 'From £70',  detail: 'Ideal for apartment moves' },
+  { name: 'Large Van',  capacity: '9–20 items',    price: 'From £100', detail: 'Full house moves and large deliveries' },
+  { name: 'Luton Van',  capacity: '20+ items',     price: 'From £130', detail: 'Maximum capacity for big moves' },
 ];
 
 const ServicesSection: React.FC = () => {
@@ -74,53 +74,68 @@ const ServicesSection: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-14">
           <span className="inline-block text-[#0A2463] text-xs font-bold tracking-[0.2em] uppercase mb-4">Our Services</span>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5">Transport solutions<br />for every need</h2>
-          <p className="text-gray-500 max-w-xl mx-auto leading-relaxed">From single item deliveries to full house moves — we connect you with the right driver for any job.</p>
+          <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5">
+            Transport solutions<br />for every need
+          </h2>
+          <p className="text-gray-500 max-w-xl mx-auto leading-relaxed">
+            From single item deliveries to full house moves — we connect you with the right driver for any job.
+          </p>
         </div>
 
-        {/* Services grid — image cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-14">
+        {/* Service cards — image top layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
           {services.map((s, idx) => (
             <div
               key={idx}
-              className="group relative rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-default"
-              style={{ aspectRatio: '4/3' }}
+              className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/60 hover:-translate-y-1 transition-all duration-300 flex flex-col"
             >
-              {/* Background image */}
-              <img
-                src={s.image}
-                alt={s.title}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
+              {/* Image */}
+              <div className="relative overflow-hidden h-[220px] shrink-0">
+                <img
+                  src={s.image}
+                  alt={s.alt}
+                  className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.style.background = 'linear-gradient(135deg, #0A2463 0%, #1B3A8C 100%)';
+                    }
+                  }}
+                />
+                {/* Tag badge */}
+                {s.tag && (
+                  <span className={`absolute top-3 left-3 text-xs font-black px-3 py-1.5 rounded-full shadow-sm ${s.tagStyle}`}>
+                    {s.tag}
+                  </span>
+                )}
+              </div>
 
-              {/* Gradient overlay — stronger at bottom */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#061539]/92 via-[#0A2463]/40 to-transparent" />
-
-              {/* Tag badge */}
-              {s.tag && (
-                <div className="absolute top-4 left-4">
-                  <span className={`text-xs font-black px-3 py-1.5 rounded-full ${s.tagColor}`}>{s.tag}</span>
-                </div>
-              )}
-
-              {/* Content — pinned to bottom */}
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <div className="w-8 h-8 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-xl flex items-center justify-center shrink-0">
-                    <s.icon className="w-4 h-4 text-[#D4AF37]" />
+              {/* Content */}
+              <div className="flex flex-col flex-1 p-6">
+                {/* Icon + title */}
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-9 h-9 bg-[#0A2463]/8 group-hover:bg-[#0A2463] rounded-xl flex items-center justify-center shrink-0 transition-colors">
+                    <s.icon className="w-4 h-4 text-[#0A2463] group-hover:text-white transition-colors" />
                   </div>
-                  <h3 className="text-lg font-black text-white">{s.title}</h3>
+                  <h3 className="text-lg font-black text-gray-900">{s.title}</h3>
                 </div>
-                <p className="text-white/65 text-sm leading-relaxed mb-4">{s.desc}</p>
-                <div className="flex items-center gap-1.5 text-[#D4AF37] text-sm font-bold opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all duration-300">
-                  Book now <ArrowRight className="w-4 h-4" />
+
+                {/* Description */}
+                <p className="text-gray-500 text-sm leading-relaxed flex-1 mb-5">{s.desc}</p>
+
+                {/* CTA */}
+                <div className="flex items-center gap-1.5 text-[#0A2463] text-sm font-bold group-hover:gap-3 transition-all">
+                  Book now
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Vehicle types — dark premium section */}
+        {/* Vehicle fleet — dark banner */}
         <div className="relative rounded-3xl overflow-hidden">
           <img src={FEATURE_IMAGES.vanLoaded} alt="Van fleet" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#061539]/98 via-[#0A2463]/90 to-[#0A2463]/50" />
@@ -129,16 +144,21 @@ const ServicesSection: React.FC = () => {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-4">Our Fleet</span>
-                <h3 className="text-3xl sm:text-4xl font-black text-white mb-5 leading-tight">Every vehicle type<br />available, right now</h3>
-                <p className="text-white/55 leading-relaxed mb-8">From compact vans for single items to full Luton trucks for house moves. Our AI matches you with the right vehicle every time.</p>
+                <h3 className="text-3xl sm:text-4xl font-black text-white mb-5 leading-tight">
+                  Every vehicle type<br />available, right now
+                </h3>
+                <p className="text-white/55 leading-relaxed mb-8">
+                  From compact vans for single items to full Luton trucks for house moves. Our AI matches you with the right vehicle every time.
+                </p>
                 <div className="flex items-center gap-3 text-white/60 text-sm">
                   <CheckCircle className="w-4 h-4 text-green-400 shrink-0" />
                   All vehicles are verified and insured
                 </div>
               </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {vehicles.map((v, idx) => (
-                  <div key={idx} className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#D4AF37]/30 rounded-2xl p-5 transition-all cursor-default">
+                  <div key={idx} className="bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#D4AF37]/30 rounded-2xl p-5 transition-all">
                     <div className="flex items-center gap-2 mb-3">
                       <Truck className="w-4 h-4 text-[#D4AF37]" />
                       <span className="text-white font-bold text-sm">{v.name}</span>
@@ -154,6 +174,7 @@ const ServicesSection: React.FC = () => {
             </div>
           </div>
         </div>
+
       </div>
     </section>
   );
