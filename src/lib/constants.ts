@@ -117,10 +117,10 @@ export const SAMPLE_JOBS = [
 ];
 
 export const NAV_LINKS = [
-  { label: 'Home', page: 'home' },
-  { label: 'Book Now', page: 'home' },
-  { label: 'How It Works', page: 'home' },
-  { label: 'For Drivers', page: 'driver-register' },
-  { label: 'Corporate', page: 'corporate' },
+  { label: 'Services', page: 'services' },
+  { label: 'Technology', page: 'technology' },
+  { label: 'For Drivers', page: 'drivers' },
+  { label: 'Enterprise', page: 'enterprise' },
+  { label: 'Students', page: 'students' },
   { label: 'Track Order', page: 'tracking' },
 ];

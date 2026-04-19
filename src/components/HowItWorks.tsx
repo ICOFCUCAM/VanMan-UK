@@ -1,76 +1,74 @@
 import React from 'react';
-import { MapPin, Search, Truck, CheckCircle, ArrowRight } from 'lucide-react';
+import { MapPin, LayoutGrid, Truck, Radio } from 'lucide-react';
 
 const steps = [
-  { icon: MapPin, number: '01', title: 'Enter Your Addresses', desc: 'Tell us where to collect and deliver. Add multiple stops or extra helpers.', color: 'text-blue-400' },
-  { icon: Search, number: '02', title: 'Get Instant Quote', desc: 'Our routing engine calculates the real road distance and gives a transparent price instantly.', color: 'text-[#D4AF37]' },
-  { icon: Truck, number: '03', title: 'Driver Matched', desc: 'Smart dispatch connects you with the nearest top-rated available driver.', color: 'text-green-400' },
-  { icon: CheckCircle, number: '04', title: 'Goods Delivered', desc: 'Track live on the map. Rate the service when your goods arrive safely.', color: 'text-purple-400' },
+  {
+    icon: MapPin,
+    number: '01',
+    title: 'Enter addresses',
+    label: 'Pickup, drop-off, extra stops',
+    color: 'text-blue-400',
+  },
+  {
+    icon: LayoutGrid,
+    number: '02',
+    title: 'Choose vehicle',
+    label: 'Matched to your load size',
+    color: 'text-[#D4AF37]',
+  },
+  {
+    icon: Truck,
+    number: '03',
+    title: 'Driver matched instantly',
+    label: 'Nearest top-rated driver dispatched',
+    color: 'text-green-400',
+  },
+  {
+    icon: Radio,
+    number: '04',
+    title: 'Track delivery live',
+    label: 'Real-time GPS to your door',
+    color: 'text-purple-400',
+  },
 ];
-
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="bg-[#061539] py-14">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-[#061539] py-12 border-b border-white/5">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Section header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
-          <div>
-            <span className="inline-block text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase mb-3">How It Works</span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight">
-              Book your van in <span className="text-[#D4AF37]">4 simple steps</span>
-            </h2>
-          </div>
-          <p className="text-white/50 max-w-xs text-sm leading-relaxed">From quote to delivery in minutes — as easy as ordering a ride.</p>
+        {/* Section label */}
+        <div className="text-center mb-10">
+          <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase">Dispatch Pipeline</span>
+          <p className="text-white/40 text-sm mt-1">From booking to delivery in minutes</p>
         </div>
 
-        {/* Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        {/* Horizontal workflow strip */}
+        <div className="flex items-start justify-center flex-wrap sm:flex-nowrap gap-0">
           {steps.map((step, idx) => (
-            <div key={idx} className="relative group">
-              {/* Connector line */}
+            <React.Fragment key={idx}>
+              {/* Step */}
+              <div className="flex flex-col items-center text-center w-1/2 sm:w-auto sm:flex-1 px-4 py-2">
+                <div className={`w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-3 ${step.color}`}>
+                  <step.icon className="w-4.5 h-4.5 w-[18px] h-[18px]" />
+                </div>
+                <span className="text-white/20 text-[10px] font-bold tracking-widest mb-1">STEP {step.number}</span>
+                <p className="text-white font-semibold text-sm leading-snug mb-1">{step.title}</p>
+                <p className="text-white/35 text-xs leading-snug max-w-[130px]">{step.label}</p>
+              </div>
+
+              {/* Arrow separator */}
               {idx < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-10 left-[calc(100%-12px)] w-[calc(100%-60px)] z-10">
-                  <div className="flex items-center gap-1">
-                    <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-white/5" />
-                    <ArrowRight className="w-3 h-3 text-white/10 shrink-0" />
-                  </div>
+                <div className="hidden sm:flex items-center self-center pb-6">
+                  <svg width="20" height="12" viewBox="0 0 20 12" fill="none" className="text-white/15">
+                    <path d="M0 6h16M12 1l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </div>
               )}
-
-              <div className="relative bg-white/3 hover:bg-white/6 border border-white/8 hover:border-[#D4AF37]/20 rounded-2xl p-5 transition-all duration-300 h-full overflow-hidden">
-                {/* Decorative number */}
-                <span className="absolute -top-4 -right-2 text-8xl font-black text-white/4 leading-none select-none group-hover:text-white/6 transition-colors">
-                  {step.number}
-                </span>
-
-                <div className={`w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center mb-5 ${step.color}`}>
-                  <step.icon className="w-5 h-5" />
-                </div>
-
-                <p className="text-[#D4AF37]/60 text-xs font-bold tracking-widest mb-2">STEP {step.number}</p>
-                <h3 className="text-lg font-bold text-white mb-3 leading-snug">{step.title}</h3>
-                <p className="text-white/45 text-sm leading-relaxed">{step.desc}</p>
-              </div>
-            </div>
+            </React.Fragment>
           ))}
         </div>
 
-        {/* Simple 4-stat inline band */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { value: '10,000+', label: 'Active Drivers' },
-            { value: '4.9 / 5', label: 'Customer Rating' },
-            { value: '< 15 min', label: 'Avg Response' },
-            { value: 'UK Wide', label: 'Coverage' },
-          ].map((s, i) => (
-            <div key={i} className="text-center py-6 border border-white/8 rounded-2xl bg-white/3">
-              <p className="text-2xl font-black text-[#D4AF37]">{s.value}</p>
-              <p className="text-white/40 text-xs mt-1 font-medium">{s.label}</p>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );

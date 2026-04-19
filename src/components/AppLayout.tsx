@@ -1,20 +1,32 @@
 import React, { useState, useRef } from 'react';
 import { Loader2, ShieldX } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
+
+// Layout
 import Header from './Header';
-import HeroSlider from './HeroSlider';
-import BookingWidget from './BookingWidget';
-import HowItWorks from './HowItWorks';
-import ServicesSection from './ServicesSection';
-import FeaturesSection from './FeaturesSection';
-import PricingSection from './PricingSection';
-import DriverSection from './DriverSection';
-import StudentDiscount from './StudentDiscount';
-import CorporateSection from './CorporateSection';
-import ReviewsSection from './ReviewsSection';
 import Footer from './Footer';
 import WhatsAppButton from './WhatsAppButton';
 import CookieConsent from './CookieConsent';
+
+// Homepage sections
+import HeroSlider from './HeroSlider';
+import BookingWidget from './BookingWidget';
+import TrustMetricsStrip from './TrustMetricsStrip';
+import HowItWorks from './HowItWorks';
+import NationwideCoverageStrip from './NationwideCoverageStrip';
+import ServicesPreview from './ServicesPreview';
+import EnterprisePreview from './EnterprisePreview';
+import CustomerRatingSummary from './CustomerRatingSummary';
+import FinalCTA from './FinalCTA';
+
+// New content pages
+import ServicesPage from './pages/ServicesPage';
+import TechnologyPage from './pages/TechnologyPage';
+import DriversPage from './pages/DriversPage';
+import StudentsPage from './pages/StudentsPage';
+import EnterprisePage from './pages/EnterprisePage';
+
+// App pages
 import DriverRegistration from './DriverRegistration';
 import DriverMarketplace from './DriverMarketplace';
 import TrackingView from './TrackingView';
@@ -71,27 +83,34 @@ const AppLayout: React.FC = () => {
   };
 
   const renderPage = () => {
-    // Public: legal pages
+    // Legal pages
     if (LEGAL_PAGES.includes(currentPage)) {
       return <LegalPages page={currentPage as any} onNavigate={navigate} />;
     }
 
-    // Public: auth pages
+    // Auth pages
     if (currentPage === 'login' || currentPage === 'driver-login') return <LoginPage onNavigate={navigate} />;
     if (currentPage === 'driver-register') return <DriverRegistration onNavigate={navigate} />;
 
-    // Public: tracking & corporate (anyone can view)
+    // Content pages (new multi-page structure)
+    if (currentPage === 'services') return <ServicesPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
+    if (currentPage === 'technology') return <TechnologyPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
+    if (currentPage === 'drivers') return <DriversPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
+    if (currentPage === 'students') return <StudentsPage onNavigate={navigate} onScrollToBooking={scrollToBooking} />;
+    if (currentPage === 'enterprise') return <EnterprisePage onNavigate={navigate} />;
+
+    // Public functional pages
     if (currentPage === 'tracking') return <TrackingView onNavigate={navigate} />;
     if (currentPage === 'corporate') return <CorporatePortal onNavigate={navigate} />;
 
-    // Protected: admin only
+    // Protected: admin
     if (currentPage === 'admin') {
       if (isLoading) return <LoadingScreen />;
       if (role !== 'admin') return <AccessDenied onNavigate={navigate} />;
       return <AdminDashboard onNavigate={navigate} />;
     }
 
-    // Protected: drivers only
+    // Protected: drivers
     if (currentPage === 'driver-marketplace' || currentPage === 'driver-dashboard') {
       if (isLoading) return <LoadingScreen />;
       if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
@@ -99,29 +118,28 @@ const AppLayout: React.FC = () => {
       return <DriverMarketplace onNavigate={navigate} />;
     }
 
-    // Protected: authenticated customers
+    // Protected: customers
     if (currentPage === 'customer-dashboard') {
       if (isLoading) return <LoadingScreen />;
       if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
       return <CustomerDashboard onNavigate={navigate} />;
     }
 
-    // Payment page (public — auth optional)
+    // Payment
     if (currentPage === 'payment') return <PaymentPage onNavigate={navigate} />;
 
-    // Home
+    // Home — simplified platform entry
     return (
       <>
         <HeroSlider onNavigate={navigate} onScrollToBooking={scrollToBooking} />
         <BookingWidget bookingRef={bookingRef} onNavigate={navigate} />
+        <TrustMetricsStrip />
         <HowItWorks />
-        <ServicesSection />
-        <FeaturesSection />
-        <PricingSection onNavigate={navigate} />
-        <DriverSection onNavigate={navigate} />
-        <StudentDiscount />
-        <CorporateSection onNavigate={navigate} />
-        <ReviewsSection />
+        <NationwideCoverageStrip />
+        <ServicesPreview onNavigate={navigate} />
+        <EnterprisePreview onNavigate={navigate} />
+        <CustomerRatingSummary />
+        <FinalCTA onScrollToBooking={scrollToBooking} onNavigate={navigate} />
       </>
     );
   };
