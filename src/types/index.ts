@@ -156,8 +156,9 @@ export type BookingStatus =
   | 'cancelled';
 
 export type DeliveryType = 'dedicated' | 'shared';
-export type PaymentMethod = 'card' | 'cash';
-export type PaymentStatus = 'pending' | 'paid' | 'refunded';
+export type PaymentMethod = 'card' | 'cash' | 'invoice';
+export type PaymentStatus = 'pending' | 'escrow' | 'released' | 'refunded' | 'invoice_pending';
+export type PaymentProvider = 'stripe' | 'invoice' | null;
 
 export interface Booking {
   id: string;
@@ -183,6 +184,16 @@ export interface Booking {
   is_recurring: boolean;
   recurring_frequency: 'weekly' | 'biweekly' | 'monthly' | null;
   scheduled_at: string | null;
+  original_price: number | null;
+  commission_rate: number | null;
+  commission_amount: number | null;
+  driver_earning: number | null;
+  payment_provider: string | null;
+  payment_intent_id: string | null;
+  stripe_session_id: string | null;
+  escrow_activated: boolean;
+  driver_confirmation: boolean;
+  customer_confirmation: boolean;
   picked_up_at: string | null;
   delivered_at: string | null;
   created_at: string;

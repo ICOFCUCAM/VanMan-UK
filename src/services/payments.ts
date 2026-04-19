@@ -4,6 +4,7 @@ export async function createCheckoutSession(
   successUrl: string,
   cancelUrl: string,
   customerEmail?: string,
+  bookingId?: string,
 ): Promise<{ url: string | null; error: Error | null }> {
   try {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
@@ -18,7 +19,7 @@ export async function createCheckoutSession(
           'Authorization': `Bearer ${supabaseKey}`,
           'apikey': supabaseKey,
         },
-        body: JSON.stringify({ amount: amountGBP, description, successUrl, cancelUrl, customerEmail }),
+        body: JSON.stringify({ amount: amountGBP, description, successUrl, cancelUrl, customerEmail, bookingId }),
       },
     );
 

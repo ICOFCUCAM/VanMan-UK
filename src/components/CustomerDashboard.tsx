@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Clock, CheckCircle2, Loader2, Package, ChevronRight, ArrowLeft, AlertCircle } from 'lucide-react';
+import { MapPin, Clock, CheckCircle2, Loader2, Package, ChevronRight, ArrowLeft, AlertCircle, CreditCard } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 import { getBookingsByCustomer } from '@/services/bookings';
+import { confirmDeliveryAsCustomer } from '@/services/escrow';
+import { PAYMENT_STATUS_LABELS, PAYMENT_STATUS_STYLES } from '@/lib/constants';
 import type { Booking } from '@/types';
 
 interface CustomerDashboardProps {
@@ -26,53 +28,105 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: 'Cancelled',
 };
 
-const BookingCard: React.FC<{ booking: Booking; onTrack: () => void }> = ({ booking, onTrack }) => (
-  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5">
-    <div className="flex items-start justify-between gap-3 mb-4">
-      <div>
-        <p className="font-mono text-xs text-gray-400 mb-1">
-          {booking.booking_ref ?? booking.id.slice(0, 8).toUpperCase()}
+interface BookingCardProps {
+  booking: Booking;
+  onTrack: () => void;
+  onPay: () => void;
+  onConfirmDelivery: () => Promise<void>;
+}
+
+const BookingCard: React.FC<BookingCardProps> = ({ booking, onTrack, onPay, onConfirmDelivery }) => {
+  const [confirming, setConfirming] = useState(false);
+
+  const handleConfirm = async () => {
+    setConfirming(true);
+    await onConfirmDelivery();
+    setConfirming(false);
+  };
+
+  const showPayBtn = booking.payment_status === 'pending' && booking.payment_method === 'card';
+  const showConfirmBtn = booking.status === 'completed' && !booking.customer_confirmation;
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5">
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div className="space-y-1.5">
+          <p className="font-mono text-xs text-gray-400">
+            {booking.booking_ref ?? booking.id.slice(0, 8).toUpperCase()}
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${STATUS_STYLES[booking.status] ?? 'bg-gray-100 text-gray-600'}`}>
+              {STATUS_LABELS[booking.status] ?? booking.status}
+            </span>
+            {booking.payment_status && (
+              <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${PAYMENT_STATUS_STYLES[booking.payment_status] ?? 'bg-gray-100 text-gray-600'}`}>
+                {PAYMENT_STATUS_LABELS[booking.payment_status] ?? booking.payment_status}
+              </span>
+            )}
+          </div>
+        </div>
+        <p className="text-2xl font-bold text-[#0A2463] shrink-0">£{booking.estimated_price}</p>
+      </div>
+
+      <div className="space-y-2 mb-4">
+        <div className="flex items-start gap-2">
+          <div className="w-2.5 h-2.5 bg-green-500 rounded-full mt-1.5 shrink-0" />
+          <p className="text-sm text-gray-700 leading-snug">{booking.collection_address}</p>
+        </div>
+        <div className="flex items-start gap-2">
+          <div className="w-2.5 h-2.5 bg-red-500 rounded-full mt-1.5 shrink-0" />
+          <p className="text-sm text-gray-700 leading-snug">{booking.delivery_address}</p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
+        <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {booking.distance_miles} mi</span>
+        <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {booking.duration}</span>
+        <span className="flex items-center gap-1"><Package className="w-3.5 h-3.5" /> {booking.vehicle_type}</span>
+      </div>
+
+      {booking.driver && (
+        <p className="text-xs text-gray-500 mb-3">
+          Driver: <span className="font-semibold text-gray-700">{booking.driver.first_name} {booking.driver.last_name}</span>
         </p>
-        <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${STATUS_STYLES[booking.status] ?? 'bg-gray-100 text-gray-600'}`}>
-          {STATUS_LABELS[booking.status] ?? booking.status}
-        </span>
-      </div>
-      <p className="text-2xl font-bold text-[#0A2463] shrink-0">£{booking.estimated_price}</p>
-    </div>
-
-    <div className="space-y-2 mb-4">
-      <div className="flex items-start gap-2">
-        <div className="w-2.5 h-2.5 bg-green-500 rounded-full mt-1.5 shrink-0" />
-        <p className="text-sm text-gray-700 leading-snug">{booking.collection_address}</p>
-      </div>
-      <div className="flex items-start gap-2">
-        <div className="w-2.5 h-2.5 bg-red-500 rounded-full mt-1.5 shrink-0" />
-        <p className="text-sm text-gray-700 leading-snug">{booking.delivery_address}</p>
-      </div>
-    </div>
-
-    <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
-      <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {booking.distance_miles} mi</span>
-      <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {booking.duration}</span>
-      <span className="flex items-center gap-1"><Package className="w-3.5 h-3.5" /> {booking.vehicle_type}</span>
-    </div>
-
-    {booking.driver && (
-      <p className="text-xs text-gray-500 mb-3">
-        Driver: <span className="font-semibold text-gray-700">{booking.driver.first_name} {booking.driver.last_name}</span>
-      </p>
-    )}
-
-    <div className="flex items-center justify-between">
-      <p className="text-xs text-gray-400">{new Date(booking.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-      {(booking.status === 'assigned' || booking.status === 'in_progress') && (
-        <button onClick={onTrack} className="flex items-center gap-1 text-[#0A2463] text-sm font-semibold hover:underline">
-          Track <ChevronRight className="w-4 h-4" />
-        </button>
       )}
+
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <p className="text-xs text-gray-400">{new Date(booking.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+        <div className="flex gap-2 flex-wrap">
+          {showPayBtn && (
+            <button
+              onClick={onPay}
+              className="flex items-center gap-1.5 bg-[#D4AF37] hover:bg-[#C5A028] text-[#0A2463] px-4 py-2 rounded-lg text-xs font-bold transition-colors"
+            >
+              <CreditCard className="w-3.5 h-3.5" /> Complete Payment
+            </button>
+          )}
+          {showConfirmBtn && (
+            <button
+              onClick={handleConfirm}
+              disabled={confirming}
+              className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors"
+            >
+              {confirming ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+              Confirm Delivery
+            </button>
+          )}
+          {booking.customer_confirmation && booking.status === 'completed' && (
+            <span className="flex items-center gap-1 text-green-600 text-xs font-semibold">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Delivery Confirmed
+            </span>
+          )}
+          {(booking.status === 'assigned' || booking.status === 'in_progress') && (
+            <button onClick={onTrack} className="flex items-center gap-1 text-[#0A2463] text-sm font-semibold hover:underline">
+              Track <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ onNavigate }) => {
   const { user } = useAppContext();
@@ -89,6 +143,18 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ onNavigate }) => 
       setIsLoading(false);
     });
   }, [user]);
+
+  const handlePay = (bookingId: string) => {
+    sessionStorage.setItem('pending_payment_booking_id', bookingId);
+    onNavigate('payment');
+  };
+
+  const handleConfirmDelivery = async (bookingId: string) => {
+    const { error: err } = await confirmDeliveryAsCustomer(bookingId);
+    if (!err) {
+      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, customer_confirmation: true } : b));
+    }
+  };
 
   const active = bookings.filter(b => !['completed', 'cancelled'].includes(b.status));
   const history = bookings.filter(b => ['completed', 'cancelled'].includes(b.status));
@@ -154,7 +220,13 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ onNavigate }) => 
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {displayed.map(b => (
-              <BookingCard key={b.id} booking={b} onTrack={() => onNavigate('tracking')} />
+              <BookingCard
+                key={b.id}
+                booking={b}
+                onTrack={() => onNavigate('tracking')}
+                onPay={() => handlePay(b.id)}
+                onConfirmDelivery={() => handleConfirmDelivery(b.id)}
+              />
             ))}
           </div>
         )}

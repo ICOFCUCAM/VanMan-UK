@@ -43,8 +43,31 @@ export const PRICING = {
   minimumJobCost: 80,
   additionalTimeCharge: 30, // per additional 1-30 minutes
   studentDiscount: 0.10, // 10%
-  platformCommission: 0.20, // 20%
+  platformCommission: 0.20, // 20% default (silver tier)
   surgeMultiplierMax: 2.5,
+};
+
+// Commission by driver tier — gold gets rewarded for comprehensive insurance
+export const COMMISSION = {
+  gold: 0.15,
+  silver: 0.20,
+  smallJobThreshold: 50,
+};
+
+export const PAYMENT_STATUS_LABELS: Record<string, string> = {
+  pending:         'Awaiting Payment',
+  escrow:          'Payment Secured',
+  released:        'Completed & Paid',
+  refunded:        'Refunded',
+  invoice_pending: 'Invoice Pending',
+};
+
+export const PAYMENT_STATUS_STYLES: Record<string, string> = {
+  pending:         'bg-yellow-100 text-yellow-700',
+  escrow:          'bg-blue-100 text-blue-700',
+  released:        'bg-green-100 text-green-700',
+  refunded:        'bg-red-100 text-red-700',
+  invoice_pending: 'bg-purple-100 text-purple-700',
 };
 
 export const VEHICLE_TYPES = [

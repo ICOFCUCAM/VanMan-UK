@@ -23,6 +23,7 @@ import CorporatePortal from './CorporatePortal';
 import LegalPages from './LegalPages';
 import LoginPage from './LoginPage';
 import CustomerDashboard from './CustomerDashboard';
+import PaymentPage from './PaymentPage';
 
 const LEGAL_PAGES = ['terms', 'privacy', 'cookies', 'driver-agreement', 'cancellation', 'contact', 'about'];
 
@@ -105,11 +106,14 @@ const AppLayout: React.FC = () => {
       return <CustomerDashboard onNavigate={navigate} />;
     }
 
+    // Payment page (public — auth optional)
+    if (currentPage === 'payment') return <PaymentPage onNavigate={navigate} />;
+
     // Home
     return (
       <>
         <HeroSlider onNavigate={navigate} onScrollToBooking={scrollToBooking} />
-        <BookingWidget bookingRef={bookingRef} />
+        <BookingWidget bookingRef={bookingRef} onNavigate={navigate} />
         <HowItWorks />
         <ServicesSection />
         <FeaturesSection />

@@ -4,14 +4,14 @@ import { PRICING, VEHICLE_TYPES } from '@/lib/constants';
 import { geocodeUK, haversineMiles } from '@/lib/geocoding';
 import { useAppContext } from '@/contexts/AppContext';
 import { createBooking } from '@/services/bookings';
-import { createCheckoutSession } from '@/services/payments';
 import type { PaymentMethod, QuoteData } from '@/types';
 
 interface BookingWidgetProps {
   bookingRef: React.RefObject<HTMLDivElement | null>;
+  onNavigate?: (page: string) => void;
 }
 
-const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
+const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate }) => {
   const { user } = useAppContext();
   const [collectionAddress, setCollectionAddress] = useState('');
   const [deliveryAddress, setDeliveryAddress] = useState('');
@@ -125,27 +125,12 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
     setIsBooking(false);
   };
 
-  // After Stripe redirects back with ?payment=success, complete the booking
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') !== 'success') return;
-    const pending = localStorage.getItem('pending_booking');
-    if (!pending) return;
-    window.history.replaceState({}, '', window.location.pathname);
-    const details = JSON.parse(pending);
-    localStorage.removeItem('pending_booking');
-    createBooking({ ...details, payment_method: 'card' as PaymentMethod }).then(({ data, error }) => {
-      if (error) { setBookingError(error.message); return; }
-      if (data) { setBookingId(data.id); setBookingConfirmed(true); }
-    });
-  }, []);
-
   const handleCardPayment = async () => {
     if (!quoteData) return;
     setIsRedirecting(true);
     setBookingError(null);
-    const origin = window.location.origin;
-    const bookingDetails = {
+
+    const { data, error } = await createBooking({
       collection_address: collectionAddress,
       delivery_address: deliveryAddress,
       stop_addresses: addStops ? stopAddresses.filter(s => s.trim()) : [],
@@ -157,26 +142,22 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
       duration: quoteData.duration,
       estimated_price: quoteData.basePrice,
       surge_multiplier: quoteData.surgeMultiplier,
+      payment_method: 'card',
       customer_id: user?.id,
       scheduled_at: scheduleForLater && scheduledAt ? new Date(scheduledAt).toISOString() : undefined,
       is_recurring: isRecurring,
       recurring_frequency: isRecurring ? recurringFrequency : null,
-    };
-    localStorage.setItem('pending_booking', JSON.stringify(bookingDetails));
-    const { url, error } = await createCheckoutSession(
-      quoteData.basePrice,
-      `Man & Van – ${collectionAddress} → ${deliveryAddress}`,
-      `${origin}?payment=success`,
-      `${origin}?payment=cancelled`,
-      user?.email,
-    );
-    if (error || !url) {
-      setBookingError(error?.message ?? 'Could not start payment. Please try again.');
-      localStorage.removeItem('pending_booking');
+    });
+
+    if (error || !data) {
+      setBookingError(error?.message ?? 'Failed to create booking. Please try again.');
       setIsRedirecting(false);
       return;
     }
-    window.location.href = url;
+
+    sessionStorage.setItem('pending_payment_booking_id', data.id);
+    setIsRedirecting(false);
+    if (onNavigate) onNavigate('payment');
   };
 
   return (
@@ -427,7 +408,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef }) => {
                     className="flex-1 bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-60 text-[#0A2463] py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
                   >
                     {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
-                    {isRedirecting ? 'Redirecting to Stripe…' : `Pay by Card £${quoteData.basePrice}`}
+                    {isRedirecting ? 'Preparing Payment…' : `Pay by Card £${quoteData.basePrice}`}
                   </button>
                   <button
                     onClick={() => confirmBooking('cash')}
