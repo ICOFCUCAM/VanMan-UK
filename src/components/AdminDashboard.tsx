@@ -256,6 +256,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
                           <p className="font-semibold text-gray-900">{driver.first_name} {driver.last_name}</p>
                           <p className="text-gray-500 text-sm">{driver.vehicle_make} {driver.vehicle_model} • {driver.insurance_type}</p>
                           <p className="text-gray-400 text-xs">{driver.email} · Applied: {new Date(driver.created_at).toLocaleDateString('en-GB')}</p>
+                          {(driver.license_document_url || driver.insurance_document_url || driver.vehicle_registration_url || driver.vehicle_photo_url) && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {driver.license_document_url && (
+                                <a href={driver.license_document_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0A2463] underline hover:text-[#1B3A8C]">License</a>
+                              )}
+                              {driver.insurance_document_url && (
+                                <a href={driver.insurance_document_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0A2463] underline hover:text-[#1B3A8C]">Insurance</a>
+                              )}
+                              {driver.vehicle_registration_url && (
+                                <a href={driver.vehicle_registration_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0A2463] underline hover:text-[#1B3A8C]">V5C</a>
+                              )}
+                              {driver.vehicle_photo_url && (
+                                <a href={driver.vehicle_photo_url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0A2463] underline hover:text-[#1B3A8C]">Vehicle Photo</a>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">

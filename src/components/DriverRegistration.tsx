@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Truck, Upload, CheckCircle, AlertCircle, ArrowRight, ArrowLeft, User, Car, Shield, FileText, Loader2 } from 'lucide-react';
 import { registerDriver } from '@/services/drivers';
+import { uploadDriverDocument } from '@/services/storage';
 import { useAppContext } from '@/contexts/AppContext';
 import type { InsuranceType } from '@/types';
 
@@ -33,6 +34,34 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
     setIsSubmitting(true);
     setSubmitError(null);
 
+    const uploadDoc = async (
+      file: File | null,
+      docType: Parameters<typeof uploadDriverDocument>[1],
+    ) => {
+      if (!file) return null;
+      const { url, error } = await uploadDriverDocument(formData.email, docType, file);
+      if (error) throw new Error(`Failed to upload ${docType}: ${error.message}`);
+      return url;
+    };
+
+    let licenseUrl: string | null = null;
+    let insuranceUrl: string | null = null;
+    let registrationUrl: string | null = null;
+    let photoUrl: string | null = null;
+
+    try {
+      [licenseUrl, insuranceUrl, registrationUrl, photoUrl] = await Promise.all([
+        uploadDoc(formData.driverLicense, 'license'),
+        uploadDoc(formData.insuranceDoc, 'insurance'),
+        uploadDoc(formData.vehicleRegistration, 'registration'),
+        uploadDoc(formData.vehiclePhotos, 'vehicle_photos'),
+      ]);
+    } catch (uploadErr) {
+      setIsSubmitting(false);
+      setSubmitError((uploadErr as Error).message);
+      return;
+    }
+
     const { data, error } = await registerDriver({
       first_name: formData.firstName,
       last_name: formData.lastName,
@@ -45,6 +74,10 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
       vehicle_reg: formData.vehicleReg,
       insurance_type: formData.insuranceType,
       user_id: user?.id,
+      license_document_url: licenseUrl,
+      insurance_document_url: insuranceUrl,
+      vehicle_registration_url: registrationUrl,
+      vehicle_photo_url: photoUrl,
     });
 
     setIsSubmitting(false);

@@ -23,6 +23,10 @@ export async function registerDriver(input: CreateDriverInput): Promise<ServiceR
         rating: 5.0,
         total_jobs: 0,
         total_earnings: 0,
+        license_document_url: input.license_document_url ?? null,
+        insurance_document_url: input.insurance_document_url ?? null,
+        vehicle_registration_url: input.vehicle_registration_url ?? null,
+        vehicle_photo_url: input.vehicle_photo_url ?? null,
       })
       .select('*')
       .single();

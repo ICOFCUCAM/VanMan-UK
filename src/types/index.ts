@@ -81,6 +81,10 @@ export interface Driver {
   rating: number;
   total_jobs: number;
   total_earnings: number;
+  license_document_url: string | null;
+  insurance_document_url: string | null;
+  vehicle_registration_url: string | null;
+  vehicle_photo_url: string | null;
   created_at: string;
 }
 
@@ -96,6 +100,10 @@ export interface CreateDriverInput {
   vehicle_reg: string;
   insurance_type: InsuranceType;
   user_id?: string;
+  license_document_url?: string | null;
+  insurance_document_url?: string | null;
+  vehicle_registration_url?: string | null;
+  vehicle_photo_url?: string | null;
 }
 
 // ─── Bookings ─────────────────────────────────────────────────────────────────
