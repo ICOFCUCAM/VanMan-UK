@@ -171,7 +171,7 @@ const DriversPage: React.FC<DriversPageProps> = ({ onNavigate, onScrollToBooking
                   style={{ boxShadow: '0px 4px 12px rgba(0,0,0,0.05)' }}
                 >
                   <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="w-4.5 h-4.5 text-green-600" />
+                    <Check className="w-4 h-4 text-green-600" />
                   </div>
                   <div>
                     <p className="text-[#0B2239] font-bold text-sm leading-snug mb-0.5">{req.title}</p>

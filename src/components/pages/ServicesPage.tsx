@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Check, Minus, ArrowRight, Shield, Radio, CheckCircle, Truck, Users, Clock, Zap, Calendar, Repeat } from 'lucide-react';
-import { SERVICE_IMAGES } from '@/lib/constants';
+import { SERVICE_IMAGES, HERO_IMAGES, FEATURE_IMAGES } from '@/lib/constants';
 import FinalCTA from '@/components/FinalCTA';
 
 interface ServicesPageProps {
@@ -32,18 +32,21 @@ const MatrixCell: React.FC<{ v: Cell }> = ({ v }) => {
 // ── Scenario Cards ────────────────────────────────────────────────────────────
 
 const SCENARIOS = [
-  { title: 'Home Relocation',    desc: 'Full house moves from studio to 5-bed homes with professional drivers and optional helpers.',         tag: 'Most Popular', tagStyle: 'bg-[#F5B400] text-[#0B2239]', image: SERVICE_IMAGES.houseMoving },
-  { title: 'Business Logistics', desc: 'Office relocations, bulk deliveries, and recurring enterprise transport with consolidated invoicing.', tag: 'Enterprise',   tagStyle: 'bg-[#0F3558] text-[#C9D8E8]',  image: SERVICE_IMAGES.officeRelocation },
-  { title: 'Express Delivery',   desc: 'Same-day dispatch within hours. AI routing finds the nearest available driver instantly.',            tag: 'Express',      tagStyle: 'bg-orange-500 text-white',       image: SERVICE_IMAGES.sameDayDelivery },
+  { title: 'Home Relocation',     desc: 'Full house moves from studio flats to 5-bed homes. Professional drivers with optional helpers.', tag: 'Most Popular', tagStyle: 'bg-[#F5B400] text-[#0B2239]', image: SERVICE_IMAGES.houseMoving },
+  { title: 'Office Relocation',   desc: 'Business moves with dedicated logistics, consolidated billing, and enterprise account support.', tag: 'Business', tagStyle: 'bg-[#0F3558] text-[#C9D8E8]', image: SERVICE_IMAGES.officeRelocation },
+  { title: 'Furniture Delivery',  desc: 'Single items to full room sets. White-glove handling available with trained helpers.', tag: 'Flexible', tagStyle: 'bg-green-600 text-white', image: SERVICE_IMAGES.furnitureDelivery },
+  { title: 'Student Moves',       desc: 'Flat moves, end-of-term relocations, and storage runs. 10% student discount applied.', tag: 'Student 10%', tagStyle: 'bg-blue-600 text-white', image: SERVICE_IMAGES.studentMoves },
+  { title: 'Same-Day Courier',    desc: 'Instant dispatch within hours. AI routing matches the nearest available driver in minutes.', tag: 'Express', tagStyle: 'bg-orange-500 text-white', image: SERVICE_IMAGES.sameDayDelivery },
+  { title: 'Scheduled Transport', desc: 'Plan ahead with fixed-date bookings, recurring schedules, and enterprise transport agreements.', tag: 'Planned', tagStyle: 'bg-purple-600 text-white', image: SERVICE_IMAGES.scheduled },
 ];
 
 // ── Vehicle Guide ─────────────────────────────────────────────────────────────
 
 const VEHICLES = [
-  { name: 'Small Van',  capacity: '1–2 items',  price: 'From £50',  fit: 'Parcels and small flats',      emoji: '🚐' },
-  { name: 'Medium Van', capacity: '3–8 items',  price: 'From £70',  fit: 'Furniture and apartment moves', emoji: '🚛' },
-  { name: 'Large Van',  capacity: '9–20 items', price: 'From £100', fit: 'House relocations',             emoji: '🚚' },
-  { name: 'Luton Van',  capacity: '20+ items',  price: 'From £130', fit: 'Office and commercial moves',   emoji: '📦' },
+  { name: 'Small Van',  capacity: '1–2 items',  price: 'From £50',  fit: 'Parcels, boxes, small studio items',      image: HERO_IMAGES[1],           usage: '8–12 boxes • 1 room' },
+  { name: 'Medium Van', capacity: '3–8 items',  price: 'From £70',  fit: 'Furniture and 1–2 bed apartment moves',   image: FEATURE_IMAGES.vanLoaded, usage: 'Sofa + boxes • small flat' },
+  { name: 'Large Van',  capacity: '9–20 items', price: 'From £100', fit: 'House relocations and full room sets',    image: HERO_IMAGES[0],           usage: '2–3 rooms • full flat' },
+  { name: 'Luton Van',  capacity: '20+ items',  price: 'From £130', fit: 'Office moves and full house relocations', image: HERO_IMAGES[2],           usage: '4+ rooms • office' },
 ];
 
 // ── Dispatch Speed ────────────────────────────────────────────────────────────
@@ -137,7 +140,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate, onScrollToBooki
             <span className="text-[#0E2A47] text-xs font-bold tracking-[0.2em] uppercase mb-2 block">Service Scenarios</span>
             <h2 className="text-2xl font-black text-[#0B2239]">Choose your use case</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {SCENARIOS.map((s, i) => (
               <button key={i} onClick={onScrollToBooking}
                 className="group relative rounded-2xl overflow-hidden text-left h-72 focus:outline-none"
@@ -171,15 +174,21 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate, onScrollToBooki
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {VEHICLES.map((v, i) => (
-              <div key={i} className="bg-white rounded-2xl p-5 border border-gray-100/80 hover:border-[#0E2A47]/20 hover:shadow-md transition-all"
-                style={{ boxShadow: '0px 4px 16px rgba(0,0,0,0.05)' }}
-              >
-                <div className="text-3xl mb-3">{v.emoji}</div>
-                <h3 className="text-[#0B2239] font-black text-sm mb-1">{v.name}</h3>
-                <p className="text-gray-500 text-xs mb-3 leading-snug">{v.fit}</p>
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                  <span className="text-[#8FA9C4] text-[11px] font-medium">{v.capacity}</span>
-                  <span className="text-[#F5B400] font-black text-sm">{v.price}</span>
+              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg transition-all" style={{ boxShadow: '0px 4px 16px rgba(0,0,0,0.06)' }}>
+                <div className="relative h-44 overflow-hidden">
+                  <img src={v.image} alt={v.name} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#071A2F]/60 to-transparent" />
+                  <div className="absolute bottom-3 left-3">
+                    <span className="bg-[#F5B400] text-[#0B2239] text-[10px] font-black px-2.5 py-1 rounded-full">{v.price}</span>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-[#0B2239] font-black text-sm mb-1">{v.name}</h3>
+                  <p className="text-gray-500 text-xs mb-2 leading-snug">{v.fit}</p>
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                    <span className="text-gray-400 text-[11px]">{v.capacity}</span>
+                    <span className="text-[#0E2A47] text-[11px] font-bold">{v.usage}</span>
+                  </div>
                 </div>
               </div>
             ))}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Clock, Phone, MessageCircle, Star, Truck, Navigation, CheckCircle, Package, ArrowLeft, Shield, ChevronRight } from 'lucide-react';
+import { MapPin, Clock, Phone, MessageCircle, Star, Truck, Navigation, CheckCircle, Package, ArrowLeft, Shield, ChevronRight, Headphones, User } from 'lucide-react';
 import { DRIVER_IMAGES, FEATURE_IMAGES } from '@/lib/constants';
 
 interface TrackingViewProps {
@@ -46,57 +46,199 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
 
   if (!isTracking) {
     return (
-      <div className="min-h-screen bg-[#071A2F] flex items-center justify-center px-4 pt-24 pb-16">
-        <div className="w-full max-w-lg">
-          {/* Card */}
-          <div className="relative rounded-3xl overflow-hidden">
-            <div className="absolute inset-0 bg-white/5 backdrop-blur-sm" />
-            <div className="absolute inset-0 border border-white/10 rounded-3xl pointer-events-none" />
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#F5B400]/6 rounded-full blur-3xl pointer-events-none" />
+      <>
+        {/* ── SECTION 1 — TRACKING HERO ────────────────────────────────────── */}
+        <section
+          className="pt-[88px] py-14"
+          style={{ background: 'linear-gradient(180deg, #071A2F 0%, #0E2A47 100%)' }}
+        >
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span className="text-[#F5B400] text-xs font-bold tracking-[0.2em] uppercase mb-4 block">
+              Live Tracking
+            </span>
+            <h1 className="text-4xl sm:text-5xl font-black text-white leading-tight mb-5">
+              Track your delivery in real time
+            </h1>
+            <p className="text-white/50 text-base leading-relaxed mb-8 max-w-xl mx-auto">
+              Live GPS updates from pickup to arrival. Enter your booking reference below.
+            </p>
 
-            <div className="relative p-8 sm:p-12 text-center">
-              <div className="w-20 h-20 bg-[#F5B400]/15 border border-[#F5B400]/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                <Navigation className="w-10 h-10 text-[#F5B400]" />
-              </div>
-              <h1 className="text-3xl font-black text-white mb-3">Track Your Delivery</h1>
-              <p className="text-white/45 mb-8 leading-relaxed">Enter your booking reference to see your driver on the map in real-time.</p>
-
-              <div className="flex gap-2.5 mb-5">
-                <input
-                  type="text"
-                  value={trackingId}
-                  onChange={(e) => setTrackingId(e.target.value)}
-                  placeholder="e.g. FMV-2026-001"
-                  className="flex-1 px-4 py-3.5 bg-white/8 border border-white/12 rounded-2xl text-white placeholder:text-white/30 focus:outline-none focus:border-[#F5B400]/50 text-sm transition-colors"
-                />
-                <button
-                  onClick={startTracking}
-                  className="bg-[#F5B400] hover:bg-[#E5A000] text-[#071A2F] px-6 py-3.5 rounded-2xl font-black text-sm transition-all hover:shadow-lg hover:shadow-[#F5B400]/30 whitespace-nowrap"
+            {/* Badge pills */}
+            <div className="flex flex-wrap gap-3 justify-center">
+              {['GPS Tracked', 'Fully Insured', 'Verified Drivers'].map((label) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-2 bg-white/8 border border-white/10 text-white/70 text-xs font-semibold px-4 py-2 rounded-full"
                 >
-                  Track
-                </button>
-              </div>
+                  <Shield className="w-3.5 h-3.5 text-[#F5B400]" />
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
 
-              <button onClick={startTracking} className="text-white/35 hover:text-[#F5B400] text-sm font-medium transition-colors">
+        {/* ── SECTION 2 — TRACKING INPUT STRIP ────────────────────────────── */}
+        <section className="py-12 bg-white border-t border-[#EEF2F7]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <label className="block text-[#0E2A47] text-xs font-bold tracking-[0.18em] uppercase mb-4">
+              Enter your booking reference
+            </label>
+
+            {/* Input row */}
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={trackingId}
+                onChange={(e) => setTrackingId(e.target.value)}
+                placeholder="e.g. FMV-2026-001234"
+                className="flex-1 border border-gray-200 rounded-xl px-5 py-4 text-[#0B2239] placeholder:text-gray-400 text-sm focus:outline-none focus:border-[#0E2A47] transition-colors"
+              />
+              <button
+                onClick={startTracking}
+                className="bg-[#F5B400] hover:bg-[#FFD24A] text-[#0B2239] font-black rounded-xl px-8 py-4 text-sm transition-all hover:shadow-lg hover:shadow-[#F5B400]/25 whitespace-nowrap"
+              >
+                Track Delivery
+              </button>
+            </div>
+
+            {/* Or divider + demo link */}
+            <div className="flex items-center gap-3 mt-5">
+              <div className="flex-1 h-px bg-gray-100" />
+              <span className="text-gray-400 text-xs font-medium">or</span>
+              <div className="flex-1 h-px bg-gray-100" />
+            </div>
+            <div className="text-center mt-3">
+              <button
+                onClick={startTracking}
+                className="text-[#0E2A47] hover:text-[#F5B400] text-sm font-semibold transition-colors"
+              >
                 View live demo →
               </button>
+            </div>
+          </div>
+        </section>
 
-              <div className="flex items-center justify-center gap-4 mt-8 pt-8 border-t border-white/8">
+        {/* ── SECTION 3 — MAP PREVIEW PANEL ───────────────────────────────── */}
+        <section className="py-10 border-t border-[#EEF2F7]" style={{ background: '#F3F7FB' }}>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative rounded-2xl overflow-hidden h-80">
+              {/* Background map image */}
+              <img
+                src={FEATURE_IMAGES.cityRoutes}
+                alt="Map preview"
+                className="absolute inset-0 w-full h-full object-cover opacity-35"
+              />
+              {/* Dark overlay */}
+              <div className="absolute inset-0 bg-[#071A2F]/60" />
+
+              {/* Centered overlay content */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                <Navigation className="w-12 h-12 text-[#F5B400]/50 mb-4" />
+                <p className="text-white/70 font-semibold text-sm mb-2">
+                  Driver location will appear here once tracking begins
+                </p>
+                <p className="text-white/35 text-xs max-w-xs leading-relaxed">
+                  Enter your booking reference above to start live tracking
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECTION 4 — DELIVERY TIMELINE ───────────────────────────────── */}
+        <section className="py-16 bg-white border-t border-[#EEF2F7]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            {/* Header */}
+            <div className="text-center mb-12">
+              <span className="text-[#0E2A47] text-xs font-bold tracking-[0.2em] uppercase mb-3 block">
+                Delivery Progress
+              </span>
+              <h2 className="text-2xl font-black text-[#0B2239]">
+                Track every stage of your delivery
+              </h2>
+            </div>
+
+            {/* 5-step inactive horizontal timeline */}
+            <div className="relative">
+              {/* Connecting line */}
+              <div className="absolute top-[28px] left-[calc(10%+20px)] right-[calc(10%+20px)] h-0.5 bg-gray-200 hidden sm:block" />
+
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-6">
                 {[
-                  { icon: Shield, label: 'Insured' },
-                  { icon: Star, label: '4.9 Rated' },
-                  { icon: Truck, label: 'GPS Tracked' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-1.5 text-white/30 text-xs">
-                    <item.icon className="w-3.5 h-3.5" />
-                    <span>{item.label}</span>
+                  'Booking Confirmed',
+                  'Driver Assigned',
+                  'Driver En Route',
+                  'Arriving Soon',
+                  'Delivered',
+                ].map((label, i) => (
+                  <div key={i} className="flex flex-col items-center text-center relative">
+                    <div className="relative mb-4">
+                      <div className="w-14 h-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
+                        <span className="text-gray-400 font-black text-base">{i + 1}</span>
+                      </div>
+                    </div>
+                    <p className="text-gray-400 text-xs font-semibold leading-snug">{label}</p>
                   </div>
                 ))}
               </div>
             </div>
+
+            <p className="text-center text-gray-300 text-xs mt-10">
+              Timeline activates once tracking begins
+            </p>
           </div>
-        </div>
-      </div>
+        </section>
+
+        {/* ── SECTION 5 — DRIVER INFO PLACEHOLDER ─────────────────────────── */}
+        <section className="py-16 border-t border-[#EEF2F7]" style={{ background: '#F7FAFC' }}>
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div
+              className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm"
+              style={{ boxShadow: '0px 4px 20px rgba(0,0,0,0.05)' }}
+            >
+              {/* Icon */}
+              <div className="flex flex-col items-center text-center mb-6">
+                <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center mb-4">
+                  <User className="w-6 h-6 text-gray-400" />
+                </div>
+                <h3 className="text-[#0B2239] font-black text-base mb-2">Driver information</h3>
+                <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
+                  Driver name, vehicle details, and estimated arrival time will appear here once tracking begins.
+                </p>
+              </div>
+
+              {/* Placeholder detail rows */}
+              <div className="space-y-3 mt-4">
+                <div className="flex items-center justify-between py-3 border-t border-gray-100">
+                  <div className="h-3 w-24 bg-gray-100 rounded-full" />
+                  <div className="h-3 w-32 bg-gray-100 rounded-full" />
+                </div>
+                <div className="flex items-center justify-between py-3 border-t border-gray-100">
+                  <div className="h-3 w-20 bg-gray-100 rounded-full" />
+                  <div className="h-3 w-28 bg-gray-100 rounded-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECTION 6 — SUPPORT STRIP ────────────────────────────────────── */}
+        <section className="py-10 bg-white border-t border-[#EEF2F7]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex items-center gap-3">
+                <Headphones className="w-5 h-5 text-[#0E2A47]" />
+                <span className="text-[#0B2239] font-semibold text-sm">Need help locating your delivery?</span>
+              </div>
+              <button className="border border-[#0E2A47] text-[#0E2A47] hover:bg-[#0E2A47] hover:text-white rounded-xl px-6 py-2.5 font-bold text-sm transition-all">
+                Contact Dispatch Support
+              </button>
+            </div>
+          </div>
+        </section>
+      </>
     );
   }
 
