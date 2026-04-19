@@ -131,7 +131,7 @@ const AppLayout: React.FC = () => {
     // Home — simplified platform entry
     return (
       <>
-        <HeroSlider onNavigate={navigate} onScrollToBooking={scrollToBooking} bookingRef={bookingRef} />
+        <HeroSlider onNavigate={navigate} bookingRef={bookingRef} />
         <TrustMetricsStrip />
         <HowItWorks />
         <NationwideCoverageStrip />

@@ -4,7 +4,6 @@ import BookingWidget from './BookingWidget';
 
 interface HeroSliderProps {
   onNavigate: (page: string) => void;
-  onScrollToBooking: () => void;
   bookingRef: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -61,7 +60,7 @@ const NetworkMap: React.FC = () => {
 
 const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, bookingRef }) => {
   return (
-    <section className="relative bg-[#061539] overflow-hidden pt-16">
+    <section className="relative bg-[#061539] overflow-hidden pt-[88px]">
       {/* SVG network map background */}
       <div className="absolute inset-0 pointer-events-none" style={{ opacity: 0.18 }}>
         <NetworkMap />
