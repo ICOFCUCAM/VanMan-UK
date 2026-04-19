@@ -201,12 +201,12 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
     <div className="bg-white rounded-3xl shadow-2xl shadow-black/15 overflow-hidden border border-gray-100/80">
 
           {/* Header */}
-          <div className="relative bg-gradient-to-r from-[#071A2F] via-[#0E2A47] to-[#0F3558] px-6 sm:px-8 py-7 overflow-hidden">
+          <div className="relative bg-gradient-to-r from-[#071A2F] via-[#0E2A47] to-[#0F3558] px-5 sm:px-6 py-5 overflow-hidden">
             <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle at 80% 50%, #F5B400 0%, transparent 55%)' }} />
             <div className="relative flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Instant Van Quote</h2>
-                <p className="text-white/55 mt-1 text-sm">Real-time pricing · No hidden fees · Verified drivers</p>
+                <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">Instant Van Quote</h2>
+                <p className="text-white/55 mt-0.5 text-xs">Real-time pricing · No hidden fees · Verified drivers</p>
               </div>
               <div className="hidden sm:flex items-center gap-4 shrink-0">
                 {[
@@ -225,7 +225,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
             </div>
           </div>
 
-          <div className="p-6 sm:p-8 space-y-6">
+          <div className="p-5 sm:p-6 space-y-5">
 
             {/* Address Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

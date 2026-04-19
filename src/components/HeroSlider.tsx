@@ -71,8 +71,8 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, bookingRef }) => {
       {/* Radial glow behind quote widget */}
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 72% 40%, rgba(245,180,0,0.11), transparent 42%)' }} />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-14 items-start py-12 lg:py-16">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-[1fr_400px] gap-8 lg:gap-12 items-start py-10 lg:py-14">
 
           {/* Left column — platform messaging */}
           <div className="flex flex-col justify-center lg:py-8">
@@ -118,7 +118,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, bookingRef }) => {
           </div>
 
           {/* Right column — booking widget */}
-          <div className="w-full pb-12 lg:pb-16">
+          <div className="w-full pb-10 lg:pb-14">
             <BookingWidget bookingRef={bookingRef} onNavigate={onNavigate} embedded />
           </div>
 
