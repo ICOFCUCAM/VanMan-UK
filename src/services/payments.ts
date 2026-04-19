@@ -10,7 +10,7 @@ export async function createCheckoutSession(
     const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
     const response = await fetch(
-      `${supabaseUrl}/functions/v1/create-payment-intent`,
+      `${supabaseUrl}/functions/v1/create-payment`,
       {
         method: 'POST',
         headers: {
