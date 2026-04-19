@@ -184,16 +184,6 @@ export const SAMPLE_REVIEWS = [
   { id: 6, name: 'Michael Brown', rating: 4, text: 'Used the corporate account for our business deliveries. Excellent analytics dashboard and reliable drivers every time.', date: '1 month ago', location: 'Edinburgh' },
 ];
 
-export const SAMPLE_JOBS = [
-  { id: 'JOB-001', pickup: '15 Baker Street, London W1U', dropoff: '42 Oxford Road, Manchester M1', distance: '208 miles', duration: '3h 45m', price: 285, customerRating: 4.8, tier: 'gold', status: 'available', items: 'Furniture & boxes', helpers: 1 },
-  { id: 'JOB-002', pickup: '7 Kings Road, Chelsea SW3', dropoff: '23 Park Lane, Mayfair W1K', distance: '2.3 miles', duration: '25m', price: 80, customerRating: 4.5, tier: 'silver', status: 'available', items: 'Office equipment', helpers: 0 },
-  { id: 'JOB-003', pickup: '88 High Street, Edinburgh EH1', dropoff: '12 George Street, Glasgow G1', distance: '47 miles', duration: '1h 10m', price: 145, customerRating: 4.9, tier: 'gold', status: 'available', items: 'Full house move', helpers: 2 },
-  { id: 'JOB-004', pickup: '5 Broad Street, Birmingham B1', dropoff: '19 Castle Street, Bristol BS1', distance: '88 miles', duration: '1h 40m', price: 175, customerRating: 4.7, tier: 'silver', status: 'available', items: 'Appliances', helpers: 1 },
-  { id: 'JOB-005', pickup: '31 Queen Street, Cardiff CF10', dropoff: '8 Wind Street, Swansea SA1', distance: '42 miles', duration: '55m', price: 110, customerRating: 4.6, tier: 'silver', status: 'available', items: 'Student move', helpers: 0 },
-  { id: 'JOB-006', pickup: '22 Deansgate, Manchester M3', dropoff: '15 The Headrow, Leeds LS1', distance: '43 miles', duration: '1h 05m', price: 120, customerRating: 5.0, tier: 'gold', status: 'available', items: 'Fragile items', helpers: 1 },
-  { id: 'JOB-007', pickup: '9 Princes Street, Edinburgh EH2', dropoff: '45 Union Street, Aberdeen AB11', distance: '125 miles', duration: '2h 30m', price: 220, customerRating: 4.4, tier: 'silver', status: 'available', items: 'Mixed cargo', helpers: 1 },
-  { id: 'JOB-008', pickup: '14 Cornmarket Street, Oxford OX1', dropoff: '3 Sidney Street, Cambridge CB2', distance: '80 miles', duration: '1h 35m', price: 160, customerRating: 4.8, tier: 'gold', status: 'available', items: 'Lab equipment', helpers: 2 },
-];
 
 export const NAV_LINKS = [
   { label: 'Book',        page: 'home' },

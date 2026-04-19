@@ -31,7 +31,7 @@ const DriversPage: React.FC<DriversPageProps> = ({ onNavigate, onScrollToBooking
       {/* ── SECTION 1 — HERO ─────────────────────────────────────────────── */}
       <section
         className="min-h-[580px] pt-[88px]"
-        style={{ background: '#071A2F' }}
+        style={{ background: 'linear-gradient(135deg, #071A2F 0%, #0E2A47 60%, #0F3558 100%)' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-12 items-center">
@@ -252,7 +252,7 @@ const DriversPage: React.FC<DriversPageProps> = ({ onNavigate, onScrollToBooking
       {/* ── SECTION 5 — DRIVER TIERS ──────────────────────────────────────── */}
       <section
         className="py-20 border-t border-white/5"
-        style={{ background: 'linear-gradient(180deg, #071A2F 0%, #0E2A47 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #071A2F 0%, #0E2A47 60%, #0F3558 100%)' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -434,7 +434,7 @@ const DriversPage: React.FC<DriversPageProps> = ({ onNavigate, onScrollToBooking
       {/* ── SECTION 7 — FINAL CTA ─────────────────────────────────────────── */}
       <section
         className="py-16"
-        style={{ background: 'linear-gradient(180deg, #071A2F 0%, #0B1E35 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #071A2F 0%, #0E2A47 60%, #0F3558 100%)' }}
       >
         <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
           <span className="text-[#F5B400] text-xs font-bold tracking-[0.2em] uppercase mb-4 block">

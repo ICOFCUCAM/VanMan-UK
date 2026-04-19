@@ -1,12 +1,25 @@
 import { supabase } from '@/lib/supabase';
 import type { Job, ServiceResult, ServiceListResult } from '@/types';
 
+const VEHICLE_LABELS: Record<string, string> = {
+  small:  'Small van — boxes & single items',
+  medium: 'Medium van — studio / 1-bed move',
+  large:  'Large van — 1–2 bed flat move',
+  luton:  'Luton van — full house move',
+};
+
+function itemLabel(vehicleType: string, notes?: string | null): string {
+  if (notes?.trim()) return notes.trim();
+  return VEHICLE_LABELS[vehicleType] ?? vehicleType;
+}
+
 export async function getAvailableJobs(): Promise<ServiceListResult<Job>> {
   try {
     const { data, error } = await supabase
       .from('bookings')
-      .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type')
+      .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type, notes')
       .eq('status', 'pending')
+      .is('driver_id', null)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -15,14 +28,14 @@ export async function getAvailableJobs(): Promise<ServiceListResult<Job>> {
       id: row.id,
       pickup: row.collection_address,
       dropoff: row.delivery_address,
-      distance: `${row.distance_miles} miles`,
-      duration: row.duration,
-      price: row.estimated_price,
-      customerRating: 4.8,
-      tier: 'silver',
+      distance: `${row.distance_miles ?? 0} miles`,
+      duration: row.duration ?? '—',
+      price: row.estimated_price ?? 0,
+      customerRating: null,
+      tier: null,
       status: 'available',
-      items: row.vehicle_type,
-      helpers: row.helpers,
+      items: itemLabel(row.vehicle_type ?? '', row.notes),
+      helpers: row.helpers ?? 0,
       booking_id: row.id,
     }));
 
@@ -36,7 +49,7 @@ export async function getJobById(id: string): Promise<ServiceResult<Job>> {
   try {
     const { data, error } = await supabase
       .from('bookings')
-      .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type')
+      .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type, notes')
       .eq('id', id)
       .single();
 
@@ -46,14 +59,14 @@ export async function getJobById(id: string): Promise<ServiceResult<Job>> {
       id: data.id,
       pickup: data.collection_address,
       dropoff: data.delivery_address,
-      distance: `${data.distance_miles} miles`,
-      duration: data.duration,
-      price: data.estimated_price,
-      customerRating: 4.8,
-      tier: 'silver',
+      distance: `${data.distance_miles ?? 0} miles`,
+      duration: data.duration ?? '—',
+      price: data.estimated_price ?? 0,
+      customerRating: null,
+      tier: null,
       status: 'available',
-      items: data.vehicle_type,
-      helpers: data.helpers,
+      items: itemLabel(data.vehicle_type ?? '', data.notes),
+      helpers: data.helpers ?? 0,
       booking_id: data.id,
     };
 

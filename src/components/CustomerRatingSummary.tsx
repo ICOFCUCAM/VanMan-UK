@@ -19,7 +19,7 @@ const CustomerRatingSummary: React.FC = () => {
                 <Star key={s} className="w-4 h-4 text-[#F5B400] fill-[#F5B400]" />
               ))}
             </div>
-            <p className="text-gray-400 text-xs">From 2,500+ verified reviews</p>
+            <p className="text-gray-400 text-xs">From platform-verified reviews</p>
           </div>
 
           {/* Review cards */}

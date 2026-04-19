@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Check, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface MovingChecklistPageProps {
@@ -127,8 +127,17 @@ const PHASES: Phase[] = [
 ];
 
 export default function MovingChecklistPage({ onNavigate, onScrollToBooking }: MovingChecklistPageProps) {
-  const [checked, setChecked] = useState<Set<string>>(new Set());
+  const [checked, setChecked] = useState<Set<string>>(() => {
+    try {
+      const saved = localStorage.getItem('moving_checklist');
+      return saved ? new Set<string>(JSON.parse(saved)) : new Set<string>();
+    } catch { return new Set<string>(); }
+  });
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['phase1']));
+
+  useEffect(() => {
+    localStorage.setItem('moving_checklist', JSON.stringify([...checked]));
+  }, [checked]);
 
   const totalItems = PHASES.reduce((acc, p) => acc + p.items.length, 0);
   const doneCount = checked.size;

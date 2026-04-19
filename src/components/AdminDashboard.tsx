@@ -82,7 +82,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
       const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
       const revenue = bookings
-        .filter(b => b.created_at.slice(0, 7) === key)
+        .filter(b => b.created_at.slice(0, 7) === key && b.payment_status === 'released')
         .reduce((s, b) => s + (b.estimated_price ?? 0), 0);
       return { month: d.toLocaleDateString('en-GB', { month: 'short' }), revenue };
     });
@@ -130,7 +130,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
   ];
 
   const stats = [
-    { label: 'Total Revenue', value: `£${bookings.reduce((s, b) => s + b.estimated_price, 0).toLocaleString()}`, change: 'live', icon: DollarSign, color: 'bg-green-500' },
+    { label: 'Total Revenue', value: `£${bookings.filter(b => b.payment_status === 'released').reduce((s, b) => s + b.estimated_price, 0).toLocaleString()}`, change: 'released only', icon: DollarSign, color: 'bg-green-500' },
     { label: 'Total Drivers', value: drivers.length.toString(), change: `${drivers.filter(d => d.status === 'active' || d.status === 'approved').length} active`, icon: Truck, color: 'bg-blue-500' },
     { label: 'Total Bookings', value: bookings.length.toString(), change: `${bookings.filter(b => b.status === 'completed').length} completed`, icon: BarChart3, color: 'bg-purple-500' },
     { label: 'Avg Rating', value: drivers.length ? (drivers.reduce((s, d) => s + d.rating, 0) / drivers.length).toFixed(2) : '—', change: 'avg', icon: Star, color: 'bg-[#F5B400]' },
@@ -301,7 +301,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <h3 className="font-bold text-gray-900 mb-1">Revenue — Last 6 Months</h3>
-                  <p className="text-gray-500 text-sm mb-4">Total £{bookings.reduce((s, b) => s + (b.estimated_price ?? 0), 0).toLocaleString()} all-time</p>
+                  <p className="text-gray-500 text-sm mb-4">Total £{bookings.filter(b => b.payment_status === 'released').reduce((s, b) => s + (b.estimated_price ?? 0), 0).toLocaleString()} released</p>
                   <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={revenueData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />

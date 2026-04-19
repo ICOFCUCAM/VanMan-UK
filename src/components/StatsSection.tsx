@@ -1,11 +1,5 @@
-import React from 'react';
-
-const STATS = [
-  { value: '50,000+', label: 'Jobs completed' },
-  { value: '10,000+', label: 'Active drivers' },
-  { value: '4.9 / 5', label: 'Customer rating' },
-  { value: 'UK Wide', label: 'Coverage' },
-];
+import React, { useState, useEffect } from 'react';
+import { getPlatformStats } from '@/services/stats';
 
 const BADGES = [
   { label: 'DBS-verified drivers', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
@@ -14,29 +8,51 @@ const BADGES = [
   { label: 'In-app messaging only', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
 ];
 
-const StatsSection: React.FC = () => (
-  <section className="py-16 bg-white">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {STATS.map(s => (
-          <div key={s.label} className="text-center">
-            <p className="text-2xl sm:text-3xl font-black text-[#0E2A47] mb-1">{s.value}</p>
-            <p className="text-xs text-gray-500">{s.label}</p>
-          </div>
-        ))}
+function fmt(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k+`;
+  return n > 0 ? `${n}+` : '—';
+}
+
+const StatsSection: React.FC = () => {
+  const [stats, setStats] = useState<{ jobs: number; drivers: number; rating: number | null } | null>(null);
+
+  useEffect(() => {
+    getPlatformStats().then(s => {
+      setStats({ jobs: s.completedJobs, drivers: s.activeDrivers, rating: s.avgRating });
+    });
+  }, []);
+
+  const items = [
+    { value: stats ? fmt(stats.jobs)    : '—', label: 'Jobs completed' },
+    { value: stats ? fmt(stats.drivers) : '—', label: 'Active drivers' },
+    { value: stats?.rating != null ? `${stats.rating} / 5` : '—', label: 'Driver rating' },
+    { value: 'UK Wide', label: 'Coverage' },
+  ];
+
+  return (
+    <section className="py-12 bg-white border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          {items.map(s => (
+            <div key={s.label} className="text-center">
+              <p className={`text-2xl sm:text-3xl font-black text-[#0E2A47] mb-1 transition-all ${stats === null ? 'opacity-30' : 'opacity-100'}`}>{s.value}</p>
+              <p className="text-xs text-gray-500">{s.label}</p>
+            </div>
+          ))}
+        </div>
+        <div className="border-t border-gray-100 mt-8 pt-5 flex flex-wrap justify-center gap-6">
+          {BADGES.map(b => (
+            <span key={b.label} className="flex items-center gap-1.5 text-xs text-gray-400">
+              <svg className="w-3.5 h-3.5 text-[#F5B400]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={b.icon} />
+              </svg>
+              {b.label}
+            </span>
+          ))}
+        </div>
       </div>
-      <div className="border-t border-gray-100 mt-10 pt-5 flex flex-wrap justify-center gap-6">
-        {BADGES.map(b => (
-          <span key={b.label} className="flex items-center gap-1.5 text-xs text-gray-400">
-            <svg className="w-3.5 h-3.5 text-[#F5B400]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={b.icon} />
-            </svg>
-            {b.label}
-          </span>
-        ))}
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default StatsSection;

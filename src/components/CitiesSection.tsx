@@ -29,11 +29,7 @@ const CitiesSection: React.FC<CitiesSectionProps> = ({ onScrollToBooking }) => (
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-5">
               <h3 className="text-xl font-black text-white mb-1">Move to {city.name}</h3>
-              <div className="flex items-center gap-3 text-xs text-gray-300">
-                <span>{city.drivers} drivers</span>
-                <span className="w-1 h-1 rounded-full bg-gray-400" />
-                <span>{city.bookings} bookings</span>
-              </div>
+              <p className="text-xs text-gray-300">Drivers available now</p>
             </div>
           </button>
         ))}

@@ -179,13 +179,21 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
               </div>
               <div className="bg-gray-50 rounded-xl p-4">
                 <p className="text-xs text-gray-600 font-medium">Tier</p>
-                <p className="text-xl font-bold text-gray-700 capitalize">{driver.tier === 'gold' ? '⭐ Gold' : '🥈 Silver'}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{driver.tier === 'gold' ? '15%' : '20%'} commission</p>
+                <p className="text-xl font-bold text-gray-700 capitalize">
+                  {driver.tier === 'elite' ? '💎 Elite' : driver.tier === 'gold_pro' ? '🥇 Gold Pro' : driver.tier === 'gold' ? '⭐ Gold' : driver.tier === 'silver_plus' ? '🥈 Silver Plus' : '🥈 Silver'}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {driver.tier === 'elite' ? '10%' : driver.tier === 'gold_pro' ? '12%' : driver.tier === 'gold' ? '15%' : driver.tier === 'silver_plus' ? '18%' : '20%'} commission
+                </p>
               </div>
             </div>
             <div className="flex gap-3">
-              <button className="bg-[#0E2A47] hover:bg-[#0F3558] text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors">Bank Transfer</button>
-              <button className="bg-[#F5B400] hover:bg-[#E5A000] text-[#0E2A47] px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors">Instant Payout</button>
+              <button disabled title="Coming soon" className="bg-[#0E2A47] text-white px-6 py-2.5 rounded-lg font-semibold text-sm opacity-60 cursor-not-allowed flex items-center gap-2">
+                Bank Transfer <span className="text-xs font-normal opacity-80">soon</span>
+              </button>
+              <button disabled title="Coming soon" className="bg-[#F5B400] text-[#0E2A47] px-6 py-2.5 rounded-lg font-semibold text-sm opacity-60 cursor-not-allowed flex items-center gap-2">
+                Instant Payout <span className="text-xs font-normal opacity-80">soon</span>
+              </button>
             </div>
           </div>
         )}

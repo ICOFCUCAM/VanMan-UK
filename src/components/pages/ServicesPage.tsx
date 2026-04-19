@@ -85,7 +85,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate, onScrollToBooki
   return (
     <>
       {/* Header */}
-      <div className="pt-[88px] border-b border-white/[0.06]" style={{ background: 'linear-gradient(180deg, #071A2F 0%, #0E2A47 100%)' }}>
+      <div className="pt-[88px] border-b border-white/[0.06]" style={{ background: 'linear-gradient(135deg, #071A2F 0%, #0E2A47 60%, #0F3558 100%)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <span className="text-[#F5B400] text-xs font-bold tracking-[0.2em] uppercase mb-3 block">Transport Services</span>
           <h1 className="text-3xl sm:text-4xl font-black text-white mb-3">Transport capability matrix</h1>
@@ -198,7 +198,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate, onScrollToBooki
 
       {/* Section 4 — Dispatch Speed */}
       <section className="py-14 border-t border-white/[0.05]"
-        style={{ background: 'linear-gradient(180deg, #071A2F 0%, #0E2A47 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #071A2F 0%, #0E2A47 60%, #0F3558 100%)' }}
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
@@ -266,7 +266,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate, onScrollToBooki
 
       {/* Section 6 — Insurance Assurance */}
       <section className="py-10 border-t border-white/[0.05]"
-        style={{ background: 'linear-gradient(180deg, #0E2A47 0%, #071A2F 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #071A2F 0%, #0E2A47 60%, #0F3558 100%)' }}
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">

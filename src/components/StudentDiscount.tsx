@@ -5,15 +5,15 @@ const StudentDiscount: React.FC = () => {
   return (
     <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#0E2A47] to-[#1a1065]">
+        <div className="relative rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #071A2F 0%, #0E2A47 60%, #0F3558 100%)' }}>
           {/* Decorative background */}
-          <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #F5B400 0%, transparent 50%), radial-gradient(circle at 80% 20%, #7C3AED 0%, transparent 40%)' }} />
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl" />
+          <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #F5B400 0%, transparent 50%), radial-gradient(circle at 80% 20%, #F5B400 0%, transparent 40%)' }} />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#F5B400]/5 rounded-full blur-3xl" />
 
           <div className="relative grid grid-cols-1 md:grid-cols-2 gap-0 items-stretch">
             {/* Left: content */}
             <div className="p-8 sm:p-10">
-              <div className="inline-flex items-center gap-2 bg-purple-500/15 border border-purple-400/20 text-purple-300 text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-5">
+              <div className="inline-flex items-center gap-2 bg-[#F5B400]/15 border border-[#F5B400]/20 text-[#F5B400] text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-5">
                 <GraduationCap className="w-3.5 h-3.5" />
                 Student Offer
               </div>
