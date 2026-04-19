@@ -45,42 +45,38 @@ CREATE OR REPLACE FUNCTION public.dispatch_assign_best_driver(p_booking_id uuid)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
-AS $$
+AS $func$
 DECLARE
   v_driver_id    uuid;
   v_vehicle_type text;
 BEGIN
-  SELECT vehicle_type
-  INTO   v_vehicle_type
-  FROM   bookings
-  WHERE  id = p_booking_id;
+  -- Use := assignment to avoid SELECT INTO being misread as table creation
+  v_vehicle_type := (
+    SELECT vehicle_type FROM bookings WHERE id = p_booking_id LIMIT 1
+  );
 
-  IF NOT FOUND THEN RETURN; END IF;
+  IF v_vehicle_type IS NULL THEN RETURN; END IF;
 
-  SELECT d.id
-  INTO   v_driver_id
-  FROM   drivers d
-  WHERE  d.status      IN ('active', 'approved')
-    AND  d.is_online    = true
-    AND  d.vehicle_type = v_vehicle_type
-    AND  d.id NOT IN (
-           SELECT driver_id FROM bookings
-           WHERE  driver_id IS NOT NULL
-             AND  status IN ('assigned', 'in_progress')
-         )
-  ORDER BY
-    -- Drivers with a known GPS location rank first (ready for proximity scoring
-    -- once pickup lat/lng is added to the bookings table)
-    CASE WHEN d.current_lat IS NOT NULL THEN 0 ELSE 1 END,
-    d.rating     DESC,
-    d.total_jobs DESC
-  LIMIT 1;
+  v_driver_id := (
+    SELECT d.id
+    FROM   drivers d
+    WHERE  d.status      IN ('active', 'approved')
+      AND  d.is_online    = true
+      AND  d.vehicle_type = v_vehicle_type
+      AND  d.id NOT IN (
+             SELECT driver_id FROM bookings
+             WHERE  driver_id IS NOT NULL
+               AND  status IN ('assigned', 'in_progress')
+           )
+    ORDER BY
+      CASE WHEN d.current_lat IS NOT NULL THEN 0 ELSE 1 END,
+      d.rating     DESC,
+      d.total_jobs DESC
+    LIMIT 1
+  );
 
   IF v_driver_id IS NULL THEN
-    -- No driver available — mark confirmed so admin can assign manually
-    UPDATE bookings
-    SET    status = 'confirmed'
-    WHERE  id = p_booking_id;
+    UPDATE bookings SET status = 'confirmed' WHERE id = p_booking_id;
     RETURN;
   END IF;
 
@@ -91,4 +87,4 @@ BEGIN
   WHERE  id        = p_booking_id
     AND  driver_id IS NULL;
 END;
-$$;
+$func$;
