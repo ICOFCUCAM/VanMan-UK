@@ -83,7 +83,7 @@ const ServicesSection: React.FC = () => {
           {services.map((s, idx) => (
             <div
               key={idx}
-              className="group relative rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-400 hover:-translate-y-1 cursor-default"
+              className="group relative rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-default"
               style={{ aspectRatio: '4/3' }}
             >
               {/* Background image */}

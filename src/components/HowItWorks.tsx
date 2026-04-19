@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Search, Truck, CheckCircle, Star, Shield, Clock, CreditCard, ArrowRight } from 'lucide-react';
+import { MapPin, Search, Truck, CheckCircle, ArrowRight } from 'lucide-react';
 
 const steps = [
   { icon: MapPin, number: '01', title: 'Enter Your Addresses', desc: 'Tell us where to collect and deliver. Add multiple stops or extra helpers.', color: 'text-blue-400' },
@@ -8,14 +8,6 @@ const steps = [
   { icon: CheckCircle, number: '04', title: 'Goods Delivered', desc: 'Track live on the map. Rate the service when your goods arrive safely.', color: 'text-purple-400' },
 ];
 
-const stats = [
-  { value: '10,000+', label: 'Active Drivers', icon: Truck },
-  { value: '4.9 / 5', label: 'Average Rating', icon: Star },
-  { value: '100%', label: 'Insured Deliveries', icon: Shield },
-  { value: '<15 min', label: 'Avg Response Time', icon: Clock },
-  { value: '£50', label: 'Starting From', icon: CreditCard },
-  { value: 'UK Wide', label: 'Coverage', icon: MapPin },
-];
 
 const HowItWorks: React.FC = () => {
   return (
@@ -66,19 +58,19 @@ const HowItWorks: React.FC = () => {
           ))}
         </div>
 
-        {/* Stats bar */}
-        <div className="relative rounded-2xl overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/10 to-transparent" />
-          <div className="absolute inset-0 border border-[#D4AF37]/15 rounded-2xl" />
-          <div className="relative grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-x divide-y sm:divide-y-0 divide-white/8">
-            {stats.map((stat, idx) => (
-              <div key={idx} className="flex flex-col items-center justify-center py-8 px-4 text-center hover:bg-white/3 transition-colors">
-                <stat.icon className="w-5 h-5 text-[#D4AF37] mb-3 opacity-70" />
-                <p className="text-2xl font-black text-white">{stat.value}</p>
-                <p className="text-white/40 text-xs mt-1 font-medium">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+        {/* Simple 4-stat inline band */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { value: '10,000+', label: 'Active Drivers' },
+            { value: '4.9 / 5', label: 'Customer Rating' },
+            { value: '< 15 min', label: 'Avg Response' },
+            { value: 'UK Wide', label: 'Coverage' },
+          ].map((s, i) => (
+            <div key={i} className="text-center py-6 border border-white/8 rounded-2xl bg-white/3">
+              <p className="text-2xl font-black text-[#D4AF37]">{s.value}</p>
+              <p className="text-white/40 text-xs mt-1 font-medium">{s.label}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

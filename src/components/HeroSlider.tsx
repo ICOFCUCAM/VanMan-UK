@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Shield, Clock, MapPin, ChevronDown, Star, Truck, Users } from 'lucide-react';
+import { ArrowRight, Shield, Clock, MapPin, ChevronDown } from 'lucide-react';
 import { HERO_IMAGES } from '@/lib/constants';
 
 interface HeroSliderProps {
   onNavigate: (page: string) => void;
   onScrollToBooking: () => void;
 }
-
-const stats = [
-  { icon: Truck, value: '10,000+', label: 'Active Drivers' },
-  { icon: Star, value: '4.9 / 5', label: 'Customer Rating' },
-  { icon: Users, value: '50,000+', label: 'Jobs Completed' },
-  { icon: MapPin, value: 'UK Wide', label: 'Coverage' },
-];
 
 const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, onScrollToBooking }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -46,7 +39,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, onScrollToBooking }
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#D4AF37 1px, transparent 1px), linear-gradient(90deg, #D4AF37 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
       {/* Content */}
-      <div className={`relative z-10 h-full flex items-center pb-32 transition-all duration-1000 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      <div className={`relative z-10 h-full flex items-center pb-20 transition-all duration-1000 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="max-w-3xl">
 
@@ -125,24 +118,6 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ onNavigate, onScrollToBooking }
         <ChevronDown className="w-4 h-4 text-white/30 animate-bounce" />
       </div>
 
-      {/* Bottom stats bar — overlaps into next section */}
-      <div className="absolute bottom-0 left-0 right-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10 bg-white/5 backdrop-blur-xl border border-white/10 rounded-t-2xl overflow-hidden">
-            {stats.map((s, i) => (
-              <div key={i} className="flex items-center gap-3 px-6 py-5 hover:bg-white/5 transition-colors">
-                <div className="w-9 h-9 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center shrink-0">
-                  <s.icon className="w-4 h-4 text-[#D4AF37]" />
-                </div>
-                <div>
-                  <p className="text-white font-bold text-lg leading-none">{s.value}</p>
-                  <p className="text-white/45 text-xs mt-0.5">{s.label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </section>
   );
 };
