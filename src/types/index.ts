@@ -106,6 +106,45 @@ export interface CreateDriverInput {
   vehicle_photo_url?: string | null;
 }
 
+// ─── Corporate ───────────────────────────────────────────────────────────────
+
+export type CorporateRole = 'admin' | 'manager' | 'booker' | 'viewer';
+export type RecurringFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly';
+
+export interface CorporateAccount {
+  id: string;
+  company_name: string;
+  email: string;
+  phone: string | null;
+  user_id: string | null;
+  discount_pct: number;
+  status: string;
+  created_at: string;
+}
+
+export interface CorporateTeamMember {
+  id: string;
+  account_id: string;
+  email: string;
+  name: string | null;
+  role: CorporateRole;
+  user_id: string | null;
+  created_at: string;
+}
+
+export interface RecurringSchedule {
+  id: string;
+  account_id: string;
+  pickup_address: string;
+  delivery_address: string;
+  vehicle_type: string;
+  frequency: RecurringFrequency;
+  day_of_week: string | null;
+  time_of_day: string;
+  is_active: boolean;
+  created_at: string;
+}
+
 // ─── Bookings ─────────────────────────────────────────────────────────────────
 
 export type BookingStatus =
@@ -140,6 +179,7 @@ export interface Booking {
   status: BookingStatus;
   payment_method: PaymentMethod;
   payment_status: PaymentStatus;
+  corporate_account_id: string | null;
   scheduled_at: string | null;
   picked_up_at: string | null;
   delivered_at: string | null;
