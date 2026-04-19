@@ -10,9 +10,10 @@ import type { PaymentMethod, QuoteData } from '@/types';
 interface BookingWidgetProps {
   bookingRef: React.RefObject<HTMLDivElement | null>;
   onNavigate?: (page: string) => void;
+  embedded?: boolean;
 }
 
-const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate }) => {
+const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, embedded = false }) => {
   const { user } = useAppContext();
   const [collectionAddress, setCollectionAddress] = useState('');
   const [deliveryAddress, setDeliveryAddress] = useState('');
@@ -196,11 +197,8 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate })
     if (onNavigate) onNavigate('payment');
   };
 
-  return (
-    <>
-    <section ref={bookingRef} className="relative -mt-20 z-20 pb-20">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl shadow-2xl shadow-black/15 overflow-hidden border border-gray-100/80">
+  const card = (
+    <div className="bg-white rounded-3xl shadow-2xl shadow-black/15 overflow-hidden border border-gray-100/80">
 
           {/* Header */}
           <div className="relative bg-gradient-to-r from-[#061539] via-[#0A2463] to-[#1B3A8C] px-6 sm:px-8 py-7 overflow-hidden">
@@ -538,10 +536,21 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate })
               </div>
             )}
           </div>
-        </div>
+    </div>
+  );
+
+  if (embedded) {
+    return <div ref={bookingRef} className="w-full">{card}</div>;
+  }
+
+  return (
+    <>
+    <section ref={bookingRef} className="relative -mt-20 z-20 pb-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {card}
       </div>
     </section>
-  </>
+    </>
   );
 };
 
