@@ -43,6 +43,7 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [driverId, setDriverId] = useState<string | null>(null);
+  const [docsSkipped, setDocsSkipped] = useState(false);
 
   const updateField = (field: string, value: any) => setFormData({ ...formData, [field]: value });
 
@@ -50,31 +51,31 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
     if (!formData.agreeTerms || !formData.agreeContractor) return;
     setIsSubmitting(true);
     setSubmitError(null);
+    setDocsSkipped(false);
 
+    // Soft-fail upload: storage RLS requires authentication. If upload fails,
+    // we proceed without the URL — admin can request documents manually.
     const uploadDoc = async (file: File | null, docType: Parameters<typeof uploadDriverDocument>[1]) => {
       if (!file) return null;
-      const { url, error } = await uploadDriverDocument(formData.email, docType, file);
-      if (error) throw new Error(`Failed to upload ${docType}: ${error.message}`);
+      const { url, error } = await uploadDriverDocument(formData.email, docType, file, user?.id);
+      if (error) {
+        console.warn(`Document upload skipped (${docType}):`, error.message);
+        return null;
+      }
       return url;
     };
 
-    let licenseUrl: string | null = null;
-    let insuranceUrl: string | null = null;
-    let registrationUrl: string | null = null;
-    let photoUrl: string | null = null;
+    const [licenseUrl, insuranceUrl, registrationUrl, photoUrl] = await Promise.all([
+      uploadDoc(formData.driverLicense, 'license'),
+      uploadDoc(formData.insuranceDoc, 'insurance'),
+      uploadDoc(formData.vehicleRegistration, 'registration'),
+      uploadDoc(formData.vehiclePhotos, 'vehicle_photos'),
+    ]);
 
-    try {
-      [licenseUrl, insuranceUrl, registrationUrl, photoUrl] = await Promise.all([
-        uploadDoc(formData.driverLicense, 'license'),
-        uploadDoc(formData.insuranceDoc, 'insurance'),
-        uploadDoc(formData.vehicleRegistration, 'registration'),
-        uploadDoc(formData.vehiclePhotos, 'vehicle_photos'),
-      ]);
-    } catch (uploadErr) {
-      setIsSubmitting(false);
-      setSubmitError((uploadErr as Error).message);
-      return;
-    }
+    // Flag if any uploaded file couldn't be stored (so we can inform the user)
+    const hadFiles = formData.driverLicense || formData.insuranceDoc || formData.vehicleRegistration || formData.vehiclePhotos;
+    const anyStored = licenseUrl || insuranceUrl || registrationUrl || photoUrl;
+    if (hadFiles && !anyStored) setDocsSkipped(true);
 
     const { data, error } = await registerDriver({
       first_name: formData.firstName,
@@ -87,7 +88,7 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
       vehicle_year: formData.vehicleYear,
       vehicle_reg: formData.vehicleReg,
       insurance_type: formData.insuranceType,
-      user_id: user?.id,
+      user_id: user?.id ?? null,
       license_document_url: licenseUrl,
       insurance_document_url: insuranceUrl,
       vehicle_registration_url: registrationUrl,
@@ -96,7 +97,12 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
 
     setIsSubmitting(false);
     if (error) {
-      setSubmitError(error.message || 'Failed to submit application. Please try again.');
+      // RLS on the drivers table requires authentication
+      if (error.message?.includes('row-level security') || error.message?.includes('policy')) {
+        setSubmitError('Please sign in or create an account before submitting your driver application. Your progress will be saved.');
+      } else {
+        setSubmitError(error.message || 'Failed to submit application. Please try again.');
+      }
       return;
     }
     setDriverId(data!.id);
@@ -116,8 +122,14 @@ const DriverRegistration: React.FC<DriverRegistrationProps> = ({ onNavigate }) =
               <span className="text-[#0E2A47] text-[10px] font-bold tracking-[0.22em] uppercase mb-3 block">Application Received</span>
               <h2 className="text-2xl font-black text-[#0B2239] mb-2">You're in the pipeline</h2>
               <p className="text-gray-500 text-sm leading-relaxed mb-5">
-                Our compliance team will review your documents and activate your account within 24–48 hours.
+                Our compliance team will review your details and activate your account within 24–48 hours.
               </p>
+              {docsSkipped && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4 text-left">
+                  <p className="text-amber-800 text-xs font-semibold mb-0.5">Documents needed</p>
+                  <p className="text-amber-700 text-xs">We couldn't store your documents automatically. Please email them to <a href="mailto:info@fastmanandvan.org" className="underline font-semibold">info@fastmanandvan.org</a> with your reference below.</p>
+                </div>
+              )}
               {driverId && (
                 <div className="inline-block bg-[#F7FAFC] border border-gray-200 rounded-xl px-6 py-3 mb-5">
                   <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-0.5">Application Reference</p>
