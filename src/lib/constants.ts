@@ -56,12 +56,23 @@ export const PRICING = {
   surgeMultiplierMax: 2.5,
 };
 
-// Commission by driver tier — gold gets rewarded for comprehensive insurance
+// Commission by driver tier
 export const COMMISSION = {
-  gold: 0.15,
-  silver: 0.20,
-  cashDeposit: 0.30,   // 30% upfront platform deposit for cash-payment jobs
+  elite:       0.10,  // 10%
+  gold_pro:    0.15,  // 15%
+  gold:        0.20,  // 20%
+  silver_plus: 0.25,  // 25%
+  silver:      0.30,  // 30%
+  cashDeposit: 0.30,
   smallJobThreshold: 50,
+};
+
+export const TIER_COMMISSION: Record<string, number> = {
+  elite:       10,
+  gold_pro:    15,
+  gold:        20,
+  silver_plus: 25,
+  silver:      30,
 };
 
 export const PAYMENT_STATUS_LABELS: Record<string, string> = {
@@ -81,16 +92,16 @@ export const PAYMENT_STATUS_STYLES: Record<string, string> = {
 };
 
 export const SUBSCRIPTION_PLANS = [
-  { id: 'silver', name: 'Silver', price: 0, period: '/mo', commissionRate: 20, dispatchPriority: 'Standard', priorityLevel: 1, popular: false, features: ['20% platform commission', 'Standard job queue access', 'Verified driver badge', 'Goods-in-transit insurance included', 'Weekly BACS payout', 'Community support forum'] },
-  { id: 'silver_plus', name: 'Silver Plus', price: 29, period: '/mo', commissionRate: 18, dispatchPriority: 'Moderate', priorityLevel: 2, popular: false, features: ['18% platform commission — save 2%', 'Moderate dispatch priority', 'Silver Plus profile badge', 'Enhanced insurance coverage', 'Weekly BACS payout', '24/7 driver support'] },
-  { id: 'gold', name: 'Gold', price: 49, period: '/mo', commissionRate: 15, dispatchPriority: 'High', priorityLevel: 3, popular: true, features: ['15% platform commission', 'High dispatch priority', 'Gold profile badge & trust seal', 'Premium insurance coverage', 'Bi-weekly BACS payout', 'Dedicated account manager'] },
-  { id: 'gold_pro', name: 'Gold Pro', price: 79, period: '/mo', commissionRate: 12, dispatchPriority: 'Very High', priorityLevel: 4, popular: false, features: ['12% platform commission', 'Very high dispatch priority', 'Gold Pro badge + featured listing', 'Corporate job access', 'Weekly BACS payout', 'Priority phone support'] },
-  { id: 'elite', name: 'Elite', price: 129, period: '/mo', commissionRate: 10, dispatchPriority: 'Highest', priorityLevel: 5, popular: false, features: ['10% platform commission', 'First access to ALL jobs', 'Elite badge + top of marketplace', 'Corporate & enterprise accounts', 'Same-day BACS payout', 'Personal account manager'] },
+  { id: 'silver',      name: 'Silver',      price: 0,   period: '/mo', commissionRate: 30, dispatchPriority: 'Standard',  priorityLevel: 1, popular: false, features: ['30% platform commission', 'Standard job queue access', 'Verified driver badge', 'Goods-in-transit insurance included', 'Weekly BACS payout', 'Community support forum'] },
+  { id: 'silver_plus', name: 'Silver Plus', price: 29,  period: '/mo', commissionRate: 25, dispatchPriority: 'Moderate',  priorityLevel: 2, popular: false, features: ['25% platform commission — save 5%', 'Moderate dispatch priority', 'Silver Plus profile badge', 'Enhanced insurance coverage', 'Weekly BACS payout', '24/7 driver support'] },
+  { id: 'gold',        name: 'Gold',        price: 49,  period: '/mo', commissionRate: 20, dispatchPriority: 'High',      priorityLevel: 3, popular: true,  features: ['20% platform commission', 'High dispatch priority', 'Gold profile badge & trust seal', 'Premium insurance coverage', 'Bi-weekly BACS payout', 'Dedicated account manager'] },
+  { id: 'gold_pro',    name: 'Gold Pro',    price: 79,  period: '/mo', commissionRate: 15, dispatchPriority: 'Very High', priorityLevel: 4, popular: false, features: ['15% platform commission', 'Very high dispatch priority', 'Gold Pro badge + featured listing', 'Corporate job access', 'Weekly BACS payout', 'Priority phone support'] },
+  { id: 'elite',       name: 'Elite',       price: 129, period: '/mo', commissionRate: 10, dispatchPriority: 'Highest',   priorityLevel: 5, popular: false, features: ['10% platform commission', 'First access to ALL jobs', 'Elite badge + top of marketplace', 'Corporate & enterprise accounts', 'Same-day BACS payout', 'Personal account manager'] },
 ] as const;
 
 export function calculateCommission(jobValue: number, planId: string): { rate: number; commission: number; earning: number } {
   const plan = SUBSCRIPTION_PLANS.find(p => p.id === planId);
-  const rate = plan?.commissionRate ?? 20;
+  const rate = plan?.commissionRate ?? 30; // default to silver rate
   const commission = Math.round(jobValue * (rate / 100));
   const earning = jobValue - commission;
   return { rate, commission, earning };

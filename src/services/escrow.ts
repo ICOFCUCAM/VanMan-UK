@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { TIER_COMMISSION } from '@/lib/constants';
 import type { ServiceResult } from '@/types';
 
 export async function confirmDeliveryAsCustomer(bookingId: string): Promise<ServiceResult<null>> {
@@ -129,9 +130,11 @@ export async function refundEscrowManually(bookingId: string): Promise<ServiceRe
 }
 
 // Fallback: update payment_status directly (dev/testing — no real money moves)
-export async function activateEscrowFallback(bookingId: string, price: number): Promise<ServiceResult<null>> {
+export async function activateEscrowFallback(bookingId: string, price: number, driverTier?: string): Promise<ServiceResult<null>> {
   try {
-    const commissionAmount = price * 0.20;
+    const ratePercent  = TIER_COMMISSION[driverTier ?? 'silver'] ?? 30;
+    const rate         = ratePercent / 100;
+    const commissionAmount = price * rate;
     const driverEarning    = price - commissionAmount;
 
     const { error: bookingErr } = await supabase
@@ -139,7 +142,7 @@ export async function activateEscrowFallback(bookingId: string, price: number): 
       .update({
         payment_status:    'escrow',
         escrow_activated:  true,
-        commission_rate:   0.20,
+        commission_rate:   rate,
         commission_amount: commissionAmount,
         driver_earning:    driverEarning,
       })

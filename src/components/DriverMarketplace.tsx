@@ -3,6 +3,7 @@ import { MapPin, Clock, Star, Truck, DollarSign, Filter, CheckCircle, X, Navigat
 import { useAppContext } from '@/contexts/AppContext';
 import { getAvailableJobs } from '@/services/jobs';
 import { assignDriverToBooking, getBookingsByDriver, updateBookingStatus } from '@/services/bookings';
+import { TIER_COMMISSION } from '@/lib/constants';
 import { setDriverOnline } from '@/services/drivers';
 import { getDriverWallet, confirmCompletionAsDriver } from '@/services/escrow';
 import type { Job, Booking } from '@/types';
@@ -183,7 +184,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                   {driver.tier === 'elite' ? '💎 Elite' : driver.tier === 'gold_pro' ? '🥇 Gold Pro' : driver.tier === 'gold' ? '⭐ Gold' : driver.tier === 'silver_plus' ? '🥈 Silver Plus' : '🥈 Silver'}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  {driver.tier === 'elite' ? '10%' : driver.tier === 'gold_pro' ? '12%' : driver.tier === 'gold' ? '15%' : driver.tier === 'silver_plus' ? '18%' : '20%'} commission
+                  {TIER_COMMISSION[driver.tier] ?? 30}% commission
                 </p>
               </div>
             </div>
