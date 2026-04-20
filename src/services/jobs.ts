@@ -17,7 +17,7 @@ export async function getAvailableJobs(): Promise<ServiceListResult<Job>> {
   try {
     const { data, error } = await supabase
       .from('bookings')
-      .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type, notes')
+      .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type')
       .eq('status', 'pending')
       .is('driver_id', null)
       .order('created_at', { ascending: false });
@@ -34,7 +34,7 @@ export async function getAvailableJobs(): Promise<ServiceListResult<Job>> {
       customerRating: null,
       tier: null,
       status: 'available',
-      items: itemLabel(row.vehicle_type ?? '', row.notes),
+      items: itemLabel(row.vehicle_type ?? ''),
       helpers: row.helpers ?? 0,
       booking_id: row.id,
     }));
@@ -49,7 +49,7 @@ export async function getJobById(id: string): Promise<ServiceResult<Job>> {
   try {
     const { data, error } = await supabase
       .from('bookings')
-      .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type, notes')
+      .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type')
       .eq('id', id)
       .single();
 
@@ -65,7 +65,7 @@ export async function getJobById(id: string): Promise<ServiceResult<Job>> {
       customerRating: null,
       tier: null,
       status: 'available',
-      items: itemLabel(data.vehicle_type ?? '', data.notes),
+      items: itemLabel(data.vehicle_type ?? ''),
       helpers: data.helpers ?? 0,
       booking_id: data.id,
     };

@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { MapPin, Clock, Star, Truck, DollarSign, Filter, CheckCircle, X, Navigation, Users, Package, ArrowUpDown, Loader2, AlertCircle, Wallet, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  MapPin, Clock, Truck, Filter, CheckCircle, X, Navigation, Users, Package,
+  ArrowUpDown, Loader2, AlertCircle, Wallet, ChevronRight, TrendingUp,
+  Star, Award, ArrowRight, CreditCard, BarChart3, Activity, Zap,
+} from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 import { getAvailableJobs } from '@/services/jobs';
 import { assignDriverToBooking, getBookingsByDriver, updateBookingStatus } from '@/services/bookings';
@@ -13,6 +17,51 @@ interface DriverMarketplaceProps {
   onNavigate: (page: string) => void;
 }
 
+// ── Tier config ──────────────────────────────────────────────────────────────
+const TIER_ORDER = ['silver', 'silver_plus', 'gold', 'gold_pro', 'elite'] as const;
+
+const TIER_LABEL: Record<string, string> = {
+  silver:      '🥈 Silver',
+  silver_plus: '🥈 Silver Plus',
+  gold:        '⭐ Gold',
+  gold_pro:    '🥇 Gold Pro',
+  elite:       '💎 Elite',
+};
+
+const TIER_COLOR: Record<string, { bg: string; text: string; border: string }> = {
+  silver:      { bg: 'bg-gray-100',           text: 'text-gray-700',    border: 'border-gray-300' },
+  silver_plus: { bg: 'bg-blue-50',            text: 'text-blue-700',    border: 'border-blue-300' },
+  gold:        { bg: 'bg-[#F5B400]/10',       text: 'text-[#B48A00]',   border: 'border-[#F5B400]/40' },
+  gold_pro:    { bg: 'bg-amber-100',          text: 'text-amber-700',   border: 'border-amber-300' },
+  elite:       { bg: 'bg-[#0E2A47]/10',       text: 'text-[#0E2A47]',  border: 'border-[#0E2A47]/30' },
+};
+
+// ── UK city heatmap data ─────────────────────────────────────────────────────
+const UK_CITIES = [
+  { name: 'London',       x: 141, y: 224, activity: 9 },
+  { name: 'Birmingham',   x: 110, y: 196, activity: 7 },
+  { name: 'Manchester',   x: 104, y: 168, activity: 7 },
+  { name: 'Leeds',        x: 117, y: 160, activity: 5 },
+  { name: 'Sheffield',    x: 117, y: 171, activity: 4 },
+  { name: 'Liverpool',    x:  90, y: 171, activity: 4 },
+  { name: 'Bristol',      x:  97, y: 224, activity: 4 },
+  { name: 'Newcastle',    x: 115, y: 126, activity: 3 },
+  { name: 'Glasgow',      x:  67, y: 101, activity: 5 },
+  { name: 'Edinburgh',    x:  86, y: 101, activity: 3 },
+  { name: 'Cardiff',      x:  86, y: 230, activity: 2 },
+  { name: 'Southampton',  x: 119, y: 240, activity: 2 },
+  { name: 'Nottingham',   x: 122, y: 183, activity: 3 },
+  { name: 'Leicester',    x: 124, y: 191, activity: 3 },
+];
+
+function activityColor(level: number): string {
+  if (level >= 8) return '#F5B400';
+  if (level >= 6) return '#0E2A47';
+  if (level >= 4) return '#2E6A9E';
+  return '#93C5FD';
+}
+
+// ── Skeleton ─────────────────────────────────────────────────────────────────
 const SkeletonCard = () => (
   <div className="bg-white rounded-2xl border border-gray-100 p-5 animate-pulse">
     <div className="flex justify-between mb-3">
@@ -36,9 +85,11 @@ const SkeletonCard = () => (
   </div>
 );
 
+// ── Component ────────────────────────────────────────────────────────────────
 const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => {
   const { driver } = useAppContext();
-  const [activeTab, setActiveTab] = useState<'marketplace' | 'my-jobs'>('marketplace');
+
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'marketplace' | 'my-jobs'>('dashboard');
   const [jobs, setJobs] = useState<Job[]>([]);
   const [myBookings, setMyBookings] = useState<Booking[]>([]);
   const [wallet, setWallet] = useState<DriverWallet | null>(null);
@@ -50,6 +101,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
   const [showWallet, setShowWallet] = useState(false);
   const [isOnline, setIsOnline] = useState(driver?.is_online ?? false);
   const [confirmingJob, setConfirmingJob] = useState<string | null>(null);
+  const [pendingConfirm, setPendingConfirm] = useState<string | null>(null); // dual confirm step 1
 
   useEffect(() => {
     Promise.all([
@@ -67,9 +119,9 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
 
   const toggleOnline = async () => {
     if (!driver) return;
-    const newState = !isOnline;
-    setIsOnline(newState);
-    await setDriverOnline(driver.id, newState);
+    const next = !isOnline;
+    setIsOnline(next);
+    await setDriverOnline(driver.id, next);
   };
 
   const handleAccept = async (job: Job) => {
@@ -79,14 +131,11 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
     setJobs(prev => prev.filter(j => j.id !== job.id));
     setAcceptedJob(job.id);
     setTimeout(() => setAcceptedJob(null), 4000);
-    // Refresh my bookings
     const { data } = await getBookingsByDriver(driver.id);
     setMyBookings((data ?? []).filter(b => ['assigned', 'in_progress', 'completed'].includes(b.status)));
   };
 
-  const handleDecline = (jobId: string) => {
-    setJobs(prev => prev.filter(j => j.id !== jobId));
-  };
+  const handleDecline = (jobId: string) => setJobs(prev => prev.filter(j => j.id !== jobId));
 
   const handleStartJob = async (bookingId: string) => {
     const { error: err } = await updateBookingStatus(bookingId, 'in_progress');
@@ -102,11 +151,11 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
 
   const handleConfirmCompletion = async (bookingId: string) => {
     setConfirmingJob(bookingId);
+    setPendingConfirm(null);
     const { error: err } = await confirmCompletionAsDriver(bookingId);
     if (err) { setError(err.message); }
     else {
       setMyBookings(prev => prev.map(b => b.id === bookingId ? { ...b, driver_confirmation: true } : b));
-      // Refresh wallet after confirmation
       if (driver) {
         const { data } = await getDriverWallet(driver.id);
         setWallet(data);
@@ -126,16 +175,42 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
 
   const walletBalance = wallet?.balance ?? 0;
   const walletPending = wallet?.pending ?? 0;
+  const totalEarned   = wallet?.total_earned ?? driver?.total_earnings ?? 0;
+  const commissionPct = TIER_COMMISSION[driver?.tier ?? 'silver'] ?? 30;
+  const currentTierIdx = TIER_ORDER.indexOf((driver?.tier ?? 'silver') as typeof TIER_ORDER[number]);
+  const nextTier = TIER_ORDER[currentTierIdx + 1] ?? null;
+
+  // Weekly earnings from completed bookings
+  const weeklyData = useMemo(() => {
+    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const amounts = Array(7).fill(0);
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    myBookings.forEach(b => {
+      if (b.status === 'completed' && b.driver_earning && b.updated_at) {
+        const d = new Date(b.updated_at);
+        if (d >= weekAgo) {
+          const idx = d.getDay() === 0 ? 6 : d.getDay() - 1;
+          amounts[idx] += b.driver_earning;
+        }
+      }
+    });
+    const max = Math.max(...amounts, 1);
+    return labels.map((label, i) => ({ label, amount: amounts[i], pct: amounts[i] / max }));
+  }, [myBookings]);
+
+  const completedJobs = myBookings.filter(b => b.status === 'completed').length;
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+
+        {/* ── Header ── */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Driver Marketplace</h1>
-            <p className="text-gray-600 mt-1">
-              {isLoading ? 'Loading…' : `${filteredJobs.length} job${filteredJobs.length !== 1 ? 's' : ''} available`}
+            <h1 className="text-3xl font-bold text-gray-900">Driver Portal</h1>
+            <p className="text-gray-500 mt-0.5 text-sm">
+              {driver ? `${driver.first_name} ${driver.last_name}` : 'Loading…'} · {TIER_LABEL[driver?.tier ?? 'silver']}
             </p>
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -148,9 +223,12 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
               <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-white animate-pulse' : 'bg-gray-400'}`} />
               {isOnline ? 'Online' : 'Go Online'}
             </button>
-            <button onClick={() => setShowWallet(!showWallet)} className="bg-[#F5B400] hover:bg-[#E5A000] text-[#0E2A47] px-4 py-2.5 rounded-lg font-semibold text-sm transition-colors flex items-center gap-2">
+            <button
+              onClick={() => setShowWallet(!showWallet)}
+              className="bg-[#F5B400] hover:bg-[#E5A000] text-[#0E2A47] px-4 py-2.5 rounded-lg font-semibold text-sm transition-colors flex items-center gap-2"
+            >
               <Wallet className="w-4 h-4" /> £{walletBalance.toFixed(2)}
-              {walletPending > 0 && <span className="text-[#0E2A47]/70 text-xs">(+£{walletPending.toFixed(2)} pending)</span>}
+              {walletPending > 0 && <span className="text-[#0E2A47]/70 text-xs">(+£{walletPending.toFixed(2)})</span>}
             </button>
             <button onClick={() => onNavigate('home')} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors">
               Back
@@ -158,7 +236,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
           </div>
         </div>
 
-        {/* Wallet Panel */}
+        {/* ── Wallet Panel ── */}
         {showWallet && driver && (
           <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
             <div className="flex items-center justify-between mb-4">
@@ -167,7 +245,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
               <div className="bg-green-50 rounded-xl p-4">
-                <p className="text-xs text-green-600 font-medium">Available Balance</p>
+                <p className="text-xs text-green-600 font-medium">Available</p>
                 <p className="text-xl font-bold text-green-700">£{walletBalance.toFixed(2)}</p>
               </div>
               <div className="bg-blue-50 rounded-xl p-4">
@@ -176,32 +254,36 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
               </div>
               <div className="bg-[#F5B400]/10 rounded-xl p-4">
                 <p className="text-xs text-[#0E2A47] font-medium">Total Earned</p>
-                <p className="text-xl font-bold text-[#0E2A47]">£{(wallet?.total_earned ?? driver.total_earnings).toFixed(2)}</p>
+                <p className="text-xl font-bold text-[#0E2A47]">£{totalEarned.toFixed(2)}</p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4">
-                <p className="text-xs text-gray-600 font-medium">Tier</p>
-                <p className="text-xl font-bold text-gray-700 capitalize">
-                  {driver.tier === 'elite' ? '💎 Elite' : driver.tier === 'gold_pro' ? '🥇 Gold Pro' : driver.tier === 'gold' ? '⭐ Gold' : driver.tier === 'silver_plus' ? '🥈 Silver Plus' : '🥈 Silver'}
+              <div className={`rounded-xl p-4 ${TIER_COLOR[driver.tier]?.bg ?? 'bg-gray-50'}`}>
+                <p className="text-xs text-gray-600 font-medium">Current Tier</p>
+                <p className={`text-lg font-bold ${TIER_COLOR[driver.tier]?.text ?? 'text-gray-700'}`}>
+                  {TIER_LABEL[driver.tier]}
                 </p>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {TIER_COMMISSION[driver.tier] ?? 30}% commission
-                </p>
+                <p className="text-xs text-gray-500 mt-0.5">{commissionPct}% commission</p>
               </div>
             </div>
-            <div className="flex gap-3">
-              <button disabled title="Coming soon" className="bg-[#0E2A47] text-white px-6 py-2.5 rounded-lg font-semibold text-sm opacity-60 cursor-not-allowed flex items-center gap-2">
+            <div className="flex gap-3 flex-wrap">
+              <button disabled className="bg-[#0E2A47] text-white px-6 py-2.5 rounded-lg font-semibold text-sm opacity-50 cursor-not-allowed flex items-center gap-2">
                 Bank Transfer <span className="text-xs font-normal opacity-80">soon</span>
               </button>
-              <button disabled title="Coming soon" className="bg-[#F5B400] text-[#0E2A47] px-6 py-2.5 rounded-lg font-semibold text-sm opacity-60 cursor-not-allowed flex items-center gap-2">
+              <button disabled className="bg-[#F5B400] text-[#0E2A47] px-6 py-2.5 rounded-lg font-semibold text-sm opacity-50 cursor-not-allowed flex items-center gap-2">
                 Instant Payout <span className="text-xs font-normal opacity-80">soon</span>
+              </button>
+              <button
+                onClick={() => { setShowWallet(false); onNavigate('driver-subscription'); }}
+                className="ml-auto bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-lg font-semibold text-sm transition-colors flex items-center gap-2"
+              >
+                <CreditCard className="w-4 h-4" /> Change Plan
               </button>
             </div>
           </div>
         )}
 
-        {/* Accepted notification */}
+        {/* ── Accepted notification ── */}
         {acceptedJob && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center gap-3 animate-in slide-in-from-top-2">
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center gap-3">
             <CheckCircle className="w-6 h-6 text-green-500 shrink-0" />
             <div>
               <p className="font-semibold text-green-800">Job Accepted!</p>
@@ -210,41 +292,258 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
           </div>
         )}
 
-        {/* Error */}
+        {/* ── Error ── */}
         {error && (
           <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
             <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
             <p className="text-red-700 text-sm">{error}</p>
+            <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-600"><X className="w-4 h-4" /></button>
           </div>
         )}
 
-        {/* Tabs */}
+        {/* ── Tabs ── */}
         <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-6 w-fit">
-          <button
-            onClick={() => setActiveTab('marketplace')}
-            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'marketplace' ? 'bg-white text-[#0E2A47] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-          >
-            Available Jobs {filteredJobs.length > 0 && <span className="ml-1.5 bg-[#0E2A47] text-white text-xs rounded-full px-1.5 py-0.5">{filteredJobs.length}</span>}
-          </button>
-          <button
-            onClick={() => setActiveTab('my-jobs')}
-            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'my-jobs' ? 'bg-white text-[#0E2A47] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-          >
-            My Jobs {myBookings.length > 0 && <span className="ml-1.5 bg-[#0E2A47] text-white text-xs rounded-full px-1.5 py-0.5">{myBookings.length}</span>}
-          </button>
+          {(['dashboard', 'marketplace', 'my-jobs'] as const).map(tab => {
+            const label = tab === 'dashboard' ? 'Dashboard' : tab === 'marketplace' ? 'Available Jobs' : 'My Jobs';
+            const count = tab === 'marketplace' ? filteredJobs.length : tab === 'my-jobs' ? myBookings.length : 0;
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
+                  activeTab === tab ? 'bg-white text-[#0E2A47] shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {label}
+                {count > 0 && (
+                  <span className="ml-1.5 bg-[#0E2A47] text-white text-xs rounded-full px-1.5 py-0.5">{count}</span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
-        {/* ── Available Jobs Tab ── */}
+        {/* ════════════════════════════════════════════════════════════════════
+            DASHBOARD TAB
+        ════════════════════════════════════════════════════════════════════ */}
+        {activeTab === 'dashboard' && (
+          <div className="space-y-6">
+
+            {/* Stats row */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-white rounded-2xl border border-gray-100 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 bg-[#0E2A47]/10 rounded-lg">
+                    <Truck className="w-4 h-4 text-[#0E2A47]" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Jobs Done</span>
+                </div>
+                <p className="text-3xl font-bold text-gray-900">{driver?.total_jobs ?? 0}</p>
+                <p className="text-xs text-gray-400 mt-1">{completedJobs} this session</p>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-gray-100 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <TrendingUp className="w-4 h-4 text-green-600" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Earned</span>
+                </div>
+                <p className="text-3xl font-bold text-gray-900">£{totalEarned.toFixed(0)}</p>
+                <p className="text-xs text-green-600 mt-1">£{walletBalance.toFixed(2)} available</p>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-gray-100 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 bg-[#F5B400]/20 rounded-lg">
+                    <Star className="w-4 h-4 text-[#F5B400]" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Rating</span>
+                </div>
+                <p className="text-3xl font-bold text-gray-900">{(driver?.rating ?? 5.0).toFixed(1)}</p>
+                <div className="flex gap-0.5 mt-1">
+                  {[1,2,3,4,5].map(i => (
+                    <Star key={i} className={`w-3 h-3 ${i <= Math.round(driver?.rating ?? 5) ? 'text-[#F5B400] fill-[#F5B400]' : 'text-gray-200 fill-gray-200'}`} />
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-gray-100 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <Activity className="w-4 h-4 text-purple-600" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Commission</span>
+                </div>
+                <p className="text-3xl font-bold text-gray-900">{commissionPct}%</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {nextTier ? `${TIER_COMMISSION[nextTier]}% on ${TIER_LABEL[nextTier]}` : 'Best rate unlocked'}
+                </p>
+              </div>
+            </div>
+
+            {/* Subscription card + Chart */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+              {/* Subscription card */}
+              <div className="lg:col-span-1 bg-white rounded-2xl border border-gray-100 p-6 flex flex-col">
+                <div className="flex items-center gap-2 mb-4">
+                  <Award className="w-5 h-5 text-[#0E2A47]" />
+                  <h3 className="font-bold text-gray-900">Your Plan</h3>
+                </div>
+
+                <div className={`rounded-xl border p-4 mb-4 ${TIER_COLOR[driver?.tier ?? 'silver'].bg} ${TIER_COLOR[driver?.tier ?? 'silver'].border}`}>
+                  <p className={`text-2xl font-bold mb-1 ${TIER_COLOR[driver?.tier ?? 'silver'].text}`}>
+                    {TIER_LABEL[driver?.tier ?? 'silver']}
+                  </p>
+                  <p className="text-sm text-gray-600">{commissionPct}% platform commission</p>
+                  <p className="text-sm text-gray-600">Keep {100 - commissionPct}% of every job</p>
+                </div>
+
+                {nextTier && (
+                  <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 mb-4">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Upgrade to {TIER_LABEL[nextTier]}</p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-700">Save {commissionPct - (TIER_COMMISSION[nextTier] ?? 0)}% commission</p>
+                        <p className="text-xs text-gray-400">Keep {100 - (TIER_COMMISSION[nextTier] ?? 0)}% per job</p>
+                      </div>
+                      <Zap className="w-5 h-5 text-[#F5B400]" />
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => onNavigate('driver-subscription')}
+                  className="mt-auto w-full bg-[#0E2A47] hover:bg-[#0F3558] text-white px-4 py-3 rounded-xl font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+                >
+                  {nextTier ? 'Upgrade Plan' : 'Manage Plan'}
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Weekly earnings chart */}
+              <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-[#0E2A47]" />
+                    <h3 className="font-bold text-gray-900">Weekly Earnings</h3>
+                  </div>
+                  <span className="text-xs text-gray-400">Last 7 days</span>
+                </div>
+
+                {weeklyData.every(d => d.amount === 0) ? (
+                  <div className="flex flex-col items-center justify-center h-36 text-center">
+                    <BarChart3 className="w-10 h-10 text-gray-200 mb-2" />
+                    <p className="text-sm text-gray-400">Earnings will appear here as you complete jobs</p>
+                  </div>
+                ) : (
+                  <div className="flex items-end gap-2 h-36">
+                    {weeklyData.map(({ label, amount, pct }) => (
+                      <div key={label} className="flex-1 flex flex-col items-center gap-1">
+                        <span className="text-xs font-semibold text-[#0E2A47]">
+                          {amount > 0 ? `£${amount.toFixed(0)}` : ''}
+                        </span>
+                        <div
+                          className="w-full rounded-t-lg transition-all duration-500"
+                          style={{
+                            height: `${Math.max(pct * 96, 4)}px`,
+                            background: pct > 0.7 ? '#F5B400' : pct > 0.4 ? '#0E2A47' : '#CBD5E1',
+                          }}
+                        />
+                        <span className="text-xs text-gray-400">{label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* UK heatmap */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <MapPin className="w-5 h-5 text-[#0E2A47]" />
+                <h3 className="font-bold text-gray-900">UK Job Activity</h3>
+                <span className="ml-auto text-xs text-gray-400">Live demand heatmap</span>
+              </div>
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="relative flex-shrink-0">
+                  <svg viewBox="0 0 180 290" width="180" height="290" className="overflow-visible">
+                    {/* Background */}
+                    <rect x="40" y="85" width="115" height="185" rx="12" fill="#F1F5F9" opacity="0.8" />
+                    {/* Scotland top */}
+                    <ellipse cx="88" cy="95" rx="45" ry="20" fill="#E2E8F0" opacity="0.6" />
+
+                    {/* City dots */}
+                    {UK_CITIES.map(city => {
+                      const r = 3 + city.activity * 1.4;
+                      const color = activityColor(city.activity);
+                      return (
+                        <g key={city.name}>
+                          {city.activity >= 6 && (
+                            <circle cx={city.x} cy={city.y} r={r + 5} fill={color} opacity="0.15">
+                              <animate attributeName="r" values={`${r+3};${r+9};${r+3}`} dur="2s" repeatCount="indefinite" />
+                              <animate attributeName="opacity" values="0.2;0.05;0.2" dur="2s" repeatCount="indefinite" />
+                            </circle>
+                          )}
+                          <circle cx={city.x} cy={city.y} r={r} fill={color} opacity="0.85" />
+                          <text
+                            x={city.x}
+                            y={city.y - r - 3}
+                            textAnchor="middle"
+                            fontSize="7"
+                            fill="#475569"
+                            fontFamily="system-ui"
+                          >
+                            {city.name}
+                          </text>
+                        </g>
+                      );
+                    })}
+                  </svg>
+                </div>
+
+                <div className="flex-1 space-y-3">
+                  <p className="text-sm text-gray-600 font-medium">Highest demand areas</p>
+                  {[...UK_CITIES].sort((a, b) => b.activity - a.activity).slice(0, 6).map(city => (
+                    <div key={city.name} className="flex items-center gap-3">
+                      <span className="text-sm text-gray-700 w-24">{city.name}</span>
+                      <div className="flex-1 bg-gray-100 rounded-full h-2">
+                        <div
+                          className="h-2 rounded-full transition-all"
+                          style={{
+                            width: `${city.activity * 10}%`,
+                            background: activityColor(city.activity),
+                          }}
+                        />
+                      </div>
+                      <span className="text-xs font-semibold text-gray-500 w-8 text-right">{city.activity * 10}%</span>
+                    </div>
+                  ))}
+                  <div className="pt-3 border-t border-gray-100 flex flex-wrap gap-3 text-xs text-gray-500">
+                    <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-[#F5B400] inline-block" /> High demand</span>
+                    <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-[#0E2A47] inline-block" /> Medium</span>
+                    <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-[#2E6A9E] inline-block" /> Active</span>
+                    <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-[#93C5FD] inline-block" /> Low</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════════════════════
+            AVAILABLE JOBS TAB
+        ════════════════════════════════════════════════════════════════════ */}
         {activeTab === 'marketplace' && (
           <>
-            {/* Filters */}
             <div className="flex flex-wrap gap-3 mb-6">
               <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 px-3 py-2">
                 <Filter className="w-4 h-4 text-gray-400" />
                 <select value={filterTier} onChange={e => setFilterTier(e.target.value)} className="bg-transparent text-sm font-medium text-gray-700 outline-none">
                   <option value="all">All Tiers</option>
-                  <option value="gold">Golden Star Only</option>
-                  <option value="silver">Silver Star Only</option>
+                  <option value="gold">Gold Only</option>
+                  <option value="silver">Silver Only</option>
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 px-3 py-2">
@@ -275,8 +574,12 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-xs font-mono text-gray-400">{job.id.slice(0, 8).toUpperCase()}</span>
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${job.tier === 'gold' ? 'bg-[#F5B400]/10 text-[#F5B400]' : 'bg-gray-100 text-gray-600'}`}>
-                          {job.tier === 'gold' ? '⭐ Golden Star' : '🥈 Silver Star'}
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                          job.tier === 'gold' || job.tier === 'gold_pro' || job.tier === 'elite'
+                            ? 'bg-[#F5B400]/10 text-[#B48A00]'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {job.tier ? TIER_LABEL[job.tier] : '📦 Standard'}
                         </span>
                       </div>
                       <div className="space-y-2 mb-4">
@@ -300,7 +603,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                         </div>
                         <div className="text-center bg-gray-50 rounded-lg p-2">
                           <Star className="w-4 h-4 text-[#F5B400] mx-auto mb-0.5" />
-                          <p className="text-xs font-semibold text-gray-700">{job.customerRating}</p>
+                          <p className="text-xs font-semibold text-gray-700">{job.customerRating ?? '—'}</p>
                         </div>
                         <div className="text-center bg-gray-50 rounded-lg p-2">
                           <Users className="w-4 h-4 text-gray-400 mx-auto mb-0.5" />
@@ -312,7 +615,12 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                         <span className="text-sm text-gray-600">{job.items}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <p className="text-2xl font-bold text-[#0E2A47]">£{job.price}</p>
+                        <div>
+                          <p className="text-2xl font-bold text-[#0E2A47]">£{job.price}</p>
+                          <p className="text-xs text-green-600">
+                            You keep £{(job.price * (1 - commissionPct / 100)).toFixed(2)}
+                          </p>
+                        </div>
                         <div className="flex gap-2">
                           <button onClick={() => handleDecline(job.id)} className="px-4 py-2 rounded-lg border-2 border-gray-200 text-gray-500 hover:border-red-300 hover:text-red-500 text-sm font-medium transition-colors">
                             Decline
@@ -330,7 +638,9 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
           </>
         )}
 
-        {/* ── My Jobs Tab ── */}
+        {/* ════════════════════════════════════════════════════════════════════
+            MY JOBS TAB
+        ════════════════════════════════════════════════════════════════════ */}
         {activeTab === 'my-jobs' && (
           <>
             {myBookings.length === 0 ? (
@@ -342,11 +652,12 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {myBookings.map(booking => {
-                  const isConfirming = confirmingJob === booking.id;
-                  const canStart = booking.status === 'assigned';
-                  const canMarkDelivered = booking.status === 'in_progress';
-                  const canConfirm = booking.status === 'completed' && !booking.driver_confirmation;
-                  const alreadyConfirmed = booking.driver_confirmation;
+                  const isConfirming  = confirmingJob === booking.id;
+                  const awaitConfirm  = pendingConfirm === booking.id;
+                  const canStart      = booking.status === 'assigned';
+                  const canDeliver    = booking.status === 'in_progress';
+                  const canConfirm    = booking.status === 'completed' && !booking.driver_confirmation;
+                  const confirmed     = booking.driver_confirmation;
 
                   return (
                     <div key={booking.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
@@ -356,9 +667,9 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                             {booking.booking_ref ?? booking.id.slice(0, 8).toUpperCase()}
                           </p>
                           <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${
-                            booking.status === 'assigned' ? 'bg-indigo-100 text-indigo-700' :
+                            booking.status === 'assigned'    ? 'bg-indigo-100 text-indigo-700' :
                             booking.status === 'in_progress' ? 'bg-purple-100 text-purple-700' :
-                            'bg-green-100 text-green-700'
+                                                               'bg-green-100 text-green-700'
                           }`}>
                             {booking.status === 'assigned' ? 'Assigned' : booking.status === 'in_progress' ? 'In Progress' : 'Completed'}
                           </span>
@@ -382,13 +693,21 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                         <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {booking.duration}</span>
                       </div>
 
-                      {booking.driver_earning && (
-                        <p className="text-xs text-gray-500 mb-4">
-                          Your earnings: <span className="font-bold text-green-700">£{booking.driver_earning.toFixed(2)}</span>
-                          {booking.commission_rate && <span className="text-gray-400 ml-1">({Math.round(booking.commission_rate * 100)}% commission deducted)</span>}
-                        </p>
+                      {booking.driver_earning != null && (
+                        <div className="bg-green-50 rounded-lg px-3 py-2 mb-4 flex items-center justify-between">
+                          <span className="text-xs text-gray-500">Your earnings</span>
+                          <span className="font-bold text-green-700">
+                            £{booking.driver_earning.toFixed(2)}
+                            {booking.commission_rate != null && (
+                              <span className="text-xs font-normal text-gray-400 ml-1">
+                                ({Math.round(booking.commission_rate * 100)}% deducted)
+                              </span>
+                            )}
+                          </span>
+                        </div>
                       )}
 
+                      {/* Action buttons */}
                       <div className="flex gap-2 flex-wrap">
                         {canStart && (
                           <button
@@ -398,7 +717,8 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                             <Navigation className="w-4 h-4" /> Start Journey
                           </button>
                         )}
-                        {canMarkDelivered && (
+
+                        {canDeliver && (
                           <button
                             onClick={() => handleMarkDelivered(booking.id)}
                             className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
@@ -406,21 +726,44 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                             <MapPin className="w-4 h-4" /> Mark Delivered
                           </button>
                         )}
-                        {canConfirm && (
+
+                        {/* ── Dual confirmation ── */}
+                        {canConfirm && !awaitConfirm && (
                           <button
-                            onClick={() => handleConfirmCompletion(booking.id)}
-                            disabled={isConfirming}
-                            className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                            onClick={() => setPendingConfirm(booking.id)}
+                            className="flex-1 bg-green-100 hover:bg-green-200 text-green-800 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 border-2 border-green-300"
                           >
-                            {isConfirming ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
-                            Confirm Completion
+                            <CheckCircle className="w-4 h-4" /> Confirm Completion
                           </button>
                         )}
-                        {alreadyConfirmed && (
+                        {canConfirm && awaitConfirm && (
+                          <div className="flex-1 flex gap-2">
+                            <button
+                              onClick={() => setPendingConfirm(null)}
+                              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() => handleConfirmCompletion(booking.id)}
+                              disabled={isConfirming}
+                              className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white px-3 py-2.5 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-1.5"
+                            >
+                              {isConfirming
+                                ? <Loader2 className="w-4 h-4 animate-spin" />
+                                : <CheckCircle className="w-4 h-4" />
+                              }
+                              Yes, Confirm
+                            </button>
+                          </div>
+                        )}
+
+                        {confirmed && (
                           <span className="flex items-center gap-1.5 text-green-600 text-sm font-semibold">
                             <CheckCircle className="w-4 h-4" /> Completion Confirmed
                           </span>
                         )}
+
                         <button
                           onClick={() => onNavigate('tracking')}
                           className="px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-1"
@@ -435,6 +778,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
             )}
           </>
         )}
+
       </div>
     </div>
   );
