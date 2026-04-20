@@ -112,3 +112,13 @@ export async function resetPassword(email: string): Promise<ServiceResult<null>>
     return { data: null, error: err as Error };
   }
 }
+
+export async function resendVerificationEmail(email: string): Promise<ServiceResult<null>> {
+  try {
+    const { error } = await supabase.auth.resend({ type: 'signup', email });
+    if (error) throw error;
+    return { data: null, error: null };
+  } catch (err) {
+    return { data: null, error: err as Error };
+  }
+}

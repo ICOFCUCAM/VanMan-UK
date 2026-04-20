@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Truck, Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, GraduationCap, AlertCircle, Loader2, Shield, Star, CheckCircle, Users } from 'lucide-react';
-import { signIn, signUp, resetPassword, signInWithProvider } from '@/services/auth';
+import { signIn, signUp, resetPassword, signInWithProvider, resendVerificationEmail } from '@/services/auth';
 import { useAppContext } from '@/contexts/AppContext';
 
 interface LoginPageProps {
@@ -34,6 +34,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, initialSignup = false
   const [awaitingAuth, setAwaitingAuth] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resetSent, setResetSent] = useState(false);
+  const [resendSent, setResendSent] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const [socialLoading, setSocialLoading] = useState<'google' | 'apple' | null>(null);
 
   const redirectByRole = (r: typeof role) => {
@@ -86,6 +88,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, initialSignup = false
     setSocialLoading(provider);
     const { error: err } = await signInWithProvider(provider);
     if (err) { setError(err.message); setSocialLoading(null); }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email || isResending) return;
+    setIsResending(true);
+    const { error: err } = await resendVerificationEmail(email);
+    setIsResending(false);
+    if (err) { setError(err.message); return; }
+    setResendSent(true);
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
@@ -241,9 +252,28 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, initialSignup = false
               </div>
 
               {error && (
-                <div className="flex items-start gap-2.5 bg-red-50 border border-red-200 rounded-2xl px-4 py-3.5 mb-5">
-                  <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
-                  <p className="text-red-700 text-sm font-medium">{error}</p>
+                <div className="bg-red-50 border border-red-200 rounded-2xl px-4 py-3.5 mb-5">
+                  <div className="flex items-start gap-2.5">
+                    <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+                    <p className="text-red-700 text-sm font-medium">{error}</p>
+                  </div>
+                  {error.toLowerCase().includes('email') && error.toLowerCase().includes('confirm') && (
+                    <div className="mt-2.5 pl-6">
+                      {resendSent ? (
+                        <p className="text-green-600 text-xs font-semibold flex items-center gap-1">
+                          <CheckCircle className="w-3.5 h-3.5" /> Verification email sent — check your inbox.
+                        </p>
+                      ) : (
+                        <button
+                          onClick={handleResendVerification}
+                          disabled={isResending || !email}
+                          className="text-xs font-bold text-[#0E2A47] underline underline-offset-2 hover:text-[#0F3558] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                        >
+                          {isResending ? <><Loader2 className="w-3 h-3 animate-spin" /> Sending…</> : 'Resend verification email'}
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 
