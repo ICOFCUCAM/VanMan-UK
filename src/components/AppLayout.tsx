@@ -92,8 +92,7 @@ const AppLayout: React.FC = () => {
   }, []);
 
   const navigate = (page: string) => {
-    if (page === 'login' || page === 'driver-login') { openModal('signin'); return; }
-    if (page === 'signup' || page === 'register')    { openModal('select'); return; }
+    if (page === 'signup') { openModal('select'); return; }
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -114,6 +113,8 @@ const AppLayout: React.FC = () => {
     }
 
     // Auth pages
+    if (currentPage === 'login' || currentPage === 'driver-login') return <LoginPage onNavigate={navigate} />;
+    if (currentPage === 'register') return <LoginPage onNavigate={navigate} initialSignup={true} />;
     if (currentPage === 'driver-register') return <DriverRegistration onNavigate={navigate} />;
 
     // Content pages
@@ -130,7 +131,7 @@ const AppLayout: React.FC = () => {
     // Driver subscription — requires authentication + driver role
     if (currentPage === 'driver-subscription') {
       if (isLoading) return <LoadingScreen />;
-      if (!isAuthenticated) { openModal('signin'); return null; }
+      if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
       if (role !== 'driver' && role !== 'admin') return <AccessDenied onNavigate={navigate} />;
       return <DriverSubscriptionPage onNavigate={navigate} />;
     }
@@ -149,7 +150,7 @@ const AppLayout: React.FC = () => {
     // Protected: drivers
     if (currentPage === 'driver-marketplace' || currentPage === 'driver-dashboard') {
       if (isLoading) return <LoadingScreen />;
-      if (!isAuthenticated) { openModal('signin'); return null; }
+      if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
       if (role !== 'driver') return <AccessDenied onNavigate={navigate} />;
       return <DriverMarketplace onNavigate={navigate} />;
     }
@@ -157,7 +158,7 @@ const AppLayout: React.FC = () => {
     // Protected: customers
     if (currentPage === 'customer-dashboard') {
       if (isLoading) return <LoadingScreen />;
-      if (!isAuthenticated) { openModal('signin'); return null; }
+      if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
       return <CustomerDashboard onNavigate={navigate} />;
     }
 

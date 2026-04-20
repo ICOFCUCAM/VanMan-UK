@@ -158,7 +158,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onOpenModal })
               ) : (
                 <>
                   <button
-                    onClick={() => onOpenModal('signin')}
+                    onClick={() => onNavigate('login')}
                     className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-gray-600 hover:text-[#0B2239] hover:bg-gray-100 transition-all text-[13px] font-medium"
                   >
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -237,7 +237,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onOpenModal })
                 </>
               ) : (
                 <>
-                  <button onClick={() => { onOpenModal('signin'); setMobileMenuOpen(false); }}
+                  <button onClick={() => { onNavigate('login'); setMobileMenuOpen(false); }}
                     className="w-full text-left px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 text-[13px] font-medium transition-colors">
                     Sign In
                   </button>
