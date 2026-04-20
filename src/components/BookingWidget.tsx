@@ -353,24 +353,20 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
                   <button
                     key={v.id}
                     onClick={() => setSelectedVehicle(v.id)}
-                    className={`relative rounded-xl border-2 text-left transition-all overflow-hidden ${selectedVehicle === v.id ? 'border-[#0E2A47] bg-[#0E2A47]' : 'border-gray-200 hover:border-[#0E2A47]/30'}`}
+                    className={`relative p-2.5 rounded-xl border-2 text-left transition-all flex items-center gap-2 ${selectedVehicle === v.id ? 'border-[#0E2A47] bg-[#0E2A47]' : 'border-gray-200 hover:border-[#0E2A47]/30'}`}
                   >
                     {selectedVehicle === v.id && (
-                      <div className="absolute top-1.5 right-1.5 z-10 w-4 h-4 bg-[#F5B400] rounded-full flex items-center justify-center">
-                        <CheckCircle2 className="w-2.5 h-2.5 text-[#071A2F]" />
+                      <div className="absolute top-1 right-1 w-3.5 h-3.5 bg-[#F5B400] rounded-full flex items-center justify-center">
+                        <CheckCircle2 className="w-2 h-2 text-[#071A2F]" />
                       </div>
                     )}
-                    <div className="w-full h-20 overflow-hidden">
-                      <img
-                        src={v.image}
-                        alt={v.name}
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="flex-1 min-w-0">
+                      <p className={`font-black text-xs leading-tight ${selectedVehicle === v.id ? 'text-white' : 'text-gray-800'}`}>{v.name}</p>
+                      <p className={`text-[10px] mt-0.5 ${selectedVehicle === v.id ? 'text-white/50' : 'text-gray-400'}`}>{v.capacity}</p>
+                      <p className="font-black text-[10px] text-[#F5B400] mt-0.5">£{v.basePrice}+</p>
                     </div>
-                    <div className="p-2.5">
-                      <p className={`font-black text-xs ${selectedVehicle === v.id ? 'text-white' : 'text-gray-800'}`}>{v.name}</p>
-                      <p className={`text-[11px] ${selectedVehicle === v.id ? 'text-white/50' : 'text-gray-400'}`}>{v.capacity}</p>
-                      <p className="font-black text-xs text-[#F5B400] mt-0.5">From £{v.basePrice}</p>
+                    <div className="w-12 h-10 rounded-md overflow-hidden shrink-0 bg-white/10">
+                      <img src={v.image} alt={v.name} className="w-full h-full object-cover" />
                     </div>
                   </button>
                 ))}
