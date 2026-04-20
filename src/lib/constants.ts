@@ -38,10 +38,10 @@ export const FEATURE_IMAGES = {
 };
 
 export const SERVICE_IMAGES = {
-  houseMoving:       'https://images.pexels.com/photos/7464232/pexels-photo-7464232.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
-  officeRelocation:  'https://images.pexels.com/photos/4487362/pexels-photo-4487362.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
-  furnitureDelivery: 'https://images.pexels.com/photos/7464662/pexels-photo-7464662.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
-  studentMoves:      'https://images.pexels.com/photos/7683887/pexels-photo-7683887.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+  officeRelocation:  'https://images.pexels.com/photos/4246120/pexels-photo-4246120.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+  houseMoving:       'https://images.pexels.com/photos/3970332/pexels-photo-3970332.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+  studentMoves:      'https://images.pexels.com/photos/5940721/pexels-photo-5940721.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+  furnitureDelivery: 'https://images.pexels.com/photos/4246222/pexels-photo-4246222.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
   sameDayDelivery:   'https://images.pexels.com/photos/6169047/pexels-photo-6169047.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
   scheduled:         'https://images.pexels.com/photos/13811650/pexels-photo-13811650.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
 };
@@ -97,10 +97,10 @@ export function calculateCommission(jobValue: number, planId: string): { rate: n
 }
 
 export const VEHICLE_TYPES = [
-  { id: 'small', name: 'Small Van', capacity: '1–2 items', capacity_m3: 3.5, payload: '500 kg', basePrice: 50, pricePerHour: 35, image: 'https://d64gsuwffb70l.cloudfront.net/69addce9f38fe37cac4cb887_1773002085117_c648ee0d.png', description: 'Perfect for single items or small moves', bestFor: ['Single items', 'Box moves', 'eBay collections'], items: ['Armchair, 10 boxes', 'Small wardrobe'], examples: ['Ford Transit Connect', 'VW Caddy'] },
-  { id: 'medium', name: 'Medium Van', capacity: '3–8 items', capacity_m3: 8.0, payload: '850 kg', basePrice: 70, pricePerHour: 50, image: 'https://d64gsuwffb70l.cloudfront.net/69addce9f38fe37cac4cb887_1773002085117_c648ee0d.png', description: 'Ideal for studio or 1-bed flat moves', bestFor: ['Studio flat', '1-bed flat', 'Office equipment'], items: ['Sofa, bed, 20 boxes', 'Studio flat contents'], examples: ['Ford Transit MWB', 'Mercedes Sprinter 313'] },
-  { id: 'large', name: 'Large Van', capacity: '9–20 items', capacity_m3: 12.0, payload: '1100 kg', basePrice: 100, pricePerHour: 65, image: 'https://d64gsuwffb70l.cloudfront.net/69addce9f38fe37cac4cb887_1773002085117_c648ee0d.png', description: 'Full 1–2 bed flat or small office move', bestFor: ['1–2 bed flat', 'Small office', 'Large furniture'], items: ['Double bed, 2 wardrobes, sofa, 30 boxes'], examples: ['Ford Transit LWB', 'Mercedes Sprinter LWB'] },
-  { id: 'luton', name: 'Luton Van', capacity: '20+ items', capacity_m3: 22.0, payload: '1500 kg', basePrice: 130, pricePerHour: 85, image: 'https://d64gsuwffb70l.cloudfront.net/69addce9f38fe37cac4cb887_1773002085117_c648ee0d.png', description: 'Maximum capacity for large house moves', bestFor: ['3-bed house', 'Full house move', 'Large office'], items: ['Full house contents, piano, large appliances'], examples: ['Luton Box Van', 'Tail-lift Luton'] },
+  { id: 'small', name: 'Small Van', capacity: '1–2 items', capacity_m3: 3.5, payload: '500 kg', basePrice: 50, pricePerHour: 35, image: 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', description: 'Perfect for single items or small moves', bestFor: ['Single items', 'Box moves', 'eBay collections'], items: ['Armchair, 10 boxes', 'Small wardrobe'], examples: ['Ford Transit Connect', 'VW Caddy'] },
+  { id: 'medium', name: 'Medium Van', capacity: '3–8 items', capacity_m3: 8.0, payload: '850 kg', basePrice: 70, pricePerHour: 50, image: 'https://images.pexels.com/photos/2199293/pexels-photo-2199293.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', description: 'Ideal for studio or 1-bed flat moves', bestFor: ['Studio flat', '1-bed flat', 'Office equipment'], items: ['Sofa, bed, 20 boxes', 'Studio flat contents'], examples: ['Ford Transit MWB', 'Mercedes Vito'] },
+  { id: 'large', name: 'Large Van', capacity: '9–20 items', capacity_m3: 12.0, payload: '1100 kg', basePrice: 100, pricePerHour: 65, image: 'https://images.pexels.com/photos/4481259/pexels-photo-4481259.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', description: 'Full 1–2 bed flat or small office move', bestFor: ['1–2 bed flat', 'Small office', 'Large furniture'], items: ['Double bed, 2 wardrobes, sofa, 30 boxes'], examples: ['Mercedes Sprinter', 'Ford Transit LWB'] },
+  { id: 'luton', name: 'Luton Van', capacity: '20+ items', capacity_m3: 22.0, payload: '1500 kg', basePrice: 130, pricePerHour: 85, image: 'https://images.pexels.com/photos/6334834/pexels-photo-6334834.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', description: 'Maximum capacity for large house moves', bestFor: ['3-bed house', 'Full house move', 'Large office'], items: ['Full house contents, piano, large appliances'], examples: ['Luton Box Van', 'Tail-lift Luton'] },
 ];
 
 export const INVENTORY_ITEMS: Record<string, { name: string; volume: number; weight: number }[]> = {

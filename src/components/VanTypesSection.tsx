@@ -1,18 +1,11 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import { VEHICLE_TYPES, SERVICE_IMAGES } from '@/lib/constants';
+import { VEHICLE_TYPES } from '@/lib/constants';
 
 interface VanTypesSectionProps {
   onNavigate: (page: string) => void;
   onScrollToBooking?: () => void;
 }
-
-const VAN_PHOTOS = [
-  SERVICE_IMAGES.sameDayDelivery,
-  SERVICE_IMAGES.furnitureDelivery,
-  SERVICE_IMAGES.houseMoving,
-  SERVICE_IMAGES.officeRelocation,
-];
 
 const VanTypesSection: React.FC<VanTypesSectionProps> = ({ onNavigate, onScrollToBooking }) => (
   <section className="py-16 bg-white">
@@ -24,11 +17,11 @@ const VanTypesSection: React.FC<VanTypesSectionProps> = ({ onNavigate, onScrollT
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        {VEHICLE_TYPES.map((van, idx) => (
+        {VEHICLE_TYPES.map((van) => (
           <div key={van.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
             <div className="relative overflow-hidden h-44">
               <img
-                src={VAN_PHOTOS[idx]}
+                src={van.image}
                 alt={van.name}
                 className="w-full h-full object-cover"
                 onError={e => {

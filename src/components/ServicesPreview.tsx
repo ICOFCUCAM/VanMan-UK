@@ -8,22 +8,6 @@ interface ServicesPreviewProps {
 
 const SERVICES = [
   {
-    icon: Home,
-    title: 'House Moving',
-    desc: 'Full house moves from studio flats to 5-bed homes. Careful, insured, stress-free.',
-    tag: 'Most Popular',
-    tagStyle: 'bg-[#F5B400] text-[#0B2239]',
-    image: SERVICE_IMAGES.houseMoving,
-  },
-  {
-    icon: Package,
-    title: 'Same Day Delivery',
-    desc: 'Urgent parcel and furniture deliveries within hours. Express dispatch guaranteed.',
-    tag: 'Express',
-    tagStyle: 'bg-orange-500 text-white',
-    image: SERVICE_IMAGES.sameDayDelivery,
-  },
-  {
     icon: Building2,
     title: 'Office Relocation',
     desc: 'Efficient office moves with minimal downtime. Weekend and out-of-hours available.',
@@ -32,11 +16,19 @@ const SERVICES = [
     image: SERVICE_IMAGES.officeRelocation,
   },
   {
+    icon: Home,
+    title: 'House Moving',
+    desc: 'Full house moves from studio flats to 5-bed homes. Careful, insured, stress-free.',
+    tag: 'Most Popular',
+    tagStyle: 'bg-[#F5B400] text-[#0B2239]',
+    image: SERVICE_IMAGES.houseMoving,
+  },
+  {
     icon: GraduationCap,
     title: 'Student Moves',
     desc: 'Affordable moves for students. Halls, shared houses, and storage — 10% discount applied.',
     tag: '10% Off',
-    tagStyle: 'bg-blue-600 text-white',
+    tagStyle: 'bg-[#0E2A47] text-white',
     image: SERVICE_IMAGES.studentMoves,
   },
   {
@@ -46,6 +38,14 @@ const SERVICES = [
     tag: null,
     tagStyle: '',
     image: SERVICE_IMAGES.furnitureDelivery,
+  },
+  {
+    icon: Package,
+    title: 'Same Day Delivery',
+    desc: 'Urgent parcel and furniture deliveries within hours. Express dispatch guaranteed.',
+    tag: 'Express',
+    tagStyle: 'bg-orange-500 text-white',
+    image: SERVICE_IMAGES.sameDayDelivery,
   },
   {
     icon: CalendarDays,
