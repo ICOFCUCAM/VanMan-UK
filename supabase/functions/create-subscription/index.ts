@@ -3,12 +3,13 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Map plan IDs to Stripe Price IDs (set these in Supabase edge function secrets)
+// Map plan IDs to Stripe Price IDs
+// Env vars take precedence — fallbacks are the sandbox price IDs
 const PRICE_IDS: Record<string, string> = {
-  silver_plus: Deno.env.get('STRIPE_PRICE_SILVER_PLUS') ?? '',
-  gold:        Deno.env.get('STRIPE_PRICE_GOLD')        ?? '',
-  gold_pro:    Deno.env.get('STRIPE_PRICE_GOLD_PRO')    ?? '',
-  elite:       Deno.env.get('STRIPE_PRICE_ELITE')       ?? '',
+  silver_plus: Deno.env.get('STRIPE_PRICE_SILVER_PLUS') ?? 'price_1TO8B5LzOVxx8TR9oBGmKjAN',
+  gold:        Deno.env.get('STRIPE_PRICE_GOLD')        ?? 'price_1TO8BzLzOVxx8TR9NZH1HtJw',
+  gold_pro:    Deno.env.get('STRIPE_PRICE_GOLD_PRO')    ?? 'price_1TO8CbLzOVxx8TR9Ic1UlErW',
+  elite:       Deno.env.get('STRIPE_PRICE_ELITE')       ?? 'price_1TO8FXLzOVxx8TR91pcrRfQE',
 };
 
 Deno.serve(async (req) => {
