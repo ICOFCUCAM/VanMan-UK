@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Loader2, ShieldX } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 
@@ -35,6 +35,9 @@ import TechnologyPage from './pages/TechnologyPage';
 import DriversPage from './pages/DriversPage';
 import StudentsPage from './pages/StudentsPage';
 import EnterprisePage from './pages/EnterprisePage';
+
+// Auth modal
+import AuthModal from './AuthModal';
 
 // Functional pages
 import DriverRegistration from './DriverRegistration';
@@ -73,12 +76,24 @@ const AccessDenied = ({ onNavigate }: { onNavigate: (p: string) => void }) => (
   </div>
 );
 
+type ModalStep = 'select' | 'signup' | 'signin' | 'forgot' | 'reset-sent';
+
 const AppLayout: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const bookingRef = useRef<HTMLDivElement>(null);
   const { isLoading, isAuthenticated, role } = useAppContext();
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalStep, setModalStep] = useState<ModalStep>('select');
+
+  const openModal = useCallback((step: ModalStep = 'select') => {
+    setModalStep(step);
+    setModalOpen(true);
+  }, []);
+
   const navigate = (page: string) => {
+    if (page === 'login' || page === 'driver-login') { openModal('signin'); return; }
+    if (page === 'signup' || page === 'register')    { openModal('select'); return; }
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -99,9 +114,6 @@ const AppLayout: React.FC = () => {
     }
 
     // Auth pages
-    if (currentPage === 'signup') return <SignUpPage onNavigate={navigate} />;
-    if (currentPage === 'login' || currentPage === 'driver-login') return <LoginPage onNavigate={navigate} />;
-    if (currentPage === 'register') return <LoginPage onNavigate={navigate} initialSignup={true} />;
     if (currentPage === 'driver-register') return <DriverRegistration onNavigate={navigate} />;
 
     // Content pages
@@ -118,7 +130,7 @@ const AppLayout: React.FC = () => {
     // Driver subscription — requires authentication + driver role
     if (currentPage === 'driver-subscription') {
       if (isLoading) return <LoadingScreen />;
-      if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
+      if (!isAuthenticated) { openModal('signin'); return null; }
       if (role !== 'driver' && role !== 'admin') return <AccessDenied onNavigate={navigate} />;
       return <DriverSubscriptionPage onNavigate={navigate} />;
     }
@@ -137,7 +149,7 @@ const AppLayout: React.FC = () => {
     // Protected: drivers
     if (currentPage === 'driver-marketplace' || currentPage === 'driver-dashboard') {
       if (isLoading) return <LoadingScreen />;
-      if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
+      if (!isAuthenticated) { openModal('signin'); return null; }
       if (role !== 'driver') return <AccessDenied onNavigate={navigate} />;
       return <DriverMarketplace onNavigate={navigate} />;
     }
@@ -145,7 +157,7 @@ const AppLayout: React.FC = () => {
     // Protected: customers
     if (currentPage === 'customer-dashboard') {
       if (isLoading) return <LoadingScreen />;
-      if (!isAuthenticated) return <LoginPage onNavigate={navigate} />;
+      if (!isAuthenticated) { openModal('signin'); return null; }
       return <CustomerDashboard onNavigate={navigate} />;
     }
 
@@ -174,11 +186,17 @@ const AppLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header currentPage={currentPage} onNavigate={navigate} />
+      <Header currentPage={currentPage} onNavigate={navigate} onOpenModal={openModal} />
       <main>{renderPage()}</main>
       <Footer onNavigate={navigate} />
       <WhatsAppButton />
       <CookieConsent />
+      <AuthModal
+        open={modalOpen}
+        initialStep={modalStep}
+        onClose={() => setModalOpen(false)}
+        onNavigate={(page) => { setModalOpen(false); setCurrentPage(page); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+      />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { BRAND } from '@/lib/constants';
 interface HeaderProps {
   currentPage: string;
   onNavigate: (page: string) => void;
+  onOpenModal: (step: 'select' | 'signin') => void;
 }
 
 const NAV = [
@@ -17,7 +18,7 @@ const NAV = [
   { label: 'Enterprise',      page: 'enterprise' },
 ];
 
-const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
+const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onOpenModal }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountDropdown, setAccountDropdown] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -157,14 +158,14 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               ) : (
                 <>
                   <button
-                    onClick={() => onNavigate('login')}
+                    onClick={() => onOpenModal('signin')}
                     className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-gray-600 hover:text-[#0B2239] hover:bg-gray-100 transition-all text-[13px] font-medium"
                   >
                     <ArrowRight className="w-3.5 h-3.5" />
                     Sign In
                   </button>
                   <button
-                    onClick={() => onNavigate('signup')}
+                    onClick={() => onOpenModal('select')}
                     className="hidden sm:flex items-center border border-[#0E2A47] text-[#0E2A47] hover:bg-[#0E2A47] hover:text-white px-4 py-1.5 rounded-lg text-[13px] font-semibold transition-all"
                   >
                     Sign Up
@@ -236,11 +237,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 </>
               ) : (
                 <>
-                  <button onClick={() => { onNavigate('login'); setMobileMenuOpen(false); }}
+                  <button onClick={() => { onOpenModal('signin'); setMobileMenuOpen(false); }}
                     className="w-full text-left px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 text-[13px] font-medium transition-colors">
                     Sign In
                   </button>
-                  <button onClick={() => { onNavigate('signup'); setMobileMenuOpen(false); }}
+                  <button onClick={() => { onOpenModal('select'); setMobileMenuOpen(false); }}
                     className="w-full text-left px-4 py-3 rounded-xl text-[#0E2A47] font-semibold hover:bg-gray-50 text-[13px] transition-colors">
                     Sign Up
                   </button>
