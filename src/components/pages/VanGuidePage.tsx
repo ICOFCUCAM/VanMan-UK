@@ -330,15 +330,24 @@ export default function VanGuidePage({ onNavigate, onScrollToBooking }: VanGuide
                     {recommendedVan && (
                       <div className="p-5">
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Recommended van</p>
-                        <div className="bg-[#F5B400]/10 border border-[#F5B400]/30 rounded-xl p-4 mb-4">
-                          <p className="font-black text-[#0B2239] text-lg">{recommendedVan.name}</p>
-                          <p className="text-gray-600 text-xs mt-0.5">{recommendedVan.description}</p>
-                          <div className="flex items-center gap-3 mt-3">
-                            <span className="text-xs font-semibold text-gray-600">{recommendedVan.capacity_m3} m³</span>
-                            <span className="text-gray-300">·</span>
-                            <span className="text-xs font-semibold text-gray-600">{recommendedVan.payload}</span>
-                            <span className="text-gray-300">·</span>
-                            <span className="text-xs font-black text-[#0E2A47]">£{recommendedVan.pricePerHour}/hr</span>
+                        <div className="bg-[#F5B400]/10 border border-[#F5B400]/30 rounded-xl p-4 mb-4 flex items-center gap-3">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-black text-[#0B2239] text-lg">{recommendedVan.name}</p>
+                            <p className="text-gray-600 text-xs mt-0.5">{recommendedVan.description}</p>
+                            <div className="flex items-center gap-3 mt-3 flex-wrap">
+                              <span className="text-xs font-semibold text-gray-600">{recommendedVan.capacity_m3} m³</span>
+                              <span className="text-gray-300">·</span>
+                              <span className="text-xs font-semibold text-gray-600">{recommendedVan.payload}</span>
+                              <span className="text-gray-300">·</span>
+                              <span className="text-xs font-black text-[#0E2A47]">£{recommendedVan.pricePerHour}/hr</span>
+                            </div>
+                          </div>
+                          <div className="w-20 h-16 rounded-lg overflow-hidden bg-white border border-[#F5B400]/20 shrink-0">
+                            <img
+                              src={recommendedVan.image}
+                              alt={recommendedVan.name}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
                         </div>
 
