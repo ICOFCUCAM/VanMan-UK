@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Check, ArrowRight, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Check, ArrowRight, Loader2, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
 import { SUBSCRIPTION_PLANS, calculateCommission, DRIVER_IMAGES } from '@/lib/constants';
 import { useAppContext } from '@/contexts/AppContext';
 import { updateDriverTier } from '@/services/drivers';
+import { createSubscriptionCheckout } from '@/services/payments';
 import { supabase } from '@/lib/supabase';
 
 interface DriverSubscriptionPageProps {
@@ -31,9 +32,24 @@ export default function DriverSubscriptionPage({ onNavigate }: DriverSubscriptio
   const { user, role, isLoading, driver } = useAppContext();
   const [gate, setGate]               = useState<ApplicationGate>('loading');
   const [examplePrice, setExamplePrice] = useState(250);
-  const [subscribing, setSubscribing] = useState<string | null>(null);
+  const [subscribing, setSubscribing]     = useState<string | null>(null);
   const [subscribeError, setSubscribeError] = useState<string | null>(null);
-  const [successPlan, setSuccessPlan] = useState<string | null>(null);
+  const [successPlan, setSuccessPlan]     = useState<string | null>(null);
+
+  // Handle Stripe return URLs (?subscription_success=1&plan=gold or ?subscription_cancelled=1)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('subscription_success') === '1') {
+      const plan = params.get('plan') ?? '';
+      setSuccessPlan(plan);
+      window.history.replaceState({}, '', window.location.pathname);
+      setTimeout(() => onNavigate('driver-marketplace'), 2500);
+    }
+    if (params.get('subscription_cancelled') === '1') {
+      setSubscribeError('Subscription was cancelled — no charge was made.');
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   useEffect(() => {
     if (isLoading) return;
@@ -85,18 +101,24 @@ export default function DriverSubscriptionPage({ onNavigate }: DriverSubscriptio
     setSubscribeError(null);
     setSuccessPlan(null);
 
-    const { error } = await updateDriverTier(driver.id, planId);
-    setSubscribing(null);
-
-    if (error) {
-      setSubscribeError(error.message || 'Failed to update plan. Please try again.');
+    // Free (silver) plan — update directly, no payment needed
+    if (planPrice === 0) {
+      const { error } = await updateDriverTier(driver.id, planId);
+      setSubscribing(null);
+      if (error) { setSubscribeError(error.message || 'Failed to update plan.'); return; }
+      setSuccessPlan(planId);
+      setTimeout(() => onNavigate('driver-marketplace'), 1800);
       return;
     }
 
-    setSuccessPlan(planId);
-
-    // Redirect to marketplace after short delay so user sees success state
-    setTimeout(() => onNavigate('driver-marketplace'), 1800);
+    // Paid plans — redirect to Stripe Checkout
+    const { url, error } = await createSubscriptionCheckout(planId, driver.id, user.email!);
+    setSubscribing(null);
+    if (error || !url) {
+      setSubscribeError(error?.message || 'Could not open payment page. Please try again.');
+      return;
+    }
+    window.location.href = url; // redirect to Stripe
   }
 
   function ctaLabel(planId: string, planPrice: number): string {
@@ -107,7 +129,7 @@ export default function DriverSubscriptionPage({ onNavigate }: DriverSubscriptio
     if (gate === 'rejected')         return 'Re-submit application';
     if (planId === currentTier)      return 'Current Plan';
     if (planPrice === 0)             return 'Switch to Free';
-    return 'Subscribe Now';
+    return 'Subscribe via Stripe';
   }
 
   return (
@@ -270,10 +292,13 @@ export default function DriverSubscriptionPage({ onNavigate }: DriverSubscriptio
                 >
                   {isSubscribing && <Loader2 className="w-4 h-4 animate-spin" />}
                   {isSuccess     && <CheckCircle className="w-4 h-4" />}
-                  {isSuccess     ? 'Plan Activated!'
-                   : isSubscribing ? 'Activating…'
-                   : isCurrent    ? '✓ Current Plan'
+                  {isSuccess       ? 'Plan Activated!'
+                   : isSubscribing ? (plan.price === 0 ? 'Activating…' : 'Opening Stripe…')
+                   : isCurrent     ? '✓ Current Plan'
                    : ctaLabel(plan.id, plan.price)}
+                  {!isSubscribing && !isSuccess && !isCurrent && plan.price > 0 && (
+                    <ExternalLink className="w-3.5 h-3.5 opacity-60" />
+                  )}
                 </button>
               </div>
             );
