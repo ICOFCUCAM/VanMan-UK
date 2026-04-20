@@ -103,10 +103,10 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
       {/* ── Main grid ────────────────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-8 lg:gap-5">
 
-          {/* Brand column */}
-          <div className="col-span-2 sm:col-span-3 lg:col-span-1 lg:pr-4">
+          {/* Brand column — spans 2 on lg so it has room for contact details */}
+          <div className="col-span-2 sm:col-span-3 lg:col-span-2 lg:pr-4">
             <button onClick={() => onNavigate('home')} className="flex items-center gap-2.5 mb-4 group">
               <div className="w-9 h-9 bg-[#F5B400] rounded-xl flex items-center justify-center shadow-md shadow-[#F5B400]/20 group-hover:scale-105 transition-transform">
                 <Truck className="w-4.5 h-4.5 text-[#071A2F]" />
@@ -131,7 +131,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <span>111 Royal Crescent, IG2 7JZ<br />London, United Kingdom</span>
               </div>
             </div>
-            {/* Social icons */}
             <div className="flex items-center gap-2.5">
               {[
                 { Icon: Twitter,   href: '#' },
@@ -202,21 +201,21 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               ))}
             </ul>
           </div>
-        </div>
-      </div>
 
-      {/* ── Corporate row ────────────────────────────────────────────── */}
-      <div className="border-t border-white/[0.05]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <p className="text-white/30 text-[10px] font-bold tracking-[0.18em] uppercase mb-3">Corporate</p>
-          <div className="flex flex-wrap gap-x-8 gap-y-2">
-            {CORPORATE.map(link => (
-              <button key={link.label} onClick={() => onNavigate(link.page)}
-                className="text-[12px] text-white/35 hover:text-white/70 transition-colors flex items-center gap-1.5">
-                {link.label}
-                {link.soon && <span className="text-[9px] text-[#F5B400]/35 font-bold tracking-widest uppercase">Soon</span>}
-              </button>
-            ))}
+          {/* Corporate — now a proper column */}
+          <div>
+            <h4 className="text-white/50 text-[10px] font-bold tracking-[0.18em] uppercase mb-4">Corporate</h4>
+            <ul className="space-y-2.5">
+              {CORPORATE.map(link => (
+                <li key={link.label}>
+                  <button onClick={() => onNavigate(link.page)}
+                    className="text-[12px] text-white/35 hover:text-white/75 transition-colors text-left flex items-center gap-1.5">
+                    {link.label}
+                    {link.soon && <span className="text-[9px] text-[#F5B400]/40 font-bold tracking-widest uppercase">Soon</span>}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

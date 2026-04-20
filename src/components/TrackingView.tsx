@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Clock, Phone, MessageCircle, Star, Truck, Navigation, CheckCircle, Package, ArrowLeft, Shield, Headphones, User, Loader2, AlertCircle } from 'lucide-react';
+import { MapPin, Clock, Phone, MessageCircle, Star, Truck, Navigation, CheckCircle, Package, ArrowLeft, Shield, Headphones, User, Loader2, AlertCircle, FileCheck, UserCheck, Timer } from 'lucide-react';
 import { FEATURE_IMAGES, BRAND } from '@/lib/constants';
 import { getBookingById } from '@/services/bookings';
 import type { Booking } from '@/types';
@@ -159,19 +159,31 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onNavigate }) => {
             <span className="text-[#0E2A47] text-xs font-bold tracking-[0.2em] uppercase mb-3 block">Delivery Progress</span>
             <h2 className="text-2xl font-black text-[#0B2239] mb-10">Track every stage of your delivery</h2>
             <div className="relative">
-              <div className="absolute top-7 left-[10%] right-[10%] h-0.5 bg-gray-100 hidden sm:block" />
+              {/* Gradient connector line */}
+              <div className="absolute top-7 left-[10%] right-[10%] h-0.5 hidden sm:block"
+                style={{ background: 'linear-gradient(90deg, #D0E0EE 0%, #0E2A47 50%, #F5B400 100%)' }} />
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
-                {['Booking Confirmed', 'Driver Assigned', 'Driver En Route', 'Arriving Soon', 'Delivered'].map((label, i) => (
+                {[
+                  { label: 'Booking Confirmed', Icon: FileCheck,  bg: '#EBF2F8', border: 'rgba(14,42,71,0.18)', iconColor: '#5B87AE', numColor: '#5B87AE' },
+                  { label: 'Driver Assigned',   Icon: UserCheck,  bg: '#C8DDEF', border: 'rgba(14,42,71,0.30)', iconColor: '#2E6A9E', numColor: '#2E6A9E' },
+                  { label: 'Driver En Route',   Icon: Truck,      bg: '#0E2A47', border: '#0E2A47',             iconColor: '#FFFFFF', numColor: '#FFFFFF' },
+                  { label: 'Arriving Soon',     Icon: Timer,      bg: '#FFF5D6', border: 'rgba(245,180,0,0.45)', iconColor: '#B48A00', numColor: '#B48A00' },
+                  { label: 'Delivered',         Icon: CheckCircle,bg: '#F5B400', border: '#E5A000',             iconColor: '#071A2F', numColor: '#071A2F' },
+                ].map(({ label, Icon, bg, border, iconColor, numColor }, i) => (
                   <div key={i} className="flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center mb-3">
-                      <span className="text-gray-300 font-black text-base">{i + 1}</span>
+                    <div
+                      className="w-14 h-14 rounded-2xl flex flex-col items-center justify-center mb-3 shadow-sm"
+                      style={{ background: bg, border: `1.5px solid ${border}` }}
+                    >
+                      <Icon style={{ color: iconColor }} className="w-5 h-5 mb-0.5" />
+                      <span className="font-black text-[10px] leading-none" style={{ color: numColor }}>{i + 1}</span>
                     </div>
-                    <p className="text-gray-400 text-xs font-semibold leading-snug">{label}</p>
+                    <p className="text-[#0B2239]/70 text-xs font-semibold leading-snug">{label}</p>
                   </div>
                 ))}
               </div>
             </div>
-            <p className="text-gray-200 text-xs mt-10">Timeline activates once tracking begins</p>
+            <p className="text-gray-400 text-xs mt-10">Timeline activates once tracking begins</p>
           </div>
         </section>
 
