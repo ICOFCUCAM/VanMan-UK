@@ -39,7 +39,7 @@ export const FEATURE_IMAGES = {
 
 export const SERVICE_IMAGES = {
   officeRelocation:  'https://csahsobwbhluezufmomm.supabase.co/storage/v1/object/public/van-images/Office%20Relocation.jpg',
-  houseMoving:       'https://images.pexels.com/photos/3970332/pexels-photo-3970332.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+  houseMoving:       'https://csahsobwbhluezufmomm.supabase.co/storage/v1/object/public/van-images/Family%20Moving.png',
   studentMoves:      'https://csahsobwbhluezufmomm.supabase.co/storage/v1/object/public/van-images/Student%20Moves.png',
   furnitureDelivery: 'https://csahsobwbhluezufmomm.supabase.co/storage/v1/object/public/van-images/Funiture%20Delivery.jpg',
   sameDayDelivery:   'https://csahsobwbhluezufmomm.supabase.co/storage/v1/object/public/van-images/69b56f9f6e49dd97b163f55e_1773498653312_5189ff4e.jpg',
