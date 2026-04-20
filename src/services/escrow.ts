@@ -9,6 +9,17 @@ export async function confirmDeliveryAsCustomer(bookingId: string): Promise<Serv
       .update({ customer_confirmation: true })
       .eq('id', bookingId);
     if (error) throw error;
+
+    // Auto-release escrow if driver has also confirmed
+    const { data: booking } = await supabase
+      .from('bookings')
+      .select('driver_confirmation, payment_method')
+      .eq('id', bookingId)
+      .single();
+    if (booking?.driver_confirmation && booking?.payment_method !== 'cash') {
+      await supabase.rpc('release_escrow_manually', { p_booking_id: bookingId }).then(() => null, () => null);
+    }
+
     return { data: null, error: null };
   } catch (err) {
     return { data: null, error: err as Error };
@@ -22,6 +33,17 @@ export async function confirmCompletionAsDriver(bookingId: string): Promise<Serv
       .update({ driver_confirmation: true })
       .eq('id', bookingId);
     if (error) throw error;
+
+    // Auto-release escrow if customer has also confirmed
+    const { data: booking } = await supabase
+      .from('bookings')
+      .select('customer_confirmation, payment_method')
+      .eq('id', bookingId)
+      .single();
+    if (booking?.customer_confirmation && booking?.payment_method !== 'cash') {
+      await supabase.rpc('release_escrow_manually', { p_booking_id: bookingId }).then(() => null, () => null);
+    }
+
     return { data: null, error: null };
   } catch (err) {
     return { data: null, error: err as Error };

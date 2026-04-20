@@ -133,12 +133,12 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </div>
             <div className="flex items-center gap-2.5">
               {[
-                { Icon: Twitter,   href: '#' },
-                { Icon: Facebook,  href: '#' },
-                { Icon: Linkedin,  href: '#' },
-                { Icon: Instagram, href: '#' },
-              ].map(({ Icon, href }, i) => (
-                <a key={i} href={href} target="_blank" rel="noopener noreferrer"
+                { Icon: Twitter,   href: 'https://twitter.com/fastmanandvan',         label: 'Twitter'   },
+                { Icon: Facebook,  href: 'https://facebook.com/fastmanandvan',         label: 'Facebook'  },
+                { Icon: Linkedin,  href: 'https://linkedin.com/company/fastmanandvan', label: 'LinkedIn'  },
+                { Icon: Instagram, href: 'https://instagram.com/fastmanandvan',        label: 'Instagram' },
+              ].map(({ Icon, href, label }, i) => (
+                <a key={i} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
                   className="w-8 h-8 bg-white/6 hover:bg-[#F5B400]/15 border border-white/8 hover:border-[#F5B400]/20 rounded-lg flex items-center justify-center transition-all">
                   <Icon className="w-3.5 h-3.5 text-white/45 hover:text-[#F5B400]" />
                 </a>

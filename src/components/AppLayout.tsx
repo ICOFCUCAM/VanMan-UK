@@ -1,14 +1,15 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, lazy, Suspense } from 'react';
 import { Loader2, ShieldX } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 
-// Layout
+// Layout — always loaded (part of every page)
 import Header from './Header';
 import Footer from './Footer';
 import WhatsAppButton from './WhatsAppButton';
 import CookieConsent from './CookieConsent';
+import AuthModal from './AuthModal';
 
-// Homepage sections
+// Homepage sections — always loaded (default route)
 import HeroSlider from './HeroSlider';
 import BookingWidget from './BookingWidget';
 import TrustMetricsStrip from './TrustMetricsStrip';
@@ -23,32 +24,27 @@ import CitiesSection from './CitiesSection';
 import SubscriptionTeaser from './SubscriptionTeaser';
 import DriverCTA from './DriverCTA';
 
-// App pages
-import SignUpPage from './pages/SignUpPage';
-import DriverSubscriptionPage from './pages/DriverSubscriptionPage';
-import MovingChecklistPage from './pages/MovingChecklistPage';
-import VanGuidePage from './pages/VanGuidePage';
-
-// Content pages
-import ServicesPage from './pages/ServicesPage';
-import TechnologyPage from './pages/TechnologyPage';
-import DriversPage from './pages/DriversPage';
-import StudentsPage from './pages/StudentsPage';
-import EnterprisePage from './pages/EnterprisePage';
-
-// Auth modal
-import AuthModal from './AuthModal';
-
-// Functional pages
-import DriverRegistration from './DriverRegistration';
-import DriverMarketplace from './DriverMarketplace';
-import TrackingView from './TrackingView';
-import AdminDashboard from './AdminDashboard';
-import CorporatePortal from './CorporatePortal';
-import LegalPages from './LegalPages';
+// Light auth pages — small, keep eager
 import LoginPage from './LoginPage';
-import CustomerDashboard from './CustomerDashboard';
-import PaymentPage from './PaymentPage';
+import LegalPages from './LegalPages';
+
+// Heavy pages — lazy loaded to reduce initial bundle
+const SignUpPage            = lazy(() => import('./pages/SignUpPage'));
+const DriverSubscriptionPage = lazy(() => import('./pages/DriverSubscriptionPage'));
+const MovingChecklistPage   = lazy(() => import('./pages/MovingChecklistPage'));
+const VanGuidePage          = lazy(() => import('./pages/VanGuidePage'));
+const ServicesPage          = lazy(() => import('./pages/ServicesPage'));
+const TechnologyPage        = lazy(() => import('./pages/TechnologyPage'));
+const DriversPage           = lazy(() => import('./pages/DriversPage'));
+const StudentsPage          = lazy(() => import('./pages/StudentsPage'));
+const EnterprisePage        = lazy(() => import('./pages/EnterprisePage'));
+const DriverRegistration    = lazy(() => import('./DriverRegistration'));
+const DriverMarketplace     = lazy(() => import('./DriverMarketplace'));
+const TrackingView          = lazy(() => import('./TrackingView'));
+const AdminDashboard        = lazy(() => import('./AdminDashboard'));
+const CorporatePortal       = lazy(() => import('./CorporatePortal'));
+const CustomerDashboard     = lazy(() => import('./CustomerDashboard'));
+const PaymentPage           = lazy(() => import('./PaymentPage'));
 
 const LEGAL_PAGES = ['terms', 'privacy', 'cookies', 'driver-agreement', 'cancellation', 'contact', 'about'];
 
@@ -188,7 +184,11 @@ const AppLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       <Header currentPage={currentPage} onNavigate={navigate} onOpenModal={openModal} />
-      <main>{renderPage()}</main>
+      <main>
+        <Suspense fallback={<LoadingScreen />}>
+          {renderPage()}
+        </Suspense>
+      </main>
       <Footer onNavigate={navigate} />
       <WhatsAppButton />
       <CookieConsent />

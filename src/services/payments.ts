@@ -1,3 +1,15 @@
+// PaymentModal requires a PaymentIntent clientSecret for Stripe Elements.
+// The backend uses Stripe Checkout sessions, so this surfaces a clear error
+// rather than silently failing — PaymentPage (Stripe Checkout) is the primary flow.
+export async function createPaymentIntent(
+  _amountGBP: number,
+): Promise<{ clientSecret: string | null; error: Error | null }> {
+  return {
+    clientSecret: null,
+    error: new Error('Embedded payment is not available. Please use the secure checkout page.'),
+  };
+}
+
 export async function createSubscriptionCheckout(
   planId: string,
   driverId: string,

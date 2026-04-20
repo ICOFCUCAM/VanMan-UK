@@ -24,6 +24,7 @@ export async function signUp(input: SignUpInput): Promise<ServiceResult<UserProf
       full_name: input.full_name,
       phone: input.phone ?? null,
       is_student: input.is_student ?? false,
+      is_admin: false,
       avatar_url: null,
       created_at: authData.user.created_at,
       updated_at: authData.user.created_at,

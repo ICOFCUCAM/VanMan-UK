@@ -103,19 +103,25 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
   const [confirmingJob, setConfirmingJob] = useState<string | null>(null);
   const [pendingConfirm, setPendingConfirm] = useState<string | null>(null); // dual confirm step 1
 
-  useEffect(() => {
-    Promise.all([
+  const fetchData = async (silent = false) => {
+    if (!silent) setIsLoading(true);
+    const [jobsRes, bookingsRes, walletRes] = await Promise.all([
       getAvailableJobs(),
       driver ? getBookingsByDriver(driver.id) : Promise.resolve({ data: [], error: null }),
       driver ? getDriverWallet(driver.id) : Promise.resolve({ data: null, error: null }),
-    ]).then(([jobsRes, bookingsRes, walletRes]) => {
-      if (jobsRes.error) setError(jobsRes.error.message);
-      else setJobs(jobsRes.data);
-      setMyBookings((bookingsRes.data ?? []).filter(b => ['assigned', 'in_progress', 'completed'].includes(b.status)));
-      setWallet(walletRes.data);
-      setIsLoading(false);
-    });
-  }, [driver]);
+    ]);
+    if (jobsRes.error) setError(jobsRes.error.message);
+    else setJobs(jobsRes.data);
+    setMyBookings((bookingsRes.data ?? []).filter(b => ['assigned', 'in_progress', 'completed'].includes(b.status)));
+    setWallet(walletRes.data);
+    if (!silent) setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(() => fetchData(true), 30_000);
+    return () => clearInterval(interval);
+  }, [driver]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleOnline = async () => {
     if (!driver) return;

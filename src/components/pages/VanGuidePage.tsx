@@ -176,7 +176,7 @@ export default function VanGuidePage({ onNavigate, onScrollToBooking }: VanGuide
                         <td className="py-3 px-5 text-gray-600 font-medium">{row.label}</td>
                         {VEHICLE_TYPES.map(v => (
                           <td key={v.id} className="py-3 px-4 text-center font-semibold text-[#0E2A47]">
-                            {row.format(v[row.key] as any)}
+                            {(row.format as (v: string | number) => string)(v[row.key])}
                           </td>
                         ))}
                       </tr>
