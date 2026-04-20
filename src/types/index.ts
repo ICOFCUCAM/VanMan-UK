@@ -58,7 +58,7 @@ export interface SignInInput {
 
 // ─── Drivers ─────────────────────────────────────────────────────────────────
 
-export type DriverTier = 'gold' | 'silver';
+export type DriverTier = 'silver' | 'silver_plus' | 'gold' | 'gold_pro' | 'elite';
 export type DriverStatus = 'pending' | 'approved' | 'rejected' | 'suspended' | 'active';
 export type InsuranceType = 'comprehensive' | 'third-party';
 

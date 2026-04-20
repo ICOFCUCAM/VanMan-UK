@@ -113,3 +113,19 @@ export async function setDriverOnline(id: string, isOnline: boolean): Promise<Se
     return { data: null, error: err as Error };
   }
 }
+
+export async function updateDriverTier(driverId: string, tier: string): Promise<ServiceResult<Driver>> {
+  try {
+    const { data, error } = await supabase
+      .from('drivers')
+      .update({ tier })
+      .eq('id', driverId)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    return { data: data as Driver, error: null };
+  } catch (err) {
+    return { data: null, error: err as Error };
+  }
+}
