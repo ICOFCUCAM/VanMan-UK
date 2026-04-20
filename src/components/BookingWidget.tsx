@@ -5,6 +5,7 @@ import { geocodeUK } from '@/lib/geocoding';
 import { getRoute } from '@/lib/routing';
 import { useAppContext } from '@/contexts/AppContext';
 import { createBooking } from '@/services/bookings';
+import AddressAutocomplete from '@/components/AddressAutocomplete';
 import type { PaymentMethod, QuoteData } from '@/types';
 
 interface BookingWidgetProps {
@@ -228,34 +229,30 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
               {/* Pickup */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Collection address</label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-green-50 rounded flex items-center justify-center pointer-events-none">
-                    <MapPin className="w-3.5 h-3.5 text-green-500" />
-                  </div>
-                  <input
-                    type="text"
-                    value={collectionAddress}
-                    onChange={(e) => setCollectionAddress(e.target.value)}
-                    placeholder="Pickup postcode or address"
-                    className="w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0E2A47]/20 focus:border-[#0E2A47] outline-none text-sm transition-colors"
-                  />
-                </div>
+                <AddressAutocomplete
+                  value={collectionAddress}
+                  onChange={setCollectionAddress}
+                  placeholder="Pickup postcode or address"
+                  icon={
+                    <div className="w-5 h-5 bg-green-50 rounded flex items-center justify-center">
+                      <MapPin className="w-3.5 h-3.5 text-green-500" />
+                    </div>
+                  }
+                />
               </div>
               {/* Delivery */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Delivery address</label>
-                <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-red-50 rounded flex items-center justify-center pointer-events-none">
-                    <MapPin className="w-3.5 h-3.5 text-red-500" />
-                  </div>
-                  <input
-                    type="text"
-                    value={deliveryAddress}
-                    onChange={(e) => setDeliveryAddress(e.target.value)}
-                    placeholder="Destination postcode or address"
-                    className="w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0E2A47]/20 focus:border-[#0E2A47] outline-none text-sm transition-colors"
-                  />
-                </div>
+                <AddressAutocomplete
+                  value={deliveryAddress}
+                  onChange={setDeliveryAddress}
+                  placeholder="Destination postcode or address"
+                  icon={
+                    <div className="w-5 h-5 bg-red-50 rounded flex items-center justify-center">
+                      <MapPin className="w-3.5 h-3.5 text-red-500" />
+                    </div>
+                  }
+                />
               </div>
               {/* Move type */}
               <div>
@@ -306,12 +303,17 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
             {addStops && (
               <div className="space-y-2 bg-amber-50/60 border border-amber-100 rounded-xl p-3">
                 {stopAddresses.map((stop, idx) => (
-                  <div key={idx} className="flex gap-2">
-                    <div className="relative flex-1">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#F5B400]" />
-                      <input type="text" value={stop} onChange={(e) => updateStop(idx, e.target.value)} placeholder={`Stop ${idx + 1}`} className="w-full pl-9 pr-3 py-2.5 border border-amber-200 rounded-lg focus:border-[#0E2A47] outline-none text-sm bg-white" />
+                  <div key={idx} className="flex gap-2 items-start">
+                    <div className="flex-1">
+                      <AddressAutocomplete
+                        value={stop}
+                        onChange={(v) => updateStop(idx, v)}
+                        placeholder={`Stop ${idx + 1} — address or postcode`}
+                        icon={<MapPin className="w-3.5 h-3.5 text-[#F5B400]" />}
+                        inputClassName="border-amber-200 bg-white py-2.5"
+                      />
                     </div>
-                    <button onClick={() => removeStop(idx)} className="p-2 text-red-400 hover:text-red-600 rounded-lg transition-colors"><X className="w-4 h-4" /></button>
+                    <button onClick={() => removeStop(idx)} className="mt-2 p-2 text-red-400 hover:text-red-600 rounded-lg transition-colors shrink-0"><X className="w-4 h-4" /></button>
                   </div>
                 ))}
                 <button onClick={addStop} className="flex items-center gap-1.5 text-[#0E2A47] text-xs font-bold hover:text-[#0F3558]"><Plus className="w-3.5 h-3.5" /> Add stop</button>

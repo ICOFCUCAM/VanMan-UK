@@ -3,6 +3,7 @@ import {
   Building2, Users, FileText, BarChart3, Repeat, Plus, CheckCircle,
   ArrowRight, MapPin, TrendingUp, Loader2, X, Trash2, AlertCircle,
 } from 'lucide-react';
+import AddressAutocomplete from '@/components/AddressAutocomplete';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAppContext } from '@/contexts/AppContext';
 import {
@@ -457,8 +458,20 @@ const CorporatePortal: React.FC<CorporatePortalProps> = ({ onNavigate }) => {
               <div className="bg-gray-50 rounded-xl p-5 mb-5 space-y-3 border border-gray-200">
                 <p className="font-semibold text-gray-900 text-sm">New Schedule</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input value={scheduleForm.pickup_address} onChange={e => setScheduleForm(f => ({ ...f, pickup_address: e.target.value }))} placeholder="Pickup address" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]" />
-                  <input value={scheduleForm.delivery_address} onChange={e => setScheduleForm(f => ({ ...f, delivery_address: e.target.value }))} placeholder="Delivery address" className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]" />
+                  <AddressAutocomplete
+                    value={scheduleForm.pickup_address}
+                    onChange={v => setScheduleForm(f => ({ ...f, pickup_address: v }))}
+                    placeholder="Pickup address or postcode"
+                    icon={<MapPin className="w-3.5 h-3.5 text-green-500" />}
+                    inputClassName="py-2.5"
+                  />
+                  <AddressAutocomplete
+                    value={scheduleForm.delivery_address}
+                    onChange={v => setScheduleForm(f => ({ ...f, delivery_address: v }))}
+                    placeholder="Delivery address or postcode"
+                    icon={<MapPin className="w-3.5 h-3.5 text-red-500" />}
+                    inputClassName="py-2.5"
+                  />
                   <select value={scheduleForm.frequency} onChange={e => setScheduleForm(f => ({ ...f, frequency: e.target.value as RecurringSchedule['frequency'] }))} className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:border-[#0E2A47]">
                     <option value="daily">Daily</option>
                     <option value="weekly">Weekly</option>
