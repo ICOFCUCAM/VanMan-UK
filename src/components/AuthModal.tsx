@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Eye, EyeOff, ChevronRight, Truck, User, Building2, ArrowLeft, Loader2 } from 'lucide-react';
+import { X, Eye, EyeOff, ChevronRight, Truck, User, Building2, ArrowLeft, Loader2, Mail } from 'lucide-react';
 import { signUp, signIn, signInWithProvider, resetPassword } from '@/services/auth';
 
 type AccountType = 'personal' | 'driver' | 'business';
-type ModalStep = 'select' | 'signup' | 'signin' | 'forgot' | 'reset-sent';
+type ModalStep = 'select' | 'signup' | 'signin' | 'forgot' | 'reset-sent' | 'verify-email';
 
 interface AuthModalProps {
   open: boolean;
@@ -86,9 +86,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, initialStep = 'select', onC
     });
     setLoading(false);
     if (err) { setError(err.message); return; }
-    onClose();
-    if (accountType === 'driver')   onNavigate('driver-register');
-    if (accountType === 'business') onNavigate('corporate');
+    setStep('verify-email');
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -431,6 +429,42 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, initialStep = 'select', onC
                 Send Reset Link
               </button>
             </form>
+          </div>
+        )}
+
+        {/* ── STEP: VERIFY EMAIL ───────────────────────────────────────── */}
+        {step === 'verify-email' && (
+          <div className="p-6 pt-8 text-center">
+            <div className="w-16 h-16 bg-[#0E2A47]/8 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="w-8 h-8 text-[#0E2A47]" />
+            </div>
+            <h2 className="text-xl font-black text-[#0B2239] mb-2">Check Your Email</h2>
+            <p className="text-gray-500 text-sm mb-3">
+              We've sent a verification link to:
+            </p>
+            <p className="font-bold text-[#0E2A47] text-sm bg-[#0E2A47]/6 rounded-xl px-4 py-2.5 mb-4 break-all">
+              {email}
+            </p>
+            <p className="text-gray-400 text-xs mb-6 leading-relaxed">
+              Click the link in your email to verify your account.<br />
+              Can't find it? Check your spam or junk folder.
+            </p>
+            <button
+              onClick={() => {
+                onClose();
+                if (accountType === 'driver')   onNavigate('driver-register');
+                if (accountType === 'business') onNavigate('corporate');
+              }}
+              className="w-full bg-[#0E2A47] hover:bg-[#0F3558] text-white py-2.5 rounded-xl font-bold text-sm transition-colors mb-3"
+            >
+              {accountType === 'driver' ? 'Continue to Driver Registration' : accountType === 'business' ? 'Continue to Business Setup' : 'Got it, I\'ll check my email'}
+            </button>
+            <button
+              onClick={() => { setStep('signin'); setError(''); }}
+              className="text-xs text-gray-400 hover:text-[#0E2A47] transition-colors"
+            >
+              Already verified? Sign in
+            </button>
           </div>
         )}
 

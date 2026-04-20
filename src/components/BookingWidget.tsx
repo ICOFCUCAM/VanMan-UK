@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2, CreditCard, Calendar, Repeat } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { MapPin, Plus, X, Truck, ArrowRight, CheckCircle2, AlertTriangle, Building2, Loader2, CreditCard, Calendar, Repeat, Lock, UserPlus } from 'lucide-react';
 import { PRICING, VEHICLE_TYPES } from '@/lib/constants';
 import { geocodeUK } from '@/lib/geocoding';
 import { getRoute } from '@/lib/routing';
@@ -44,6 +44,12 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [showAuthGate, setShowAuthGate] = useState(false);
+
+  // Clear auth gate when user signs in
+  useEffect(() => {
+    if (user) setShowAuthGate(false);
+  }, [user]);
   const [scheduleForLater, setScheduleForLater] = useState(false);
   const [scheduledAt, setScheduledAt] = useState('');
   const [isRecurring, setIsRecurring] = useState(false);
@@ -109,6 +115,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
 
   const handleCardPayment = async () => {
     if (!quoteData) return;
+    if (!user) { setShowAuthGate(true); return; }
     setIsRedirecting(true);
     setBookingError(null);
 
@@ -144,6 +151,7 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
 
   const handleCashPayment = async () => {
     if (!quoteData) return;
+    if (!user) { setShowAuthGate(true); return; }
     setIsBooking(true);
     setBookingError(null);
 
@@ -496,6 +504,38 @@ const BookingWidget: React.FC<BookingWidgetProps> = ({ bookingRef, onNavigate, e
               <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-3.5 py-3">
                 <AlertTriangle className="w-3.5 h-3.5 text-red-500 shrink-0" />
                 <span className="text-red-700 text-xs">{bookingError}</span>
+              </div>
+            )}
+
+            {/* Auth gate — shown when unauthenticated user tries to pay */}
+            {showAuthGate && !user && (
+              <div className="bg-[#0E2A47]/5 border-2 border-[#0E2A47]/20 rounded-xl p-4">
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="p-2 bg-[#0E2A47]/10 rounded-lg shrink-0">
+                    <Lock className="w-4 h-4 text-[#0E2A47]" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#0E2A47] text-sm">Sign up to complete your booking</p>
+                    <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">
+                      Your quote of <span className="font-bold text-[#0E2A47]">£{quoteData.basePrice}</span> is saved.
+                      Create a free account or sign in to proceed to payment.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => onNavigate?.('signup')}
+                    className="flex-1 bg-[#0E2A47] hover:bg-[#0F3558] text-white py-2.5 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <UserPlus className="w-4 h-4" /> Create Account
+                  </button>
+                  <button
+                    onClick={() => onNavigate?.('login')}
+                    className="flex-1 border-2 border-[#0E2A47]/30 hover:border-[#0E2A47]/60 text-[#0E2A47] py-2.5 rounded-xl font-bold text-sm transition-colors"
+                  >
+                    Sign In
+                  </button>
+                </div>
               </div>
             )}
 
