@@ -129,6 +129,60 @@ export async function refundEscrowManually(bookingId: string): Promise<ServiceRe
   }
 }
 
+// After a cash job is confirmed complete, reimburse the driver the difference
+// between the 30% deposit collected and their tier commission rate.
+// Silver: 0% back · Silver Plus: 5% · Gold: 10% · Gold Pro: 15% · Elite: 20%
+export async function processCashReimbursement(
+  bookingId: string,
+  driverId: string,
+  driverTier: string,
+  jobPrice: number,
+): Promise<ServiceResult<{ reimbursementAmount: number }>> {
+  try {
+    const tierRatePct  = TIER_COMMISSION[driverTier] ?? 30;
+    const reimbursePct = 30 - tierRatePct; // e.g. gold → 30−20 = 10
+
+    if (reimbursePct <= 0) {
+      return { data: { reimbursementAmount: 0 }, error: null };
+    }
+
+    const reimbursementAmount = Math.round(jobPrice * reimbursePct / 100);
+
+    const { error: txErr } = await supabase
+      .from('driver_wallet_transactions')
+      .insert({
+        driver_id:   driverId,
+        booking_id:  bookingId,
+        type:        'cash_reimbursement',
+        amount:      reimbursementAmount,
+        description: `Cash job reimbursement — ${driverTier} tier (${reimbursePct}% returned by platform)`,
+      });
+    if (txErr) throw txErr;
+
+    const { data: wallet } = await supabase
+      .from('driver_wallets')
+      .select('pending, total_earned')
+      .eq('driver_id', driverId)
+      .single();
+
+    const { error: walletErr } = await supabase
+      .from('driver_wallets')
+      .upsert(
+        {
+          driver_id:    driverId,
+          pending:      (wallet?.pending      ?? 0) + reimbursementAmount,
+          total_earned: (wallet?.total_earned ?? 0) + reimbursementAmount,
+        },
+        { onConflict: 'driver_id' },
+      );
+    if (walletErr) throw walletErr;
+
+    return { data: { reimbursementAmount }, error: null };
+  } catch (err) {
+    return { data: null, error: err as Error };
+  }
+}
+
 // Fallback: update payment_status directly (dev/testing — no real money moves)
 export async function activateEscrowFallback(bookingId: string, price: number, driverTier?: string): Promise<ServiceResult<null>> {
   try {

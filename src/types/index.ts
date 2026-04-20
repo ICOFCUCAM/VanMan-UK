@@ -251,6 +251,7 @@ export interface Job {
   items: string;
   helpers: number;
   booking_id?: string;
+  paymentMethod?: 'card' | 'cash';
 }
 
 // ─── Reviews ─────────────────────────────────────────────────────────────────

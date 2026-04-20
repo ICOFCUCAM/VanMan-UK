@@ -9,7 +9,7 @@ import { getAvailableJobs } from '@/services/jobs';
 import { assignDriverToBooking, getBookingsByDriver, updateBookingStatus } from '@/services/bookings';
 import { TIER_COMMISSION } from '@/lib/constants';
 import { setDriverOnline } from '@/services/drivers';
-import { getDriverWallet, confirmCompletionAsDriver } from '@/services/escrow';
+import { getDriverWallet, confirmCompletionAsDriver, processCashReimbursement } from '@/services/escrow';
 import type { Job, Booking } from '@/types';
 import type { DriverWallet } from '@/services/escrow';
 
@@ -155,6 +155,16 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
     const { error: err } = await confirmCompletionAsDriver(bookingId);
     if (err) { setError(err.message); }
     else {
+      // For cash bookings, process tier-based platform reimbursement
+      const completedBooking = myBookings.find(b => b.id === bookingId);
+      if (completedBooking?.payment_method === 'cash' && driver) {
+        await processCashReimbursement(
+          bookingId,
+          driver.id,
+          driver.tier ?? 'silver',
+          completedBooking.estimated_price,
+        );
+      }
       setMyBookings(prev => prev.map(b => b.id === bookingId ? { ...b, driver_confirmation: true } : b));
       if (driver) {
         const { data } = await getDriverWallet(driver.id);
@@ -617,9 +627,15 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-2xl font-bold text-[#0E2A47]">£{job.price}</p>
-                          <p className="text-xs text-green-600">
-                            You keep £{(job.price * (1 - commissionPct / 100)).toFixed(2)}
-                          </p>
+                          {job.paymentMethod === 'cash' ? (
+                            <p className="text-xs text-amber-600">
+                              £{Math.round(job.price * 0.70)} cash + £{Math.round(job.price * (30 - commissionPct) / 100)} wallet
+                            </p>
+                          ) : (
+                            <p className="text-xs text-green-600">
+                              You keep £{(job.price * (1 - commissionPct / 100)).toFixed(2)}
+                            </p>
+                          )}
                         </div>
                         <div className="flex gap-2">
                           <button onClick={() => handleDecline(job.id)} className="px-4 py-2 rounded-lg border-2 border-gray-200 text-gray-500 hover:border-red-300 hover:text-red-500 text-sm font-medium transition-colors">
@@ -693,7 +709,36 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                         <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {booking.duration}</span>
                       </div>
 
-                      {booking.driver_earning != null && (
+                      {booking.payment_method === 'cash' ? (
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4 space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-amber-700">Cash from customer (70%)</span>
+                            <span className="text-sm font-bold text-amber-800">£{Math.round(booking.estimated_price * 0.70)}</span>
+                          </div>
+                          {(() => {
+                            const tierPct    = TIER_COMMISSION[driver?.tier ?? 'silver'] ?? 30;
+                            const reimbPct   = 30 - tierPct;
+                            const reimbAmt   = Math.round(booking.estimated_price * reimbPct / 100);
+                            return reimbPct > 0 ? (
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-green-600">Platform reimbursement ({reimbPct}%)</span>
+                                <span className="text-sm font-bold text-green-700">+£{reimbAmt}</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-gray-400">No platform reimbursement (Silver)</span>
+                                <span className="text-xs text-gray-400">£0</span>
+                              </div>
+                            );
+                          })()}
+                          <div className="border-t border-amber-200 pt-1 flex items-center justify-between">
+                            <span className="text-xs font-semibold text-gray-600">Total you keep</span>
+                            <span className="text-sm font-bold text-[#0E2A47]">
+                              £{Math.round(booking.estimated_price * (100 - (TIER_COMMISSION[driver?.tier ?? 'silver'] ?? 30)) / 100)}
+                            </span>
+                          </div>
+                        </div>
+                      ) : booking.driver_earning != null ? (
                         <div className="bg-green-50 rounded-lg px-3 py-2 mb-4 flex items-center justify-between">
                           <span className="text-xs text-gray-500">Your earnings</span>
                           <span className="font-bold text-green-700">
@@ -705,7 +750,7 @@ const DriverMarketplace: React.FC<DriverMarketplaceProps> = ({ onNavigate }) => 
                             )}
                           </span>
                         </div>
-                      )}
+                      ) : null}
 
                       {/* Action buttons */}
                       <div className="flex gap-2 flex-wrap">

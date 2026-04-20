@@ -17,7 +17,7 @@ export async function getAvailableJobs(): Promise<ServiceListResult<Job>> {
   try {
     const { data, error } = await supabase
       .from('bookings')
-      .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type')
+      .select('id, collection_address, delivery_address, distance_miles, duration, estimated_price, helpers, vehicle_type, payment_method')
       .eq('status', 'pending')
       .is('driver_id', null)
       .order('created_at', { ascending: false });
@@ -37,6 +37,7 @@ export async function getAvailableJobs(): Promise<ServiceListResult<Job>> {
       items: itemLabel(row.vehicle_type ?? ''),
       helpers: row.helpers ?? 0,
       booking_id: row.id,
+      paymentMethod: row.payment_method === 'cash' ? 'cash' : 'card',
     }));
 
     return { data: jobs, error: null };
